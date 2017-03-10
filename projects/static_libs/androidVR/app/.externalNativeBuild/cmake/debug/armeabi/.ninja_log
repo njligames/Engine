@@ -1,0 +1,11 @@
+# ninja log v5
+1	41	0	CMakeFiles/gles3jni.dir/gl3stub_wrapper.c.o	602a5362923c8dee
+1	83	0	CMakeFiles/gles3jni.dir/RendererES2.cpp.o	7ace0b3bfefdef0c
+1	84	0	CMakeFiles/gles3jni.dir/RendererES3.cpp.o	3d4116c9ae17dd51
+1	128	0	CMakeFiles/gles3jni.dir/gles3jni.cpp.o	f636d545293b3ebb
+128	188	0	/Users/jamesfolk/Dropbox/Developer/NJLI/Engine/projects/static_libs/androidVR/app/build/intermediates/cmake/debug/obj/armeabi/libgles3jni.so	a5b990aadfc1a8db
+0	38	0	CMakeFiles/gles3jni.dir/gl3stub_wrapper.c.o	602a5362923c8dee
+0	64	0	CMakeFiles/gles3jni.dir/RendererES2.cpp.o	7ace0b3bfefdef0c
+1	66	0	CMakeFiles/gles3jni.dir/RendererES3.cpp.o	3d4116c9ae17dd51
+0	110	0	CMakeFiles/gles3jni.dir/gles3jni.cpp.o	f636d545293b3ebb
+110	149	0	/Users/jamesfolk/Dropbox/Developer/NJLI/Engine/projects/static_libs/androidVR/app/build/intermediates/cmake/debug/obj/armeabi/libgles3jni.so	a5b990aadfc1a8db

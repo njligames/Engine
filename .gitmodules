@@ -1,0 +1,3 @@
+[submodule "src/njli/lua"]
+	path = src/njli/lua
+	url = https://github.com/njligames/lua.git

@@ -1,0 +1,5 @@
+// the configured options and settings for Tutorial
+#define NJLIGameEngine_VERSION_MAJOR @NJLIGameEngine_VERSION_MAJOR@
+#define NJLIGameEngine_VERSION_MINOR @NJLIGameEngine_VERSION_MINOR@
+
+#cmakedefine USE_MYMATH
