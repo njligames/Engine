@@ -96,7 +96,44 @@ build_applewatchos()
     build_apple RelWithDebugInfo applewatchos OFF OS ${MY_IOS_PATH} ${CMAKE_WATCHOS_SYSTEM_VERSION}
 }
 
-build_ios
-build_appletvos
+_build_macos()
+{
+    MY_BUILD_DIRECTORY=.build
+    mkdir -p ${MY_BUILD_DIRECTORY}
+    cd ${MY_BUILD_DIRECTORY}
+
+
+    #Debug Release MinsizeRel RelWithDebugInfo
+    MY_BUILD_TYPE=$1
+    MY_VERSION=$2
+    MY_BUILD_DIR="macOS/${MY_VERSION}"
+
+    cmake .. -G "Unix Makefiles" \
+        -DCMAKE_INSTALL_PREFIX=../generated/ \
+        -DNJLI_THIRDPARTY_DIRECTORY:STRING=${MY_THIRDPARTY_DIR} \
+        -DNJLI_BUILD_PLATFORM="macOS" \
+        -DCMAKE_BUILD_TYPE=${MY_BUILD_TYPE} \
+        -DNJLI_BUILD_DIR=${MY_BUILD_DIR}
+
+	make -j4
+	make install
+
+    cd ..
+}
+
+build_macos()
+{
+    BUILD_TYPES=(Debug Release MinsizeRel RelWithDebugInfo)
+
+    for BUILD_TYPE in ${BUILD_TYPES[@]};do
+        _build_macos ${BUILD_TYPE} ${CMAKE_MACOS_SYSTEM_VERSION}
+    done
+}
+
+#build_macos
+#build_ios
+#build_appletvos
 #build_applewatchos
+
+_build_macos Release ${CMAKE_MACOS_SYSTEM_VERSION}
 

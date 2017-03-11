@@ -17,18 +17,22 @@ export MY_ANDROID_API_LEVEL=24
 
 rm -rf .build
 
-./cmake_doc.sh
-./cmake_android.sh
 ./cmake_apple.sh
-./cmake_emscripten.sh
 
-mkdir -p .build
-cd .build
-cpack .. --config CPackConfig.cmake
-cd ..
 
-rm -rf install
-mkdir -p install
-cp ./.build/NJLIGameEngine* ./install
-cp ./.build/install_manifest.txt ./install
+#./cmake_doc.sh
+#./cmake_android.sh
+#./cmake_apple.sh
+#./cmake_emscripten.sh
+
+
+#mkdir -p .build
+#cd .build
+#cpack .. --config CPackConfig.cmake
+#cd ..
+
+#rm -rf install
+#mkdir -p install
+#cp ./.build/NJLIGameEngine* ./install
+#cp ./.build/install_manifest.txt ./install
 
