@@ -1,0 +1,26 @@
+//%njli_array_functions(njli::DeviceInputTime, DeviceInputTimeArray);
+//%njli_array_functions(njli::DeviceTouch, DeviceTouchArray);
+//%njli_array_functions(File, FileArray);
+//%njli_array_functions(Game, GameArray);
+//%njli_array_functions(JLIAssetUtil, JLIAssetUtilArray);
+//%njli_array_functions(JLIFileUtil, JLIFileUtilArray);
+//%njli_array_functions(Localization, LocalizationArray);
+//%njli_array_functions(Log, LogArray);
+//%njli_array_functions(Macros, MacrosArray);
+%njli_array_functions(njli::Sound, SoundArray);
+//%njli_array_functions(Util, UtilArray);
+//%njli_array_functions(WorldFacebook, WorldFacebookArray);
+//%njli_array_functions(WorldInput, WorldInputArray);
+//%njli_array_functions(WorldPythonVirtualMachine, WorldPythonVirtualMachineArray);
+//%njli_array_functions(WorldSound, WorldSoundArray);
+
+%array_functions(s8, s8Array);
+%array_functions(u8, u8Array);
+%array_functions(s16, s16Array);
+%array_functions(u16, u16Array);
+%array_functions(s32, s32Array);
+%array_functions(u32, u32Array);
+%array_functions(s64, s64Array);
+%array_functions(u64, u64Array);
+%array_functions(f32, f32Array);
+%array_functions(f64, f64Array);

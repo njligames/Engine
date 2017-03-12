@@ -1,0 +1,27 @@
+//Factory
+%newobject njli::PhysicsConstraintConeTwist::create;
+%delobject njli::PhysicsConstraintConeTwist::destroy;
+%factory(njli::PhysicsConstraintConeTwist *njli::PhysicsConstraintConeTwist::create, njli::PhysicsConstraintConeTwist /*Add the children to the njli::PhysicsConstraintConeTwist class*/);
+%factory(njli::PhysicsConstraintConeTwist *njli::PhysicsConstraintConeTwist::close, njli::PhysicsConstraintConeTwist /*Add the children to the njli::PhysicsConstraintConeTwist class*/);
+%factory(njli::PhysicsConstraintConeTwist *njli::PhysicsConstraintConeTwist::copy, njli::PhysicsConstraintConeTwist /*Add the children to the njli::PhysicsConstraintConeTwist class*/);
+
+//Extend
+%extend njli::PhysicsConstraintConeTwist
+{
+    const char *__concat__(const char *s) {
+        static std::string temp;
+        std::string t1(*self);
+        std::string t2(s);
+        
+        temp = (t1 + t2);
+        return temp.c_str();
+    }
+    
+    const char *__str__()
+    {
+        std::string s(*self);
+        static char tmp[1024];
+        sprintf(tmp, "%s", s.c_str());
+        return tmp;
+    }
+}

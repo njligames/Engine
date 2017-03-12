@@ -10,7 +10,12 @@ SET( CMAKE_INSTALL_DATADIR data/ CACHE STRING "The data directory" )
 SET( CMAKE_INSTALL_DOCDIR doc/ CACHE STRING "The documentation directory" )
 SET( CMAKE_INSTALL_TESTDIR tests/ CACHE STRING "The tests directory" )
 SET( NJLI_THIRDPARTY_DIRECTORY "${CMAKE_SOURCE_DIR}/../External/thirdparty/" CACHE STRING "The third party include directory")
+
+SET( NJLI_BUILDERS_SOURCE_DIRECTORY "${CMAKE_SOURCE_DIR}/src/builders/" CACHE STRING "The lua source directory")
+SET( NJLI_GENERATED_SOURCE_DIRECTORY "${CMAKE_SOURCE_DIR}/src/generated/" CACHE STRING "The lua source directory")
+SET( NJLI_LUA_SOURCE_DIRECTORY "${CMAKE_SOURCE_DIR}/src/lua/" CACHE STRING "The lua source directory")
 SET( NJLI_SOURCE_DIRECTORY "${CMAKE_SOURCE_DIR}/src/njli/" CACHE STRING "The njli source directory")
+SET( NJLI_SWIGIN_DIRECTORY "${CMAKE_SOURCE_DIR}/src/swig.in/" CACHE STRING "The njli source directory")
 
 option ( GENERATE_DOCUMENTATION "Whether to build the documentation or not" OFF )
 option ( GENERATE_LIB "Whether to build the documentation or not" ON )
@@ -60,7 +65,7 @@ macro( BUILD_PLATFORM )
     # to the source code
     CONFIGURE_FILE (
         "${CMAKE_SOURCE_DIR}/cmake.in/NJLIGameEngineConfig.h.in"
-        "${NJLI_SOURCE_DIRECTORY}/generated/NJLIGameEngineConfig.h"
+        "${NJLI_GENERATED_SOURCE_DIRECTORY}/NJLIGameEngineConfig.h"
         )
 
     INCLUDE_DIRECTORIES(${NJLI_SOURCE_DIRECTORY} )
@@ -84,81 +89,120 @@ macro( BUILD_PLATFORM )
         )
 
     file(GLOB Lua_SRCS
-        "${NJLI_SOURCE_DIRECTORY}/generated/swig/lua/njli_wrap.cxx"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lapi.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lapi.h"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lauxlib.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lauxlib.h"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lbaselib.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lbitlib.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lcode.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lcode.h"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lcorolib.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lctype.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lctype.h"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/ldblib.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/ldebug.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/ldebug.h"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/ldo.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/ldo.h"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/ldump.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lfunc.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lfunc.h"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lgc.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lgc.h"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/linit.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/liolib.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/llex.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/llex.h"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/llimits.h"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lmathlib.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lmem.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lmem.h"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/loadlib.c"
-        #"${NJLI_SOURCE_DIRECTORY}/lua/src/loadlib_rel.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lobject.c"
-        #"${NJLI_SOURCE_DIRECTORY}/lua/src/lobject.h"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lopcodes.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lopcodes.h"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/loslib.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lparser.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lparser.h"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lprefix.h"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lstate.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lstate.h"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lstring.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lstring.h"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lstrlib.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/ltable.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/ltable.h"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/ltablib.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/ltm.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/ltm.h"
-        #"${NJLI_SOURCE_DIRECTORY}/lua/src/lua.c"
-        #"${NJLI_SOURCE_DIRECTORY}/lua/src/lua.h"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lua.hpp"
-        #"${NJLI_SOURCE_DIRECTORY}/lua/src/lua.rc"
-        #"${NJLI_SOURCE_DIRECTORY}/lua/src/luac.c"
-        #"${NJLI_SOURCE_DIRECTORY}/lua/src/luac.rc"
-        #"${NJLI_SOURCE_DIRECTORY}/lua/src/luaconf.h.in"
-        #"${NJLI_SOURCE_DIRECTORY}/lua/src/luaconf.h.orig"
-        #"${NJLI_SOURCE_DIRECTORY}/lua/src/lualib.h"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lundump.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lundump.h"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lutf8lib.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lvm.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lvm.h"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lzio.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/src/lzio.h"
-        #"${NJLI_SOURCE_DIRECTORY}/lua/src/wmain.c"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/lapi.c"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/lapi.h"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/lauxlib.c"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/lauxlib.h"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/lbaselib.c"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/lbitlib.c"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/lcode.c"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/lcode.h"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/lcorolib.c"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/lctype.c"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/lctype.h"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/ldblib.c"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/ldebug.c"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/ldebug.h"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/ldo.c"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/ldo.h"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/ldump.c"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/lfunc.c"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/lfunc.h"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/lgc.c"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/lgc.h"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/linit.c"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/liolib.c"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/llex.c"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/llex.h"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/llimits.h"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/lmathlib.c"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/lmem.c"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/lmem.h"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/loadlib.c"
+        #"${NJLI_LUA_SOURCE_DIRECTORY}/src/loadlib_rel.c"
+        "$${NJLI_LUA_SOURCE_DIRECTORY}/src/lobject.c"
+        #"${NJLI_LUA_SOURCE_DIRECTORY}/src/lobject.h"
+        "$${NJLI_LUA_SOURCE_DIRECTORY}/src/lopcodes.c"
+        "$${NJLI_LUA_SOURCE_DIRECTORY}/src/lopcodes.h"
+        "$${NJLI_LUA_SOURCE_DIRECTORY}/src/loslib.c"
+        "$${NJLI_LUA_SOURCE_DIRECTORY}/src/lparser.c"
+        "$${NJLI_LUA_SOURCE_DIRECTORY}/src/lparser.h"
+        "$${NJLI_LUA_SOURCE_DIRECTORY}/src/lprefix.h"
+        "$${NJLI_LUA_SOURCE_DIRECTORY}/src/lstate.c"
+        "$${NJLI_LUA_SOURCE_DIRECTORY}/src/lstate.h"
+        "$${NJLI_LUA_SOURCE_DIRECTORY}/src/lstring.c"
+        "$${NJLI_LUA_SOURCE_DIRECTORY}/src/lstring.h"
+        "$${NJLI_LUA_SOURCE_DIRECTORY}/src/lstrlib.c"
+        "$${NJLI_LUA_SOURCE_DIRECTORY}/src/ltable.c"
+        "$${NJLI_LUA_SOURCE_DIRECTORY}/src/ltable.h"
+        "$${NJLI_LUA_SOURCE_DIRECTORY}/src/ltablib.c"
+        "$${NJLI_LUA_SOURCE_DIRECTORY}/src/ltm.c"
+        "$${NJLI_LUA_SOURCE_DIRECTORY}/src/ltm.h"
+        #"${NJLI_LUA_SOURCE_DIRECTORY}/src/lua.c"
+        #"${NJLI_LUA_SOURCE_DIRECTORY}/src/lua.h"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/lua.hpp"
+        #"${NJLI_LUA_SOURCE_DIRECTORY}/src/lua.rc"
+        #"${NJLI_LUA_SOURCE_DIRECTORY}/src/luac.c"
+        #"${NJLI_LUA_SOURCE_DIRECTORY}/src/luac.rc"
+        #"${NJLI_LUA_SOURCE_DIRECTORY}/src/luaconf.h.in"
+        #"${NJLI_LUA_SOURCE_DIRECTORY}/src/luaconf.h.orig"
+        #"${NJLI_LUA_SOURCE_DIRECTORY}/src/lualib.h"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/lundump.c"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/lundump.h"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/lutf8lib.c"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/lvm.c"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/lvm.h"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/lzio.c"
+        "${NJLI_LUA_SOURCE_DIRECTORY}/src/lzio.h"
+        #"${NJLI_LUA_SOURCE_DIRECTORY}/src/wmain.c"
+        )
+
+    file(GLOB NJLIGameEngineSWIG_SRCS
+        "${NJLI_GENERATED_SOURCE_DIRECTORY}/swig/lua/njli_wrap.cxx"
+        )
+
+    file(GLOB NJLIGameEngineGraphics_SRCS
+        "${NJLI_SOURCE_DIRECTORY}/graphics/*.h"
+        "${NJLI_SOURCE_DIRECTORY}/graphics/*.cpp"
+        "${NJLI_SOURCE_DIRECTORY}/graphics/${NJLI_GRAPHICS_PLATFORM}/*.h"
+        "${NJLI_SOURCE_DIRECTORY}/graphics/${NJLI_GRAPHICS_PLATFORM}/*.cpp"
+        "${NJLI_SOURCE_DIRECTORY}/builders/graphics/*.h"
+        "${NJLI_SOURCE_DIRECTORY}/builders/graphics/*.cpp"
+        )
+
+    file(GLOB NJLIGameEnginePlatform_SRCS
+        "${NJLI_SOURCE_DIRECTORY}/platform/*.h"
+        "${NJLI_SOURCE_DIRECTORY}/platform/*.cpp"
+        "${NJLI_SOURCE_DIRECTORY}/platform/${NJLI_BUILD_PLATFORM}/*.h"
+        "${NJLI_SOURCE_DIRECTORY}/platform/${NJLI_BUILD_PLATFORM}/*.cpp"
+        "${NJLI_SOURCE_DIRECTORY}/builders/platform/*.h"
+        "${NJLI_SOURCE_DIRECTORY}/builders/platform/*.cpp"
+        )
+
+    file(GLOB NJLIGameEngineSound_SRCS
+        "${NJLI_SOURCE_DIRECTORY}/sound/*.h"
+        "${NJLI_SOURCE_DIRECTORY}/sound/*.cpp"
+        "${NJLI_SOURCE_DIRECTORY}/sound/${NJLI_SOUND_PLATFORM}/*.h"
+        "${NJLI_SOURCE_DIRECTORY}/sound/${NJLI_SOUND_PLATFORM}/*.cpp"
+        )
+
+    file(GLOB NJLIGameEngineBase_SRCS
+        "${NJLI_SOURCE_DIRECTORY}/*.h"
+        "${NJLI_SOURCE_DIRECTORY}/*.cpp"
+        "${NJLI_SOURCE_DIRECTORY}/builders/*.h"
+        "${NJLI_SOURCE_DIRECTORY}/builders/*.cpp"
+        ${NJLIGameEngineGraphics_SRCS}
+        ${NJLIGameEnginePlatform_SRCS}
+        ${NJLIGameEngineSound_SRCS}
         )
 
     file(GLOB NJLIGameEngine_SRCS
-        "${NJLI_SOURCE_DIRECTORY}/*.h"
-        "${NJLI_SOURCE_DIRECTORY}/*.cpp"
+        ${NJLIGameEngineBase_SRCS}
+        ${Lua_SRCS} 
+        ${NJLIGameEngineSWIG_SRCS}
         )
 
-    ADD_LIBRARY( libnjli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} STATIC ${NJLIGameEngine_SRCS} ${Lua_SRCS})
+    ADD_LIBRARY( libnjli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} STATIC ${NJLIGameEngine_SRCS} )
     SET_TARGET_PROPERTIES(libnjli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES OUTPUT_NAME libnjli)
 
     INSTALL(TARGETS libnjli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} DESTINATION lib/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE})
@@ -244,7 +288,7 @@ macro( BUILD_PLATFORM )
 
     INCLUDE_DIRECTORIES(${NJLI_SOURCE_DIRECTORY} )
 
-    ADD_LIBRARY( njli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} MODULE ${NJLIGameEngine_SRCS} ${Lua_SRCS} )
+    ADD_LIBRARY( njli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} MODULE ${NJLIGameEngine_SRCS} )
     SET_TARGET_PROPERTIES(njli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES OUTPUT_NAME njli)
 
     IF(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
@@ -286,96 +330,8 @@ macro( BUILD_PLATFORM )
     MATH(EXPR BUILD_COUNTER "${BUILD_COUNTER}+1")
 endmacro()
 
-#function(BUILD_ANDROID build_type)
-#
-#    SET( MY_API_LEVEL 24 )
-#
-#    SET( ANDROID_NATIVE_API_LEVEL ${MY_API_LEVEL} )
-#    SET( ANDROID_STL c++_static )
-#    SET( ANDROID_NDK /Users/jamesfolk/Library/Android/sdk/ndk-bundle )
-#    SET( ANDROID_TOOLCHAIN=/Users/jamesfolk/Library/Android/sdk/ndk-bundle/build/cmake/android.toolchain.cmake )
-#
-#    SET( ANDROID_ABI "armeabi-v7a with NEON" )
-#    BUILD_PLATFORM(${build_type} "android/${MY_API_LEVEL}/armeabi-v7a_neon" "android")
-#
-#    SET( ANDROID_ABI armeabi-v7a )
-#    BUILD_PLATFORM(${build_type} "android/${MY_API_LEVEL}/armeabi-v7a" "android")
-#
-#    SET( ANDROID_ABI x86 )
-#    BUILD_PLATFORM(${build_type} "android/${MY_API_LEVEL}/x86" "android")
-#
-#    SET( ANDROID_ABI mips )
-#    BUILD_PLATFORM(${build_type} "android/${MY_API_LEVEL}/mips" "android")
-#
-#    SET( ANDROID_ABI arm64-v8a )
-#    BUILD_PLATFORM(${build_type} "android/${MY_API_LEVEL}/arm64-v8a" "android")
-#
-#    SET( ANDROID_ABI x86_64 )
-#    BUILD_PLATFORM(${build_type} "android/${MY_API_LEVEL}/x86_64" "android")
-#
-#    SET( ANDROID_ABI mips64 )
-#    BUILD_PLATFORM(${build_type} "android/${MY_API_LEVEL}/mips64" "android")
-#
-#endfunction()
-#
-#function(BUILD_EMSCRIPTEN build_type)
-#    SET( CMAKE_C_FLAGS "-D__linux__" "linux flags" )
-#    SET( CMAKE_TOOLCHAIN_FILE "/Applications/Developer/emsdk_portable/emscripten/1.35.0/cmake/Modules/Platform/Emscripten.cmake" )
-#
-#    BUILD_PLATFORM(${build_type} "emscripten" "emscripten")
-#endfunction()
-#
-#function(BUILD_IOS build_type)
-#
-#    SET( CMAKE_BUILD_TYPE ${build_type} )
-#    SET( PLATFORM ios )
-#    SET( FRAMEWORK ON  )
-#    SET( SIMULATOR OFF )
-#    SET( CMAKE_TOOLCHAIN_FILE "${NJLI_THIRDPARTY_DIRECTORY}/apple.toolchain.cmake" )
-#    BUILD_PLATFORM(${build_type} "iOS/10.2/OS" "ios")
-#
-#    SET( CMAKE_BUILD_TYPE ${build_type} )
-#    SET( PLATFORM ios )
-#    SET( FRAMEWORK ON  )
-#    SET( SIMULATOR ON )
-#    SET( CMAKE_TOOLCHAIN_FILE "${NJLI_THIRDPARTY_DIRECTORY}/apple.toolchain.cmake" )
-#    BUILD_PLATFORM(${build_type} "iOS/10.2/SIMULATOR" "ios")
-#    
-#endfunction()
-#
-#function(BUILD_LINUX build_type)
-#endfunction()
-#
-#function(BUILD_MACOS build_type)
-#    SET( CMAKE_OSX_ARCHITECTURES "i386;x86_64"  )
-#
-#    BUILD_PLATFORM(${build_type} "macOS/10.2" "macos")
-#endfunction()
-#
-#function(BUILD_TVOS build_type)
-#
-#    SET( CMAKE_BUILD_TYPE ${build_type} )
-#    SET( PLATFORM appletvos )
-#    SET( FRAMEWORK ON  )
-#    SET( SIMULATOR OFF )
-#    SET( CMAKE_TOOLCHAIN_FILE "${NJLI_THIRDPARTY_DIRECTORY}/apple.toolchain.cmake" )
-#    BUILD_PLATFORM(${build_type} "tvOS/10.1/OS" "tvos")
-#
-#    SET( CMAKE_BUILD_TYPE ${build_type} )
-#    SET( PLATFORM appletvos )
-#    SET( FRAMEWORK ON  )
-#    SET( SIMULATOR ON )
-#    SET( CMAKE_TOOLCHAIN_FILE "${NJLI_THIRDPARTY_DIRECTORY}/apple.toolchain.cmake" )
-#    BUILD_PLATFORM(${build_type} "tvOS/10.1/SIMULATOR" "tvos")
-#    
-#endfunction()
-#
-#function(BUILD_WINDOWS build_type)
-#endfunction()
-
-
 IF(GENERATE_LIB)
-    EXECUTE_PROCESS(COMMAND swig -w312 -w201 -O -c++ -lua -includeall -ignoremissing -features directors,autodoc=1 -xmlout ${CMAKE_CURRENT_BINARY_DIR}/njli.xml -o "${NJLI_SOURCE_DIRECTORY}/generated/swig/lua/njli_wrap.cxx" "${CMAKE_SOURCE_DIR}/src/swig.in/lua/hello.swg"
+    EXECUTE_PROCESS(COMMAND swig -w312 -w201 -O -c++ -lua -includeall -ignoremissing -features directors,autodoc=1 -xmlout ${CMAKE_CURRENT_BINARY_DIR}/njli.xml -o "${NJLI_GENERATED_SOURCE_DIRECTORY}/swig/lua/njli_wrap.cxx" "${CMAKE_SOURCE_DIR}/src/swig.in/lua/hello.swg"
         WORKING_DIRECTORY ${NJLI_SOURCE_DIRECTORY}
         RESULT_VARIABLE swig_result
         OUTPUT_VARIABLE swig_ver)
@@ -390,44 +346,6 @@ ENDIF()
 IF(GENERATE_DOCUMENTATION)
     BUILD_DOCUMENTATION()
 ENDIF()
-
-
-#BUILD_EMSCRIPTEN(Debug)
-#BUILD_EMSCRIPTEN(Release)
-#BUILD_EMSCRIPTEN(RelWithDebugInfo)
-#BUILD_EMSCRIPTEN(MinsizeRel)
-#
-#BUILD_MACOS(Debug)
-#BUILD_MACOS(Release)
-#BUILD_MACOS(RelWithDebugInfo)
-#BUILD_MACOS(MinsizeRel)
-#
-#BUILD_TVOS(Debug)
-#BUILD_TVOS(Release)
-#BUILD_TVOS(RelWithDebugInfo)
-#BUILD_TVOS(MinsizeRel)
-#
-#BUILD_IOS(Debug)
-#BUILD_IOS(Release)
-#BUILD_IOS(RelWithDebugInfo)
-#BUILD_IOS(MinsizeRel)
-#
-#BUILD_ANDROID(Debug)
-#BUILD_ANDROID(Release)
-#BUILD_ANDROID(RelWithDebugInfo)
-#BUILD_ANDROID(MinsizeRel)
-
-#BUILD_WINDOWS(Debug)
-#BUILD_WINDOWS(Release)
-#BUILD_WINDOWS(RelWithDebugInfo)
-#BUILD_WINDOWS(MinsizeRel)
-
-#BUILD_LINUX(Debug)
-#BUILD_LINUX(Release)
-#BUILD_LINUX(RelWithDebugInfo)
-#BUILD_LINUX(MinsizeRel)
-
-
 
 # build a CPack driven installer package
 include (InstallRequiredSystemLibraries)
