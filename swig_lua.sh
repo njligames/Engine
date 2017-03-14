@@ -6,6 +6,7 @@ MY_NJLI_INTERFACE_DIRECTORY=${PWD}/src/swig.in/lua
 MY_BULLET_INTERFACE_DIRECTORY=${PWD}/../External/thirdparty/swig.in/lua/bullet3
 
 MY_NJLI_SOURCE_DIRECTORY=${PWD}/src/njli
+MY_NJLI_BULLET_SOURCE_DIRECTORY=${PWD}/src/bullet
 MY_BULLET_SOURCE_DIRECTORY=${PWD}/../External/thirdparty/bullet3/src
 
 MY_GENERATED_DIRECTORY=${MY_NJLI_SOURCE_DIRECTORY}/generated/swig/lua
@@ -25,45 +26,20 @@ mkdir -p ${MY_NJLI_SOURCE_DIRECTORY}/generated/swig/lua
 if [ -z "${MY_XML_OUTPUT_DIRECTORY}" ]
 then
     #bullet.
-    /usr/local/bin/swig -v -w312 -w201 -O -c++ -lua -includeall -ignoremissing -features directors,autodoc=1 -DBT_INFINITY \
+    /usr/local/bin/swig -v -c++ -lua -includeall -ignoremissing -features directors,autodoc=1 -DBT_INFINITY \
         -I${MY_BULLET_SOURCE_DIRECTORY} \
-        -I${MY_BULLET_SOURCE_DIRECTORY}/BulletCollision/BroadphaseCollision \
-        -I${MY_BULLET_SOURCE_DIRECTORY}/BulletCollision/CollisionDispatch \
-        -I${MY_BULLET_SOURCE_DIRECTORY}/BulletCollision/CollisionShapes \
-        -I${MY_BULLET_SOURCE_DIRECTORY}/BulletCollision/Gimpact \
-        -I${MY_BULLET_SOURCE_DIRECTORY}/BulletCollision/NarrowPhaseCollision \
-        -I${MY_BULLET_SOURCE_DIRECTORY}/BulletDynamics/Character \
-        -I${MY_BULLET_SOURCE_DIRECTORY}/BulletDynamics/ConstraintSolver \
-        -I${MY_BULLET_SOURCE_DIRECTORY}/BulletDynamics/Dynamics \
-        -I${MY_BULLET_SOURCE_DIRECTORY}/BulletDynamics/Featherstone \
-        -I${MY_BULLET_SOURCE_DIRECTORY}/BulletDynamics/MLCPSolvers \
-        -I${MY_BULLET_SOURCE_DIRECTORY}/BulletDynamics/Vehicle \
-        -I${MY_BULLET_SOURCE_DIRECTORY}/BulletSoftBody \
-        -I${MY_BULLET_SOURCE_DIRECTORY}/LinearMath \
+        -I${MY_NJLI_BULLET_SOURCE_DIRECTORY} \
         -o ${MY_BULLET_CPP_OUTPUT} \
         ${MY_BULLET_INTERFACE_DIRECTORY}/_LuaEntry.i
 
     #njli
-#    /usr/local/bin/swig -w312 -w201 -O -c++ -lua -includeall -ignoremissing -features directors,autodoc=1 \
-#        -I- \
-#        -I${MY_NJLI_INTERFACE_DIRECTORY} \
-#        -I${MY_BULLET_INTERFACE_DIRECTORY} \
-#        -I${MY_BULLET_SOURCE_DIRECTORY}/BulletCollision/BroadphaseCollision \
-#        -I${MY_BULLET_SOURCE_DIRECTORY}/BulletCollision/CollisionDispatch \
-#        -I${MY_BULLET_SOURCE_DIRECTORY}/BulletCollision/CollisionShapes \
-#        -I${MY_BULLET_SOURCE_DIRECTORY}/BulletCollision/Gimpact \
-#        -I${MY_BULLET_SOURCE_DIRECTORY}/BulletCollision/NarrowPhaseCollision \
-#        -I${MY_BULLET_SOURCE_DIRECTORY}/BulletDynamics/Character \
-#        -I${MY_BULLET_SOURCE_DIRECTORY}/BulletDynamics/ConstraintSolver \
-#        -I${MY_BULLET_SOURCE_DIRECTORY}/BulletDynamics/Dynamics \
-#        -I${MY_BULLET_SOURCE_DIRECTORY}/BulletDynamics/Featherstone \
-#        -I${MY_BULLET_SOURCE_DIRECTORY}/BulletDynamics/MLCPSolvers \
-#        -I${MY_BULLET_SOURCE_DIRECTORY}/BulletDynamics/Vehicle \
-#        -I${MY_BULLET_SOURCE_DIRECTORY}/BulletSoftBody \
-#        -I${MY_BULLET_SOURCE_DIRECTORY}/LinearMath \
+#    /usr/local/bin/swig -v -c++ -lua -includeall -ignoremissing -features directors,autodoc=1 \
+#        -I${MY_BULLET_SOURCE_DIRECTORY} \
 #        -I${MY_NJLI_SOURCE_DIRECTORY} \
+#        -I${MY_NJLI_SOURCE_DIRECTORY}/platform \
 #        -o ${MY_NJLI_CPP_OUTPUT} \
 #        ${MY_NJLI_INTERFACE_DIRECTORY}/njli/_LuaEntry.i
+
 else
     /usr/local/bin/swig -w312 -w201 -O -c++ -lua -includeall -ignoremissing -features directors,autodoc=1 \
         -I${MY_NJLI_SOURCE_DIRECTORY} \
