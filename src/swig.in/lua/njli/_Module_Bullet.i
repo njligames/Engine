@@ -8,7 +8,7 @@
 %import(module="bullet") "BulletCollision/BroadphaseCollision/btDbvt.h"
 %import(module="bullet") "BulletCollision/BroadphaseCollision/btDbvtBroadphase.h"
 %import(module="bullet") "BulletCollision/BroadphaseCollision/btDispatcher.h"
-%import(module="bullet") "BulletCollision/BroadphaseCollision/btMultiSapBroadphase.h"
+//%import(module="bullet") "BulletCollision/BroadphaseCollision/btMultiSapBroadphase.h"
 %import(module="bullet") "BulletCollision/BroadphaseCollision/btOverlappingPairCache.h"
 %import(module="bullet") "BulletCollision/BroadphaseCollision/btOverlappingPairCallback.h"
 %import(module="bullet") "BulletCollision/BroadphaseCollision/btQuantizedBvh.h"

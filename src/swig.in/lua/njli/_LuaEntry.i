@@ -4,8 +4,8 @@
 
 //MARK: Tested Ignore, successfully
 %include "_IgnoreNJLI.i"
-%include "../../platform/Lua/_IgnorePlatform.i"
-%include "../../bullet/Lua/_IgnoreBullet.i"
+%include "_IgnorePlatform.i"
+%include "_IgnoreBullet.i"
 
 //MARK: Tested ModuleBullet, succesfully
 %include "_Module_Bullet.i"
@@ -40,27 +40,26 @@
 %import <lua/wchar.i>
 %import <lua/lua.swg>
 
-
-%include "../../NJLIArray.i"
-%include "../../NJLICast.i"
-%include "../../NJLITypemaps.i"
-%include "../../NJLISwigOverwrite.i"
+%include "NJLIArray.i"
+%include "NJLICast.i"
+%include "NJLITypemaps.i"
+%include "NJLISwigOverwrite.i"
 
 //MARK: Tested Apply, successfully
 %include "_ApplyNJLI.i"
-%include "../../platform/Lua/_ApplyPlatform.i"
-%include "../../bullet/Lua/_ApplyBullet.i"
+%include "_ApplyPlatform.i"
+%include "_ApplyBullet.i"
 
 //MARK: Tested Rename, successfully
 %include "_RenameNJLI.i"
-%include "../../platform/Lua/_RenamePlatform.i"
-%include "../../bullet/Lua/_RenameBullet.i"
+%include "_RenamePlatform.i"
+%include "_RenameBullet.i"
 
 //MARK: %luacode wrapper doesn't work in an external file.
 %luacode
 %{
     function greet()
-    print "hello world"
+    print "hello world from NJLIGameEngine."
     end
 
     --greet()
@@ -289,14 +288,14 @@
 %}
 
 //MARK: Tested Template, successfully
-%include "../../bullet/Lua/_TemplateBullet.i"
-%include "../../platform/Lua/_TemplatePlatform.i"
+%include "_TemplateBullet.i"
+%include "_TemplatePlatform.i"
 %include "_TemplateNJLI.i"
 
 
 //MARK: Tested Array, succesfully.
-%include "../../bullet/Lua/_ArrayBullet.i"
-%include "../../platform/Lua/_ArrayPlatform.i"
+%include "_ArrayBullet.i"
+%include "_ArrayPlatform.i"
 %include "_ArrayNJLI.i"
 
 //MARK: Tested Factory, successfully
@@ -504,22 +503,17 @@
 %include "Xml.i"
 %include "XmlBuilder.i"
 //#########################################################################################################
-%include "../../platform/Lua/DeviceInputTime.i"
-%include "../../platform/Lua/DeviceTouch.i"
-%include "../../platform/Lua/File.i"
-//%include "../../platform/Lua/Game.i"
-//%include "../../platform/Lua/JLIAssetUtil.i"
-//%include "../../platform/Lua/JLIFileUtil.i"
-%include "../../platform/Lua/Localization.i"
-%include "../../platform/Lua/Log.i"
-%include "../../platform/Lua/Macros.i"
-%include "../../platform/Lua/Sound.i"
-%include "../../platform/Lua/Util.i"
-%include "../../platform/Lua/ColorUtil.i"
-//%include "../../platform/Lua/WorldFacebook.i"
-%include "../../platform/Lua/WorldInput.i"
-//%include "./../platform/Lua/WorldPythonVirtualMachine.i"
-%include "../../platform/Lua/WorldSound.i"
+%include "DeviceInputTime.i"
+%include "DeviceTouch.i"
+%include "File.i"
+%include "Localization.i"
+%include "Log.i"
+%include "Macros.i"
+%include "Sound.i"
+%include "Util.i"
+%include "ColorUtil.i"
+%include "WorldInput.i"
+%include "WorldSound.i"
 
 //#########################################################################################################
 //Including source files to Public interface
@@ -2334,20 +2328,15 @@ break;
 %include "Xml.i"
 %include "XmlBuilder.i"
 //#########################################################################################################
-%include "../../platform/Lua/DeviceInputTime.i"
-%include "../../platform/Lua/DeviceTouch.i"
-%include "../../platform/Lua/File.i"
-//%include "../../platform/Lua/Game.i"
-//%include "../../platform/Lua/JLIAssetUtil.i"
-//%include "../../platform/Lua/JLIFileUtil.i"
-%include "../../platform/Lua/Localization.i"
-%include "../../platform/Lua/Log.i"
-%include "../../platform/Lua/Macros.i"
-%include "../../platform/Lua/Sound.i"
-%include "../../platform/Lua/Util.i"
-%include "../../platform/Lua/ColorUtil.i"
-//%include "../../platform/Lua/WorldFacebook.i"
-%include "../../platform/Lua/WorldInput.i"
-//%include "./../platform/Lua/WorldPythonVirtualMachine.i"
-%include "../../platform/Lua/WorldSound.i"
+%include "DeviceInputTime.i"
+%include "DeviceTouch.i"
+%include "File.i"
+%include "Localization.i"
+%include "Log.i"
+%include "Macros.i"
+%include "Sound.i"
+%include "Util.i"
+%include "ColorUtil.i"
+%include "WorldInput.i"
+%include "WorldSound.i"
 
