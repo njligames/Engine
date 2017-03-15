@@ -48,12 +48,55 @@ then
         -I${MY_BULLET_SOURCE_DIRECTORY}/BulletDynamics/Vehicle \
         -I${MY_BULLET_SOURCE_DIRECTORY}/BulletSoftBody \
         -I${MY_BULLET_SOURCE_DIRECTORY}/LinearMath \
+        \
         -I${MY_NJLI_BULLET_SOURCE_DIRECTORY} \
+        \
         -I${MY_NJLI_SOURCE_DIRECTORY} \
+        -I${MY_NJLI_SOURCE_DIRECTORY}/builders \
+        -I${MY_NJLI_SOURCE_DIRECTORY}/builders/graphics \
+        -I${MY_NJLI_SOURCE_DIRECTORY}/builders/physics \
+        -I${MY_NJLI_SOURCE_DIRECTORY}/builders/physics/body \
+        -I${MY_NJLI_SOURCE_DIRECTORY}/builders/physics/constraint \
+        -I${MY_NJLI_SOURCE_DIRECTORY}/builders/physics/shape \
+        -I${MY_NJLI_SOURCE_DIRECTORY}/builders/platform \
+        -I${MY_NJLI_SOURCE_DIRECTORY}/builders/sound \
+        -I${MY_NJLI_SOURCE_DIRECTORY}/builders/steering \
+        -I${MY_NJLI_SOURCE_DIRECTORY}/builders/steering/behavior \
+        -I${MY_NJLI_SOURCE_DIRECTORY}/generated \
+        -I${MY_NJLI_SOURCE_DIRECTORY}/graphics \
+        -I${MY_NJLI_SOURCE_DIRECTORY}/physics \
+        -I${MY_NJLI_SOURCE_DIRECTORY}/physics/body \
+        -I${MY_NJLI_SOURCE_DIRECTORY}/physics/constraint \
+        -I${MY_NJLI_SOURCE_DIRECTORY}/physics/shape \
         -I${MY_NJLI_SOURCE_DIRECTORY}/platform \
+        -I${MY_NJLI_SOURCE_DIRECTORY}/sound \
+        -I${MY_NJLI_SOURCE_DIRECTORY}/sound/fmod \
+        -I${MY_NJLI_SOURCE_DIRECTORY}/sound/openal \
+        -I${MY_NJLI_SOURCE_DIRECTORY}/steering \
+        -I${MY_NJLI_SOURCE_DIRECTORY}/steering/behavior \
         \
         -I${MY_NJLI_INTERFACE_DIRECTORY} \
+        -I${MY_NJLI_INTERFACE_DIRECTORY}/njli \
+        -I${MY_NJLI_INTERFACE_DIRECTORY}/njli/builders \
+        -I${MY_NJLI_INTERFACE_DIRECTORY}/njli/builders/graphics \
+        -I${MY_NJLI_INTERFACE_DIRECTORY}/njli/builders/physics \
+        -I${MY_NJLI_INTERFACE_DIRECTORY}/njli/builders/physics/body \
+        -I${MY_NJLI_INTERFACE_DIRECTORY}/njli/builders/physics/constraint \
+        -I${MY_NJLI_INTERFACE_DIRECTORY}/njli/builders/physics/shape \
+        -I${MY_NJLI_INTERFACE_DIRECTORY}/njli/builders/platform \
+        -I${MY_NJLI_INTERFACE_DIRECTORY}/njli/builders/sound \
+        -I${MY_NJLI_INTERFACE_DIRECTORY}/njli/builders/steering \
+        -I${MY_NJLI_INTERFACE_DIRECTORY}/njli/builders/steering/behavior \
+        -I${MY_NJLI_INTERFACE_DIRECTORY}/njli/graphics \
+        -I${MY_NJLI_INTERFACE_DIRECTORY}/njli/physics \
+        -I${MY_NJLI_INTERFACE_DIRECTORY}/njli/physics/body \
+        -I${MY_NJLI_INTERFACE_DIRECTORY}/njli/physics/constraint \
+        -I${MY_NJLI_INTERFACE_DIRECTORY}/njli/physics/shape \
         -I${MY_NJLI_INTERFACE_DIRECTORY}/njli/platform \
+        -I${MY_NJLI_INTERFACE_DIRECTORY}/njli/sound \
+        -I${MY_NJLI_INTERFACE_DIRECTORY}/njli/steering \
+        -I${MY_NJLI_INTERFACE_DIRECTORY}/njli/steering/behavior \
+        \
         -I${MY_BULLET_INTERFACE_DIRECTORY} \
         \
         -o ${MY_NJLI_CPP_OUTPUT} \
