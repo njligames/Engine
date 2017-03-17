@@ -93,7 +93,7 @@ namespace njli
             //dispatcher will keep algorithms persistent in the collision pair
             if (!collisionPair.m_algorithm)
             {
-                collisionPair.m_algorithm = dispatcher.findAlgorithm(&obj0Wrap,&obj1Wrap);
+                //TODO: (error: too few arguments to function call, expected 4, have 2) collisionPair.m_algorithm = dispatcher.findAlgorithm(&obj0Wrap,&obj1Wrap);
             }
             
             if (collisionPair.m_algorithm)

@@ -16,7 +16,7 @@
 #include "ShaderProgram.h"
 #include "AbstractFrameBufferObject.h"
 #include "Material.h"
-#include "PVRTTextureAPI.h"
+//#include "PVRTTextureAPI.h"
 
 #define FORMATSTRING "{\"njli::MaterialProperty\":[]}"
 #include "btPrint.h"

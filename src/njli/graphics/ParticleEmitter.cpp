@@ -1168,7 +1168,7 @@ namespace njli
                 else
                 {
                     btVector3 tmp, radial, tangential;
-                    btVector3 zero = {0,0,0};
+                    btVector3 zero(0,0,0);
                     
                     radial.setX(0);
                     radial.setY(0);
@@ -1359,7 +1359,7 @@ namespace njli
         
         // Calculate the color the particle should have when it starts its life.  All the elements
         // of the start color passed in along with the variance are used to calculate the star color
-        btVector4 start = {0, 0, 0, 0};
+        btVector4 start(0, 0, 0, 0);
         start.setX(startColor->x() + startColorVariance->x() * RANDOM_MINUS_1_TO_1());
         start.setY(startColor->y() + startColorVariance->y() * RANDOM_MINUS_1_TO_1());
         start.setZ(startColor->z() + startColorVariance->z() * RANDOM_MINUS_1_TO_1());
@@ -1367,7 +1367,7 @@ namespace njli
         
         // Calculate the color the particle should be when its life is over.  This is done the same
         // way as the start color above
-        btVector4 end = {0, 0, 0, 0};
+        btVector4 end(0, 0, 0, 0);
         end.setX(finishColor->x() + finishColorVariance->x() * RANDOM_MINUS_1_TO_1());
         end.setY(finishColor->y() + finishColorVariance->y() * RANDOM_MINUS_1_TO_1());
         end.setZ(finishColor->z() + finishColorVariance->z() * RANDOM_MINUS_1_TO_1());

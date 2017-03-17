@@ -1,12 +1,16 @@
 #define GL_GLEXT_PROTOTYPES
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-#include <GLUT/glut.h>
+
+#include <EGL/egl.h>
+#include <EGL/eglext.h>
+#include <EGL/eglplatform.h>
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
+#include <GLES2/gl2platform.h>
+
+
+
 #ifndef __MACOSX__
-# define __MACOSX__
+#define __MACOSX__
 #endif
 
 #define USE_FMOD
-//#ifndef USE_OPENAL
-//# define USE_OPENAL
-//#endif

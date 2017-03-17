@@ -10,6 +10,12 @@
 #include "JLIFactoryTypes.h"
 #include "DeviceTouch.h"
 #include "World.h"
+#import <UIKit/UIKit.h>
+//#import "GameViewController.h"
+
+#define FORMATSTRING "{\"njli::WorldInput\":[]}"
+#include "btPrint.h"
+#include "JsonJLI.h"
 
 namespace njli
 {
@@ -48,7 +54,7 @@ namespace njli
     
     WorldInput::operator std::string() const
     {
-        return "TODO";
+        return njli::JsonJLI::parse(string_format("%s", FORMATSTRING));
     }
     
     DeviceTouch * WorldInput::getTouch(const s32 index)
@@ -81,14 +87,12 @@ namespace njli
     
     void WorldInput::setTouch(const void *touch, const int index, const int num_touches)
     {
-        DEBUG_LOG_V("WorldInput.cpp", "WorldInput::setTouch(%s)\n", "");
         m_CurrentTouches[index] = m_AllTouches[index];
         m_CurrentTouches[index]->set(touch, index, num_touches);
         m_NumTouches = num_touches;
     }
     void WorldInput::setTouch(const int x, const int y, const int index, const int num_touches, float scaleFactor)
     {
-        DEBUG_LOG_V("WorldInput.cpp", "WorldInput::setTouch(%d, %d, index, num_touches, scaleFactor)\n", x, y, index, num_touches, scaleFactor);
         m_CurrentTouches[index] = m_AllTouches[index];
         m_CurrentTouches[index]->set(x, y, index, num_touches, scaleFactor);
         m_NumTouches = num_touches;
@@ -103,13 +107,11 @@ namespace njli
     
     void WorldInput::touchDown()
     {
-        DEBUG_LOG_V("WorldInput.cpp", "WorldInput::touchDown(%s)\n", "");
         njli::World::getInstance()->touchDown(m_CurrentTouches);
 //        clearTouches();
     }
     void WorldInput::touchUp()
     {
-        DEBUG_LOG_V("WorldInput.cpp", "WorldInput::touchUp(%s)\n", "");
         njli::World::getInstance()->touchUp(m_CurrentTouches);
 //        clearTouches();
     }
@@ -124,6 +126,23 @@ namespace njli
 //        clearTouches();
     }
     
+    
+    
+    void WorldInput::keyboardShow()
+    {
+        njli::World::getInstance()->keyboardShow();
+    }
+    
+    void WorldInput::keyboardCancel()
+    {
+        njli::World::getInstance()->keyboardCancel();
+    }
+    
+    void WorldInput::keyboardReturn(const char* text)
+    {
+        njli::World::getInstance()->keyboardReturn(text);
+    }
+    
     void WorldInput::setOrientation(const s32 orientation)
     {
         m_Orientation = orientation;
@@ -131,19 +150,24 @@ namespace njli
     
     bool WorldInput::isPortraitOrientation()const
     {
-        // return (((UIInterfaceOrientation)m_Orientation == UIInterfaceOrientationPortrait) || ((UIInterfaceOrientation)m_Orientation == UIInterfaceOrientationPortraitUpsideDown));
-        return false;
+        return (((UIInterfaceOrientation)m_Orientation == UIInterfaceOrientationPortrait) || ((UIInterfaceOrientation)m_Orientation == UIInterfaceOrientationPortraitUpsideDown));
     }
     
     bool WorldInput::isLandscapeOrientation()const
     {
-        // return (((UIInterfaceOrientation)m_Orientation == UIInterfaceOrientationLandscapeLeft) || ((UIInterfaceOrientation)m_Orientation == UIInterfaceOrientationLandscapeRight));
-        return true;
+        return (((UIInterfaceOrientation)m_Orientation == UIInterfaceOrientationLandscapeLeft) || ((UIInterfaceOrientation)m_Orientation == UIInterfaceOrientationLandscapeRight));
     }
     
     s32 WorldInput::getOrientation()const
     {
         return m_Orientation;
+    }
+    
+    void WorldInput::showKeyboard(const char *currentText)
+    {
+//        id<UIApplicationDelegate> appDelegate = [[UIApplication sharedApplication] delegate];
+//        GameViewController *viewController = (GameViewController*)appDelegate.window.rootViewController;
+//        [viewController showKeyboard:[NSString stringWithCString:currentText encoding:NSUTF8StringEncoding]];
     }
     
     void WorldInput::clearTouches()
@@ -152,11 +176,5 @@ namespace njli
         {
             m_CurrentTouches[i] = NULL;
         }
-    }
-    void WorldInput::showKeyboard(const char *currentText)
-    {
-        //        id<UIApplicationDelegate> appDelegate = [[UIApplication sharedApplication] delegate];
-        //        GameViewController *viewController = (GameViewController*)appDelegate.window.rootViewController;
-        //        [viewController showKeyboard:[NSString stringWithCString:currentText encoding:NSUTF8StringEncoding]];
     }
 }

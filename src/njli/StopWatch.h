@@ -12,7 +12,7 @@
 #include "AbstractBuilder.h"
 #include "AbstractClock.h"
 #include "AbstractFactoryObject.h"
-#include "btClock.h"
+#include "LinearMath/btQuickprof.h"
 #include "lua.hpp"
 
 namespace njli {

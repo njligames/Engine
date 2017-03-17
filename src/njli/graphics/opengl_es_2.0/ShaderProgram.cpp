@@ -519,7 +519,7 @@ namespace njli
             btTransform tvalue=value;
             if(getUniformValue(uniformName, tvalue))
             {
-                if(tvalue != value)
+                //if(tvalue != value)
                 {
                     value.getOpenGLMatrix(m_mat4Buffer);
                     glUniformMatrix4fv(location,

@@ -2,17 +2,17 @@
 #ifndef __JLIGameEngineTest__WorldSound__
 #define __JLIGameEngineTest__WorldSound__
 
-#include "SoundPlatform.h"
+//#include "SoundPlatform.h"
 
-#ifdef USE_OPENAL
-#include "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/OpenAL.framework/Versions/A/Headers/al.h"
-#include "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/OpenAL.framework/Versions/A/Headers/alc.h"
-#include <vector>
-#endif
-#ifdef USE_FMOD
+//#ifdef USE_OPENAL
+//#include "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/OpenAL.framework/Versions/A/Headers/al.h"
+//#include "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/OpenAL.framework/Versions/A/Headers/alc.h"
+//#include <vector>
+//#endif
+//#ifdef USE_FMOD
 #include "fmod.hpp"
 #include "fmod_errors.h"
-#endif
+//#endif
 
 #include "AbstractObject.h"
 #include "Util.h"
@@ -55,16 +55,16 @@ protected:
 
     
 
-#ifdef USE_OPENAL
-    // OpenAL context for playing sounds
-    ALCcontext* m_ALCcontext;
-
-    // The device we are going to use to play sounds
-    ALCdevice* m_ALCdevice;
-
-    std::vector<u32> m_Sources;
-#endif
-#ifdef USE_FMOD
+//#ifdef USE_OPENAL
+//    // OpenAL context for playing sounds
+//    ALCcontext* m_ALCcontext;
+//
+//    // The device we are going to use to play sounds
+//    ALCdevice* m_ALCdevice;
+//
+//    std::vector<u32> m_Sources;
+//#endif
+//#ifdef USE_FMOD
 protected:
     FMOD::Channel* getChannel(s32 channelindex);
 
@@ -72,7 +72,7 @@ private:
     FMOD::System* m_System;
     FMOD::ChannelGroup* m_MasterChannel;
     int* m_ChannelsPlaying;
-#endif
+//#endif
 };
 }
 

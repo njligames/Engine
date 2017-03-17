@@ -208,10 +208,9 @@ extern "C" {
 #include "WorldSound.h"
 
 
-#include "njli_swig_runtime.h"
-//#include "njli_swig_types.h"
-////#include "swig_type_info.h"
-extern swig_type_info *swig_types[597];
+#include "swig_runtime.h"
+
+extern swig_type_info *swig_types[484];
 
 
 

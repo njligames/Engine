@@ -109,6 +109,7 @@ _build_macos()
     MY_BUILD_DIR="macOS/${MY_VERSION}"
 
     cmake .. -G "Unix Makefiles" \
+        -DCMAKE_CXX_FLAGS='-std=gnu++11' \
         -DCMAKE_INSTALL_PREFIX=../generated/ \
         -DNJLI_THIRDPARTY_DIRECTORY:STRING=${MY_THIRDPARTY_DIR} \
         -DNJLI_BUILD_PLATFORM="macOS" \

@@ -11,7 +11,7 @@
 
 #include "AbstractClock.h"
 #include "AbstractObject.h"
-#include "btClock.h"
+#include "LinearMath/btQuickprof.h"
 #include <string>
 
 namespace njli {
