@@ -80,7 +80,7 @@ namespace njli
     m_WorldInput(new WorldInput),
     m_WorldSound(new WorldSound),
     m_WorldDebugDrawer(new WorldDebugDrawer),
-    m_WorldSQLite(new WorldSQLite),
+    //m_WorldSQLite(new WorldSQLite),
     //m_WorldFacebook(new WorldFacebook),
     m_enableDebugDraw(false),
     m_DebugDrawCamera(NULL),
@@ -114,7 +114,7 @@ namespace njli
         
         delete m_BackgroundColor;m_BackgroundColor=NULL;
         //delete m_WorldFacebook;m_WorldFacebook=NULL;
-        delete m_WorldSQLite;m_WorldSQLite=NULL;
+        //delete m_WorldSQLite;m_WorldSQLite=NULL;
         delete m_WorldDebugDrawer;m_WorldDebugDrawer=NULL;
         delete m_WorldSound;m_WorldSound=NULL;
         delete m_WorldInput;m_WorldInput=NULL;
@@ -338,15 +338,15 @@ namespace njli
         return m_WorldDebugDrawer;
     }
     
-    WorldSQLite *World::getWorldSQLite()
-    {
-        return m_WorldSQLite;
-    }
+    //WorldSQLite *World::getWorldSQLite()
+    //{
+    //    return m_WorldSQLite;
+    //}
     
-    const WorldSQLite *World::getWorldSQLite()const
-    {
-        return m_WorldSQLite;
-    }
+//    const WorldSQLite *World::getWorldSQLite()const
+//    {
+//        return m_WorldSQLite;
+//    }
     
     void World::touchDown(DeviceTouch **m_CurrentTouches)
     {
@@ -1035,7 +1035,7 @@ namespace njli
                         }
                         
                         if (!wrote)
-                            DEBUG_LOG_V(TAG, "Couldn't write file %s - (%d bytes of %u)", filePath.c_str(), numwrote, source.length());
+                            DEBUG_LOG_V(TAG, "Couldn't write file %s - (%d bytes of %lu)", filePath.c_str(), numwrote, source.length());
                         else
                             DEBUG_LOG_V(TAG, "Wrote file %s", filePath.c_str());
                     }

@@ -23,21 +23,21 @@ namespace njli
 {
     PhysicsShapeMultiSphere::PhysicsShapeMultiSphere():
     PhysicsShape(),
-    m_btMultiSphereShape(new btMultiSphereShape(&m_localPositionArray[0], &m_radiArray[0], 0))
+    m_btMultiSphereShape(new btMultiSphereShape(NULL, NULL, 0))
     {
         m_btMultiSphereShape->setUserPointer(static_cast<void*>(this));
     }
     
     PhysicsShapeMultiSphere::PhysicsShapeMultiSphere(const AbstractBuilder &builder):
     PhysicsShape(builder),
-    m_btMultiSphereShape(new btMultiSphereShape(&m_localPositionArray[0], &m_radiArray[0], 0))
+    m_btMultiSphereShape(new btMultiSphereShape(NULL, NULL, 0))
     {
         m_btMultiSphereShape->setUserPointer(static_cast<void*>(this));
     }
     
     PhysicsShapeMultiSphere::PhysicsShapeMultiSphere(const PhysicsShapeMultiSphere &copy):
     PhysicsShape(copy),
-    m_btMultiSphereShape(new btMultiSphereShape(&m_localPositionArray[0], &m_radiArray[0], 0))
+    m_btMultiSphereShape(new btMultiSphereShape(NULL, NULL, 0))
     {
         m_btMultiSphereShape->setUserPointer(static_cast<void*>(this));
     }

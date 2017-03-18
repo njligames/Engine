@@ -156,7 +156,7 @@ namespace njli
     
     MaterialProperty::~MaterialProperty()
     {
-        delete [] m_TextureTransform;
+        delete m_TextureTransform;
         m_TextureTransform=NULL;
         
         unLoadGPU();

@@ -102,7 +102,6 @@ _build_macos()
     mkdir -p ${MY_BUILD_DIRECTORY}
     cd ${MY_BUILD_DIRECTORY}
 
-
     #Debug Release MinsizeRel RelWithDebugInfo
     MY_BUILD_TYPE=$1
     MY_VERSION=$2
@@ -112,11 +111,13 @@ _build_macos()
         -DCMAKE_CXX_FLAGS='-std=gnu++11' \
         -DCMAKE_INSTALL_PREFIX=../generated/ \
         -DNJLI_THIRDPARTY_DIRECTORY:STRING=${MY_THIRDPARTY_DIR} \
+        -DGL_GLEXT_PROTOTYPES=1 \
+        -DCMAKE_OSX_ARCHITECTURES="x86_64;i386" \
         -DNJLI_BUILD_PLATFORM="macOS" \
         -DCMAKE_BUILD_TYPE=${MY_BUILD_TYPE} \
         -DNJLI_BUILD_DIR=${MY_BUILD_DIR}
 
-	make -j4
+	make -j8
 	make install
 
     cd ..
@@ -137,4 +138,5 @@ build_macos()
 #build_applewatchos
 
 _build_macos Release ${CMAKE_MACOS_SYSTEM_VERSION}
+#build_apple Debug ios ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
 

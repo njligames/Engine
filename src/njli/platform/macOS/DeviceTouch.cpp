@@ -7,7 +7,7 @@
 //
 
 #include "DeviceTouch.h"
-#include <UIKit/UIKit.h>
+//#include <UIKit/UIKit.h>
 #include "JLIFactoryTypes.h"
 #include "World.h"
 
@@ -176,28 +176,28 @@ namespace njli
     
     void DeviceTouch::convert(DeviceTouch &t, const void *_touch)
     {
-        if(_touch)
-        {
-            UITouch *touch = (__bridge UITouch*)_touch;
-            
-            float height = njli::World::getInstance()->getViewportDimensions().y();
-            
-            m_scale = touch.view.contentScaleFactor;
-            
-            CGPoint touchPoint = [touch locationInView:touch.view];
-            CGPoint previousTouchPoint = [touch previousLocationInView:touch.view];
-            
-            t.setTimeStampFrame(touch.timestamp);
-            t.m_address = [touch hash];
-            t.m_tapCount = [touch tapCount];
-            
-            t.m_xpos = (touchPoint.x * m_scale);
-            t.m_ypos = height - (touchPoint.y * m_scale);
-            
-            t.m_prev_xpos = (previousTouchPoint.x * m_scale);
-            t.m_prev_ypos = height - (previousTouchPoint.y * m_scale);
-            
-//            DEBUG_LOG_V("devictouch", "%s", ((std::string)t).c_str());
-        }
+//        if(_touch)
+//        {
+//            UITouch *touch = (__bridge UITouch*)_touch;
+//            
+//            float height = njli::World::getInstance()->getViewportDimensions().y();
+//            
+//            m_scale = touch.view.contentScaleFactor;
+//            
+//            CGPoint touchPoint = [touch locationInView:touch.view];
+//            CGPoint previousTouchPoint = [touch previousLocationInView:touch.view];
+//            
+//            t.setTimeStampFrame(touch.timestamp);
+//            t.m_address = [touch hash];
+//            t.m_tapCount = [touch tapCount];
+//            
+//            t.m_xpos = (touchPoint.x * m_scale);
+//            t.m_ypos = height - (touchPoint.y * m_scale);
+//            
+//            t.m_prev_xpos = (previousTouchPoint.x * m_scale);
+//            t.m_prev_ypos = height - (previousTouchPoint.y * m_scale);
+//            
+////            DEBUG_LOG_V("devictouch", "%s", ((std::string)t).c_str());
+//        }
     }
 }

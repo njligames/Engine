@@ -15,7 +15,7 @@
 //#include "btAlignedObjectArray.h"
 #include "WorldFactory.h"
 #include "WorldLuaVirtualMachine.h"
-#include "WorldSQLite.h"
+//#include "WorldSQLite.h"
 #include "WorldSound.h"
 //#include "WorldPythonVirtualMachine.h"
 #include "Camera.h"
@@ -209,13 +209,13 @@ public:
          *
          *  @return <#return value description#>
          */
-    WorldSQLite* getWorldSQLite();
+    //WorldSQLite* getWorldSQLite();
     /**
          *  <#Description#>
          *
          *  @return <#return value description#>
          */
-    const WorldSQLite* getWorldSQLite() const;
+    //const WorldSQLite* getWorldSQLite() const;
 
     /**
          *  <#Description#>
@@ -487,7 +487,7 @@ private:
     WorldInput* m_WorldInput;
     WorldSound* m_WorldSound;
     WorldDebugDrawer* m_WorldDebugDrawer;
-    WorldSQLite* m_WorldSQLite;
+    //WorldSQLite* m_WorldSQLite;
     //WorldFacebook *m_WorldFacebook;
     bool m_enableDebugDraw;
     Camera* m_DebugDrawCamera;

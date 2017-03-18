@@ -17,7 +17,7 @@
 #include "WorldSocket.h"
 #include <stdio.h>
 
-#import <UIKit/UIKit.h>
+//#import <UIKit/UIKit.h>
 
 
 #include "JsonJLI.h"
@@ -114,20 +114,20 @@ void _debug_log_stderr(const char* tag, const char* fmt, ...)
 
 void njliSleep( unsigned int _ms )
 {
-    int microsecs;
-    
-    struct timeval tv;
-    
-    double seconds = _ms / 1000.0f;
-    
-    microsecs = _ms * 1000;
-    
-    tv.tv_sec  = microsecs / 1000000;
-    tv.tv_usec = microsecs % 1000000;
-    
-    [NSThread sleepForTimeInterval:seconds];
-    
-//    select( 0, NULL, NULL, NULL, &tv );
+//    int microsecs;
+//    
+//    struct timeval tv;
+//    
+//    double seconds = _ms / 1000.0f;
+//    
+//    microsecs = _ms * 1000;
+//    
+//    tv.tv_sec  = microsecs / 1000000;
+//    tv.tv_usec = microsecs % 1000000;
+//    
+//    [NSThread sleepForTimeInterval:seconds];
+//    
+////    select( 0, NULL, NULL, NULL, &tv );
     
 }
 

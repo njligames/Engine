@@ -4,8 +4,8 @@
 #include "JLIFactoryTypes.h"
 #include "Sound.h"
 //#import <AudioToolbox/AudioSession.h>
-#import <AVFoundation/AVAudioSession.h>
-#import <Foundation/Foundation.h>
+//#import <AVFoundation/AVAudioSession.h>
+//#import <Foundation/Foundation.h>
 #define FORMATSTRING "{\"njli::WorldSound\":[]}"
 #include "btPrint.h"
 #include "JsonJLI.h"
@@ -420,74 +420,74 @@ namespace njli
 {
     WorldSound::WorldSound()
     {
-//        AudioSessionInitialize(NULL, NULL, interruptionListenerCallback, NULL);
+////        AudioSessionInitialize(NULL, NULL, interruptionListenerCallback, NULL);
+////        
+////        // Default to 'play and record' so we have recording available for examples that use it
+//////        UInt32 sessionCategory = kAudioSessionCategory_PlayAndRecord;
+////        UInt32 sessionCategory = kAudioSessionCategory_MediaPlayback;
+////        AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(sessionCategory), &sessionCategory);
 //        
-//        // Default to 'play and record' so we have recording available for examples that use it
-////        UInt32 sessionCategory = kAudioSessionCategory_PlayAndRecord;
-//        UInt32 sessionCategory = kAudioSessionCategory_MediaPlayback;
-//        AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(sessionCategory), &sessionCategory);
-        
-//        AudioSessionSetActive(true);
-        
-        
-        BOOL success = NO;
-        NSError *error = nil;
-        
-        AVAudioSession *session = [AVAudioSession sharedInstance];
-        
-//        success = [session setCategory:AVAudioSessionCategoryPlayAndRecord error:&error];
-        success = [session setCategory:AVAudioSessionCategoryPlayback error:&error];
-        if(FMOD_LOGGING_ON)DEBUG_ASSERT_PRINT(success, "%s", [[error localizedDescription] UTF8String]);
-        
-        success = [session setActive:YES error:&error];
-        if(FMOD_LOGGING_ON)DEBUG_ASSERT_PRINT(success, "%s", [[error localizedDescription] UTF8String]);
-        
-        FMOD_RESULT   result        = FMOD_OK;
-        unsigned int  version       = 0;
-        
-//        FMOD::Debug_Initialize(FMOD_DEBUG_LEVEL_NONE | FMOD_DEBUG_LEVEL_ERROR | FMOD_DEBUG_LEVEL_WARNING | FMOD_DEBUG_LEVEL_LOG, FMOD_DEBUG_MODE_CALLBACK, fmodErrorCallback);
-        FMOD::Debug_Initialize(FMOD_DEBUG_LEVEL_NONE);// | FMOD_DEBUG_LEVEL_ERROR | FMOD_DEBUG_LEVEL_WARNING | FMOD_DEBUG_LEVEL_LOG);
-        
-        result = FMOD::System_Create(&m_System);
-        FMOD_ERRCHECK(result);
-        
-        result = m_System->getVersion(&version);
-        FMOD_ERRCHECK(result);
-        
-//        s32 d = FMOD_DEBUG_LEVEL_ERROR | FMOD_DEBUG_LEVEL_WARNING | FMOD_DEBUG_LEVEL_LOG | FMOD_DEBUG_TYPE_MEMORY | FMOD_DEBUG_TYPE_FILE | FMOD_DEBUG_TYPE_CODEC | FMOD_DEBUG_TYPE_TRACE | FMOD_DEBUG_DISPLAY_TIMESTAMPS | FMOD_DEBUG_DISPLAY_LINENUMBERS | FMOD_DEBUG_DISPLAY_THREAD;
-//        result = FMOD::Debug_Initialize(d, FMOD_DEBUG_MODE_TTY, fmodDebugCallback);
+////        AudioSessionSetActive(true);
+//        
+//        
+//        BOOL success = NO;
+//        NSError *error = nil;
+//        
+//        AVAudioSession *session = [AVAudioSession sharedInstance];
+//        
+////        success = [session setCategory:AVAudioSessionCategoryPlayAndRecord error:&error];
+//        success = [session setCategory:AVAudioSessionCategoryPlayback error:&error];
+//        if(FMOD_LOGGING_ON)DEBUG_ASSERT_PRINT(success, "%s", [[error localizedDescription] UTF8String]);
+//        
+//        success = [session setActive:YES error:&error];
+//        if(FMOD_LOGGING_ON)DEBUG_ASSERT_PRINT(success, "%s", [[error localizedDescription] UTF8String]);
+//        
+//        FMOD_RESULT   result        = FMOD_OK;
+//        unsigned int  version       = 0;
+//        
+////        FMOD::Debug_Initialize(FMOD_DEBUG_LEVEL_NONE | FMOD_DEBUG_LEVEL_ERROR | FMOD_DEBUG_LEVEL_WARNING | FMOD_DEBUG_LEVEL_LOG, FMOD_DEBUG_MODE_CALLBACK, fmodErrorCallback);
+//        FMOD::Debug_Initialize(FMOD_DEBUG_LEVEL_NONE);// | FMOD_DEBUG_LEVEL_ERROR | FMOD_DEBUG_LEVEL_WARNING | FMOD_DEBUG_LEVEL_LOG);
+//        
+//        result = FMOD::System_Create(&m_System);
 //        FMOD_ERRCHECK(result);
-        
-        if (version < FMOD_VERSION)
-        {
-            if(FMOD_LOGGING_ON)DEBUG_LOG_PRINT_E(TAG, "FMOD lib version %08x doesn't match header version %08x", version, FMOD_VERSION);
-        }
-        result = m_System->init(MAXCHANNELS, FMOD_INIT_NORMAL, 0);
-        FMOD_ERRCHECK(result);
-        
-        result = m_System->setCallback(fmodSystemcallback);
-        FMOD_ERRCHECK(result);
-        
-        result = m_System->setFileSystem(fmodFileOpenCallback, fmodFileCloseCallback, fmodFileReadCallback, fmodFileSeekCallback, fmodFileAsyncReadCallback, fmodFileAsyncCancelCallback, 2048);
-        FMOD_ERRCHECK(result);
-        
-        result = m_System->set3DRolloffCallback(fmod3DRolloffCallback);
-        FMOD_ERRCHECK(result);
+//        
+//        result = m_System->getVersion(&version);
+//        FMOD_ERRCHECK(result);
+//        
+////        s32 d = FMOD_DEBUG_LEVEL_ERROR | FMOD_DEBUG_LEVEL_WARNING | FMOD_DEBUG_LEVEL_LOG | FMOD_DEBUG_TYPE_MEMORY | FMOD_DEBUG_TYPE_FILE | FMOD_DEBUG_TYPE_CODEC | FMOD_DEBUG_TYPE_TRACE | FMOD_DEBUG_DISPLAY_TIMESTAMPS | FMOD_DEBUG_DISPLAY_LINENUMBERS | FMOD_DEBUG_DISPLAY_THREAD;
+////        result = FMOD::Debug_Initialize(d, FMOD_DEBUG_MODE_TTY, fmodDebugCallback);
+////        FMOD_ERRCHECK(result);
+//        
+//        if (version < FMOD_VERSION)
+//        {
+//            if(FMOD_LOGGING_ON)DEBUG_LOG_PRINT_E(TAG, "FMOD lib version %08x doesn't match header version %08x", version, FMOD_VERSION);
+//        }
+//        result = m_System->init(MAXCHANNELS, FMOD_INIT_NORMAL, 0);
+//        FMOD_ERRCHECK(result);
+//        
+//        result = m_System->setCallback(fmodSystemcallback);
+//        FMOD_ERRCHECK(result);
+//        
+//        result = m_System->setFileSystem(fmodFileOpenCallback, fmodFileCloseCallback, fmodFileReadCallback, fmodFileSeekCallback, fmodFileAsyncReadCallback, fmodFileAsyncCancelCallback, 2048);
+//        FMOD_ERRCHECK(result);
+//        
+//        result = m_System->set3DRolloffCallback(fmod3DRolloffCallback);
+//        FMOD_ERRCHECK(result);
         
     }
     WorldSound::~WorldSound()
     {
-        FMOD_RESULT   result        = FMOD_OK;
-        
-        result = m_System->close();
-        FMOD_ERRCHECK(result);
-        result = m_System->release();
-        FMOD_ERRCHECK(result);
-        
-        
-        NSError *error = nil;
-        BOOL success = [[AVAudioSession sharedInstance] setActive:NO error:&error];
-        if(FMOD_LOGGING_ON)DEBUG_ASSERT_PRINT(success, "%s", [[error localizedDescription] UTF8String]);
+//        FMOD_RESULT   result        = FMOD_OK;
+//        
+//        result = m_System->close();
+//        FMOD_ERRCHECK(result);
+//        result = m_System->release();
+//        FMOD_ERRCHECK(result);
+//        
+//        
+//        NSError *error = nil;
+//        BOOL success = [[AVAudioSession sharedInstance] setActive:NO error:&error];
+//        if(FMOD_LOGGING_ON)DEBUG_ASSERT_PRINT(success, "%s", [[error localizedDescription] UTF8String]);
     }
     
     const s8 *WorldSound::getClassName()const
@@ -559,23 +559,23 @@ namespace njli
     
     void WorldSound::enablePause(bool enable)
     {
-        BOOL success = NO;
-        NSError *error = nil;
-        AVAudioSession *session = [AVAudioSession sharedInstance];
-        
-        if (enable)
-        {
-            success = [session setActive:NO error:&error];
-            
-            m_System->mixerSuspend();
-        }
-        else
-        {
-            success = [session setCategory:AVAudioSessionCategoryPlayback error:&error];
-            success = [session setActive:YES error:&error];
-            
-            m_System->mixerResume();
-        }
+//        BOOL success = NO;
+//        NSError *error = nil;
+//        AVAudioSession *session = [AVAudioSession sharedInstance];
+//        
+//        if (enable)
+//        {
+//            success = [session setActive:NO error:&error];
+//            
+//            m_System->mixerSuspend();
+//        }
+//        else
+//        {
+//            success = [session setCategory:AVAudioSessionCategoryPlayback error:&error];
+//            success = [session setActive:YES error:&error];
+//            
+//            m_System->mixerResume();
+//        }
     }
     
     FMOD::Channel *WorldSound::getChannel(s32 channelindex)

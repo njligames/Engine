@@ -182,7 +182,7 @@ extern "C" {
 #include "WorldHUD.h"
 #include "WorldLuaVirtualMachine.h"
 #include "WorldResourceLoader.h"
-#include "WorldSQLite.h"
+//#include "WorldSQLite.h"
 #include "WorldSocket.h"
 #include "WorldState.h"
 #include "WorldStateBuilder.h"
