@@ -21,6 +21,8 @@
 #define TAG "Geometry.cpp"
 #define FORMATSTRING "{\"njli::Geometry\":[]}"
 #include "btPrint.h"
+#include "JsonJLI.h"
+
 #include "Image.h"
 
 static const u32 MAX_SPRITES = NUMBER_OF_MESHES;
@@ -31,6 +33,14 @@ static const GLfloat IDENTITYMATRIX[] =
     0, 1, 0, 0,
     0, 0, 1, 0,
     0, 0, 0, 1,
+};
+
+static const GLfloat COLOR_IDENTITYMATRIX[] =
+{
+    1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, 0,
+    0, 0, 0, 0,
 };
 
 namespace njli
@@ -44,14 +54,17 @@ namespace njli
     m_Material(NULL),
     m_ShaderProgram(NULL),
     m_projectionMatrixUniform(-1),
-    m_modelViewMatrixUniform(-1),
+//    m_modelViewMatrixUniform(-1),
     m_ModelviewTransform(NULL),
-    modelviewBufferID(-1),
+    m_ColorTransform(NULL),
+    m_modelViewBufferID(-1),
+    m_colorTransformBufferID(-1),
     m_InTransformAttrib(-1),
+    m_InColorTransform(-1),
 //    m_CurrentMeshCount(-1),
-    verticesID(-1),
+    m_verticesBufferID(-1),
     indexBufferID(-1),
-    vertexArrayID(-1),
+    m_vertexArrayID(-1),
     m_InPositionAttrib(-1),
     m_InTexCoordAttrib(-1),
     m_InColorAttrib(-1),
@@ -62,6 +75,7 @@ namespace njli
     m_enableDepthTest(true),
     m_enableStencilTest(false),
     m_TransformDirty(true),
+    m_ColorTransformDirty(true),
 //    m_StartCopyTransform(std::numeric_limits<u64>::max()),
     m_LoadGPU(false),
     m_setupOpacity_Material(NULL),
@@ -72,7 +86,8 @@ namespace njli
     m_bufferModified(true),
     m_vertexAttribChanged(false),
     m_MatrixBuffer(new float[16]),
-    m_maxindice(0)
+    m_maxindice(0),
+    m_RenderCategory(JLI_BIT_CATEGORY_NONE)
     {
         enableRenderObject();
     }
@@ -83,14 +98,17 @@ namespace njli
     m_Material(NULL),
     m_ShaderProgram(NULL),
     m_projectionMatrixUniform(-1),
-    m_modelViewMatrixUniform(-1),
+//    m_modelViewMatrixUniform(-1),
     m_ModelviewTransform(NULL),
-    modelviewBufferID(-1),
+    m_ColorTransform(NULL),
+    m_modelViewBufferID(-1),
+    m_colorTransformBufferID(-1),
     m_InTransformAttrib(-1),
+    m_InColorTransform(-1),
 //    m_CurrentMeshCount(-1),
-    verticesID(-1),
+    m_verticesBufferID(-1),
     indexBufferID(-1),
-    vertexArrayID(-1),
+    m_vertexArrayID(-1),
     m_InPositionAttrib(-1),
     m_InTexCoordAttrib(-1),
     m_InColorAttrib(-1),
@@ -101,6 +119,7 @@ namespace njli
     m_enableDepthTest(true),
     m_enableStencilTest(false),
     m_TransformDirty(true),
+    m_ColorTransformDirty(true),
 //    m_StartCopyTransform(std::numeric_limits<u64>::max()),
     m_LoadGPU(false),
     m_setupOpacity_Material(NULL),
@@ -111,7 +130,8 @@ namespace njli
     m_bufferModified(true),
     m_vertexAttribChanged(false),
     m_MatrixBuffer(new float[16]),
-    m_maxindice(0)
+    m_maxindice(0),
+    m_RenderCategory(JLI_BIT_CATEGORY_NONE)
     {
         enableRenderObject();
     }
@@ -122,14 +142,17 @@ namespace njli
     m_Material(NULL),
     m_ShaderProgram(NULL),
     m_projectionMatrixUniform(-1),
-    m_modelViewMatrixUniform(-1),
+//    m_modelViewMatrixUniform(-1),
     m_ModelviewTransform(NULL),
-    modelviewBufferID(-1),
+    m_ColorTransform(NULL),
+    m_modelViewBufferID(-1),
+    m_colorTransformBufferID(-1),
     m_InTransformAttrib(-1),
+    m_InColorTransform(-1),
 //    m_CurrentMeshCount(-1),
-    verticesID(-1),
+    m_verticesBufferID(-1),
     indexBufferID(-1),
-    vertexArrayID(-1),
+    m_vertexArrayID(-1),
     m_InPositionAttrib(-1),
     m_InTexCoordAttrib(-1),
     m_InColorAttrib(-1),
@@ -142,6 +165,7 @@ namespace njli
     m_enableDepthTest(true),
     m_enableStencilTest(false),
     m_TransformDirty(true),
+    m_ColorTransformDirty(true),
 //    m_StartCopyTransform(std::numeric_limits<u64>::max()),
     m_LoadGPU(false),
     m_setupOpacity_Material(NULL),
@@ -152,7 +176,8 @@ namespace njli
     m_bufferModified(true),
     m_vertexAttribChanged(false),
     m_MatrixBuffer(new float[16]),
-    m_maxindice(0)
+    m_maxindice(0),
+    m_RenderCategory(JLI_BIT_CATEGORY_NONE)
     {
         enableRenderObject();
     }
@@ -196,7 +221,7 @@ namespace njli
     
     Geometry::operator std::string() const
     {
-        return njli::JsonJLI::parse(string_format("%s", FORMATSTRING).c_str());
+        return njli::JsonJLI::parse(string_format("%s", FORMATSTRING));
     }
     
     Geometry *Geometry::create(u32 type)
@@ -361,7 +386,7 @@ namespace njli
         return NULL;
     }
     
-    void Geometry::addMaterial(Material *material, Image *img)
+    void Geometry::setMaterial(Material *material, Image *img)
     {
         DEBUG_ASSERT(material != NULL);
         
@@ -427,9 +452,7 @@ namespace njli
         
         addChild(m_ShaderProgram);
         
-        
-//        setupShader();
-        setupShader_Internal();
+        setupShader();
     }
     
     void Geometry::removeShaderProgram()
@@ -493,30 +516,15 @@ namespace njli
     
     bool Geometry::isLoadedGPU()const
     {
-        return (verticesID != -1);
+        return (m_verticesBufferID != -1);
     }
     
-    void Geometry::setTransform(const u64 index, const btTransform &transform)
-    {
-        if (index < getMaxMeshes())
-        {
-            const GLuint STRIDE = 64;
-            
-            transform.getOpenGLMatrix(m_MatrixBuffer);
-            
-            m_TransformDirty = true;
-            for (int currentVertex = 0; currentVertex < numberOfVertices(); currentVertex++)
-            {
-                size_t p = ((index * STRIDE) + (16 * currentVertex));
-                memcpy(m_ModelviewTransform + p, m_MatrixBuffer, sizeof(f32) * 16);
-            }
-            m_maxindice = index;
-        }
-    }
+    
     
     void Geometry::sort(const btVector3 &cameraOrigin)
     {
         quickSort(0, m_maxindice, cameraOrigin);
+        m_maxindice = 0;
     }
     
     void Geometry::quickSort(signed long left, signed long right, const btVector3 &cameraOrigin)
@@ -572,26 +580,109 @@ namespace njli
         return cameraOrigin.distance2(object1) > cameraOrigin.distance2(object2);
     }
     
+    void Geometry::setTransform(const u64 index, const btTransform &transform)
+    {
+        if (index < getMaxMeshes())
+        {
+            const GLuint STRIDE = 64;
+            
+            transform.getOpenGLMatrix(m_MatrixBuffer);
+            
+            m_TransformDirty = true;
+            for (int currentVertex = 0; currentVertex < numberOfVertices(); currentVertex++)
+            {
+                u64 p = ((index * STRIDE) + (16 * currentVertex));
+                int cmp = memcmp(m_ModelviewTransform + p,
+                                 m_MatrixBuffer,
+                                 sizeof(f32) * 16);
+                
+                if(0 != cmp)
+                {
+                    memcpy(m_ModelviewTransform + p, m_MatrixBuffer, sizeof(f32) * 16);
+                    m_TransformDirty = true;
+                }
+            }
+            m_maxindice = std::max<u64>(index, m_maxindice);
+        }
+    }
+    
     btTransform Geometry::getTransform(const u64 index)
     {
         btTransform transform(btTransform::getIdentity());
         if (index < getMaxMeshes())
         {
             const GLuint STRIDE = 64;
-//            static GLfloat m[16];
-//            GLfloat *m = new GLfloat[16];
             
             for (int currentVertex = 0; currentVertex < numberOfVertices(); currentVertex++)
             {
-                memcpy(m_MatrixBuffer, m_ModelviewTransform + ((index * STRIDE) + (16 * currentVertex)), sizeof(f32) * 16);
+                u64 p = ((index * STRIDE) + (16 * currentVertex));
+                memcpy(m_MatrixBuffer,
+                       m_ModelviewTransform + p,
+                       sizeof(f32) * 16);
             }
             
             transform.setFromOpenGLMatrix(m_MatrixBuffer);
-            
-//            delete [] m;m=NULL;
         }
         return transform;
     }
+    
+    
+    
+    
+    
+    
+    
+    void Geometry::setColorTransform(const u64 index, const btTransform &transform)
+    {
+        if (index < getMaxMeshes())
+        {
+            const GLuint STRIDE = 64;
+            
+            transform.getOpenGLMatrix(m_MatrixBuffer);
+            
+            m_ColorTransformDirty = false;
+            for (int currentVertex = 0; currentVertex < numberOfVertices(); currentVertex++)
+            {
+                u64 p = ((index * STRIDE) + (16 * currentVertex));
+                
+                int cmp = memcmp(m_ColorTransform + p,
+                               m_MatrixBuffer,
+                               sizeof(f32) * 16);
+                
+                if(0 != cmp)
+                {
+                    memcpy(m_ColorTransform + p,
+                           m_MatrixBuffer,
+                           sizeof(f32) * 16);
+                    m_ColorTransformDirty = true;
+                    
+                }
+                
+            }
+        }
+    }
+    
+    btTransform Geometry::getColorTransform(const u64 index)
+    {
+        btTransform transform(btTransform::getIdentity());
+        if (index < getMaxMeshes())
+        {
+            const GLuint STRIDE = 64;
+            
+            for (int currentVertex = 0; currentVertex < numberOfVertices(); currentVertex++)
+            {
+                u64 p = ((index * STRIDE) + (16 * currentVertex));
+                memcpy(m_MatrixBuffer,
+                       m_ColorTransform + p,
+                       sizeof(f32) * 16);
+            }
+            
+            transform.setFromOpenGLMatrix(m_MatrixBuffer);
+        }
+        return transform;
+    }
+    
+    
     
     void Geometry::getAabb(Node *node, btVector3& aabbMin,btVector3& aabbMax) const
     {
@@ -614,12 +705,32 @@ namespace njli
         m_enableStencilTest = enable;
     }
     
+    void Geometry::hide(Camera* camera)
+    {
+        DEBUG_ASSERT(camera);
+        
+        m_RenderCategory = (njliBitCategories)Off(m_RenderCategory, camera->getRenderCategory());
+    }
+    
+    void Geometry::show(Camera * camera)
+    {
+        DEBUG_ASSERT(camera);
+        
+        m_RenderCategory = (njliBitCategories)On(m_RenderCategory, camera->getRenderCategory());
+    }
+    
+    bool Geometry::isHidden(Camera * camera) const
+    {
+        return !camera->hasRenderCategory(m_RenderCategory);
+    }
+    
     void Geometry::load()
     {
         unLoad();
         
         m_ModelviewTransform = new f32[MAX_SPRITES * numberOfVertices() * 16];
         memset(m_ModelviewTransform, 0, sizeof(f32) * MAX_SPRITES * numberOfVertices() * 16);
+        
         m_TransformDirty = true;
 //        m_StartCopyTransform = 0;
         
@@ -627,6 +738,25 @@ namespace njli
         {
             memcpy(m_ModelviewTransform + i, IDENTITYMATRIX, sizeof(IDENTITYMATRIX));
         }
+        
+        
+        
+        
+        
+        m_ColorTransform = new f32[MAX_SPRITES * numberOfVertices() * 16];
+        memset(m_ColorTransform, 0, sizeof(f32) * MAX_SPRITES * numberOfVertices() * 16);
+        
+        m_ColorTransformDirty = true;
+        //        m_StartCopyTransform = 0;
+        
+        for (int i = 0; i < MAX_SPRITES * numberOfVertices() * 16; i += 16)
+        {
+            memcpy(m_ColorTransform + i, COLOR_IDENTITYMATRIX, sizeof(COLOR_IDENTITYMATRIX));
+        }
+        
+        
+        
+        
         
         m_References.reset();
 //        std::string ids = m_References.to_string();
@@ -637,10 +767,19 @@ namespace njli
         if(m_ModelviewTransform)
             delete [] m_ModelviewTransform;
         m_ModelviewTransform=NULL;
+        
+        if(m_ColorTransform)
+            delete [] m_ColorTransform;
+        m_ColorTransform=NULL;
     }
     
     void Geometry::render(Camera *camera, s32 mode)
     {
+#if defined(DEBUG) || defined (_DEBUG)
+        GLchar buffer[2048];
+        sprintf(buffer, "%s, %s", getName(), camera->getName());
+        glPushGroupMarkerEXT(0, buffer);
+#endif
         Material *material = getMaterial();
         ShaderProgram *shader = getShaderProgram();
         
@@ -659,9 +798,15 @@ namespace njli
 //            setupShader_Internal();
         
         if (m_enableBlend)
+        {
             glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glBlendEquation(GL_FUNC_ADD);
+        }
         else
+        {
             glDisable(GL_BLEND);
+        }
         
         if (m_enableDepthTest)
             glEnable(GL_DEPTH_TEST);
@@ -674,24 +819,10 @@ namespace njli
             glDisable(GL_STENCIL_TEST);
         
         
-        glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//        glBlendFunc(GL_ONE_MINUS_DST_ALPHA,GL_DST_ALPHA);
-//        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-//        glBlendFunc(m_blendFuncSource, m_blendFuncDestination);
         
-//        glDisable(GL_CULL_FACE);
         
-        if(NULL != shader)
-            shader->use();
-
-        if(NULL != material && NULL != shader)
-            material->bind(shader);
-            
-        glUniformMatrix4fv(m_modelViewMatrixUniform, 1, 0, camera->getModelViewMatrixArray());
-        glUniformMatrix4fv(m_projectionMatrixUniform, 1, 0, camera->getProjectionMatrixArray());
-        glUniform1i(u_opacityModifyRGB, _opacityModifyRGB);
         
-        glBindVertexArrayAPPLE(vertexArrayID);
+        
         
         if(!isLoadedGPU())
         {
@@ -699,72 +830,110 @@ namespace njli
             loadGPU_Internal();
         }
         
-        bindTransform();
+        //TODO:UPDATE glBindVertexArrayOES(m_vertexArrayID);
         
-        glBindBuffer(GL_ARRAY_BUFFER, verticesID);
+        
+        
+        if(NULL != shader)
+        {
+            if(shader->use())
+            {
+                if(NULL != material)
+                    material->bind(shader);
+                
+                shader->setUniformValue("modelView", camera->getModelView());
+                //        shader->setUniformValue("projection", camera->getProjection());
+                
+                //        glUniformMatrix4fv(m_modelViewMatrixUniform, 1, 0, camera->getModelViewMatrixArray());
+                glUniformMatrix4fv(m_projectionMatrixUniform, 1, 0, camera->getProjectionMatrixArray());
+                //        glUniform1i(u_opacityModifyRGB, _opacityModifyRGB);
+                shader->setUniformValue("u_opacityModifyRGB", _opacityModifyRGB);
+            }
+        }
+        
+        
+        
+        
+        
+        
+        bindTransform();
+        bindColorTransform();
+        
+        
         
         if(isBufferModified())
         {
+            glBindBuffer(GL_ARRAY_BUFFER, m_verticesBufferID);
             glBufferSubData(GL_ARRAY_BUFFER, 0, (GLsizeiptr)getArrayBufferSize(), getArrayBuffer());
             m_bufferModified = false;
 //            printf("buffer");
+            
+            if (m_vertexAttribChanged)
+            {
+//
+                
+                glEnableVertexAttribArray(m_InPositionAttrib);
+                glVertexAttribPointer(m_InPositionAttrib,
+                                      3,
+                                      GL_FLOAT,
+                                      GL_FALSE,
+                                      sizeof(TexturedColoredVertex),
+                                      (const GLvoid*) offsetof(TexturedColoredVertex, vertex));
+                
+                glEnableVertexAttribArray(m_InTexCoordAttrib);
+                glVertexAttribPointer(m_InTexCoordAttrib,
+                                      2,
+                                      GL_FLOAT,
+                                      GL_FALSE,
+                                      sizeof(TexturedColoredVertex),
+                                      (const GLvoid*) offsetof(TexturedColoredVertex, texture));
+                
+                glEnableVertexAttribArray(m_InColorAttrib);
+                glVertexAttribPointer(m_InColorAttrib,
+                                      4,
+                                      GL_FLOAT,
+                                      GL_FALSE,
+                                      sizeof(TexturedColoredVertex),
+                                      (const GLvoid*) offsetof(TexturedColoredVertex, color));
+                
+                glEnableVertexAttribArray(m_InOpacityAttrib);
+                glVertexAttribPointer(m_InOpacityAttrib,
+                                      1,
+                                      GL_FLOAT,
+                                      GL_FALSE,
+                                      sizeof(TexturedColoredVertex),
+                                      (const GLvoid*)offsetof(TexturedColoredVertex, opacity));
+                
+                glEnableVertexAttribArray(m_InHiddenAttrib);
+                glVertexAttribPointer(m_InHiddenAttrib,
+                                      1,
+                                      GL_FLOAT,
+                                      GL_FALSE,
+                                      sizeof(TexturedColoredVertex),
+                                      (const GLvoid*)offsetof(TexturedColoredVertex, hidden));
+            }
+            
+            
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
+            
+            glDrawElements(mode, static_cast<GLsizei>((getMaxMeshes()) * numberOfIndices()), GL_UNSIGNED_SHORT, (const GLvoid*)0);
+            
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
         }
+        m_vertexAttribChanged = false;
         
-        if (m_vertexAttribChanged)
-        {
-//            m_vertexAttribChanged = false;
-            
-            glEnableVertexAttribArray(m_InPositionAttrib);
-            glVertexAttribPointer(m_InPositionAttrib,
-                                  3,
-                                  GL_FLOAT,
-                                  GL_FALSE,
-                                  sizeof(TexturedColoredVertex),
-                                  (const GLvoid*) offsetof(TexturedColoredVertex, vertex));
-            
-            glEnableVertexAttribArray(m_InTexCoordAttrib);
-            glVertexAttribPointer(m_InTexCoordAttrib,
-                                  2,
-                                  GL_FLOAT,
-                                  GL_FALSE,
-                                  sizeof(TexturedColoredVertex),
-                                  (const GLvoid*) offsetof(TexturedColoredVertex, texture));
-            
-            glEnableVertexAttribArray(m_InColorAttrib);
-            glVertexAttribPointer(m_InColorAttrib,
-                                  4,
-                                  GL_FLOAT,
-                                  GL_FALSE,
-                                  sizeof(TexturedColoredVertex),
-                                  (const GLvoid*) offsetof(TexturedColoredVertex, color));
-            
-            glEnableVertexAttribArray(m_InOpacityAttrib);
-            glVertexAttribPointer(m_InOpacityAttrib,
-                                  1,
-                                  GL_FLOAT,
-                                  GL_FALSE,
-                                  sizeof(TexturedColoredVertex),
-                                  (const GLvoid*)offsetof(TexturedColoredVertex, opacity));
-            
-            glEnableVertexAttribArray(m_InHiddenAttrib);
-            glVertexAttribPointer(m_InHiddenAttrib,
-                                  1,
-                                  GL_FLOAT,
-                                  GL_FALSE,
-                                  sizeof(TexturedColoredVertex),
-                                  (const GLvoid*)offsetof(TexturedColoredVertex, hidden));
-        }
-        
-        
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
-        
-        glDrawElements(mode, static_cast<GLsizei>((getMaxMeshes()) * numberOfIndices()), GL_UNSIGNED_SHORT, (const GLvoid*)0);
-        
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
         
         if(material)
             material->unBind();
+        
+        glDisable(GL_STENCIL_TEST);
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_BLEND);
+        
+#if defined(DEBUG) || defined (_DEBUG)
+        glPopGroupMarkerEXT();
+#endif
     }
     
 //    void Geometry::setupShader()
@@ -779,7 +948,7 @@ namespace njli
         {
             const GLuint STRIDE = 64;
             
-            glBindBuffer(GL_ARRAY_BUFFER, modelviewBufferID);
+            glBindBuffer(GL_ARRAY_BUFFER, m_modelViewBufferID);
             
             GLsizei size = sizeof(GLfloat) * getMaxMeshes() * numberOfVertices() * 16;
             
@@ -801,10 +970,38 @@ namespace njli
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             
             m_TransformDirty = false;
+        }
+    }
+    
+    void Geometry::bindColorTransform()
+    {
+        if(m_ColorTransformDirty)
+        {
+            const GLuint STRIDE = 64;
             
-//            DEBUG_LOG_V(TAG, "%llu\n", m_StartCopyTransform);
+            glBindBuffer(GL_ARRAY_BUFFER, m_colorTransformBufferID);
             
-//            m_StartCopyTransform = std::numeric_limits<u64>::max();
+            GLsizei size = sizeof(GLfloat) * getMaxMeshes() * numberOfVertices() * 16;
+            
+            glBufferSubData(GL_ARRAY_BUFFER, 0, size, m_ColorTransform);
+            
+            if (m_vertexAttribChanged)
+            {
+                glEnableVertexAttribArray(m_InColorTransform + 0);
+                glEnableVertexAttribArray(m_InColorTransform + 1);
+                glEnableVertexAttribArray(m_InColorTransform + 2);
+                glEnableVertexAttribArray(m_InColorTransform + 3);
+                glVertexAttribPointer(m_InColorTransform + 0, 4, GL_FLOAT, 0, STRIDE, (GLvoid*)0);
+                glVertexAttribPointer(m_InColorTransform + 1, 4, GL_FLOAT, 0, STRIDE, (GLvoid*)16);
+                glVertexAttribPointer(m_InColorTransform + 2, 4, GL_FLOAT, 0, STRIDE, (GLvoid*)32);
+                glVertexAttribPointer(m_InColorTransform + 3, 4, GL_FLOAT, 0, STRIDE, (GLvoid*)48);
+            }
+            
+            
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            
+            m_ColorTransformDirty = false;
+            
         }
     }
     
@@ -894,31 +1091,47 @@ namespace njli
         DEBUG_ASSERT(m_LoadGPU);
         
         
-        DEBUG_ASSERT(vertexArrayID == -1);
-        glGenVertexArraysAPPLE(1, &vertexArrayID);
-        glBindVertexArrayAPPLE(vertexArrayID);
-        
-        DEBUG_ASSERT(modelviewBufferID == -1);
-        glGenBuffers(1, &modelviewBufferID);
-        glBindBuffer(GL_ARRAY_BUFFER, modelviewBufferID);
-        
-        GLsizei size = sizeof(GLfloat) * getMaxMeshes() * numberOfVertices() * 16;
-        glBufferData(GL_ARRAY_BUFFER, size, m_ModelviewTransform, GL_DYNAMIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        
-        DEBUG_ASSERT(verticesID == -1);
-        glGenBuffers(1, &verticesID);
-        glBindBuffer(GL_ARRAY_BUFFER, verticesID);
-        glBufferData(GL_ARRAY_BUFFER, (long)getArrayBufferSize(), getArrayBuffer(), GL_DYNAMIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        
-        DEBUG_ASSERT(indexBufferID == -1);
-        glGenBuffers(1, &indexBufferID);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, (long)getElementArrayBufferSize(), getElementArrayBuffer(), GL_STATIC_DRAW);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-        
-        glBindVertexArrayAPPLE(0);
+        DEBUG_ASSERT(m_vertexArrayID == -1);
+        //TODO:UPDATE glGenVertexArraysOES(1, &m_vertexArrayID);
+        //TODO:UPDATE glBindVertexArrayOES(m_vertexArrayID);
+        {
+            {
+                DEBUG_ASSERT(m_modelViewBufferID == -1);
+                glGenBuffers(1, &m_modelViewBufferID);
+                glBindBuffer(GL_ARRAY_BUFFER, m_modelViewBufferID);
+                
+                GLsizei size = sizeof(GLfloat) * getMaxMeshes() * numberOfVertices() * 16;
+                glBufferData(GL_ARRAY_BUFFER, size, m_ModelviewTransform, GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
+            }
+            
+            {
+                DEBUG_ASSERT(m_colorTransformBufferID == -1);
+                glGenBuffers(1, &m_colorTransformBufferID);
+                glBindBuffer(GL_ARRAY_BUFFER, m_colorTransformBufferID);
+                
+                GLsizei size = sizeof(GLfloat) * getMaxMeshes() * numberOfVertices() * 16;
+                glBufferData(GL_ARRAY_BUFFER, size, m_ColorTransform, GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
+            }
+            
+            {
+                DEBUG_ASSERT(m_verticesBufferID == -1);
+                glGenBuffers(1, &m_verticesBufferID);
+                glBindBuffer(GL_ARRAY_BUFFER, m_verticesBufferID);
+                glBufferData(GL_ARRAY_BUFFER, (long)getArrayBufferSize(), getArrayBuffer(), GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
+            }
+            
+            {
+                DEBUG_ASSERT(indexBufferID == -1);
+                glGenBuffers(1, &indexBufferID);
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
+                glBufferData(GL_ELEMENT_ARRAY_BUFFER, (long)getElementArrayBufferSize(), getElementArrayBuffer(), GL_STATIC_DRAW);
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+            }
+        }
+        //TODO:UPDATE glBindVertexArrayOES(0);
         
         m_LoadGPU = false;
     }
@@ -953,10 +1166,16 @@ namespace njli
     {
         DEBUG_ASSERT(m_UnLoadGPU);
         
-        if(modelviewBufferID == -1)
+        if(m_modelViewBufferID == -1)
         {
-            glDeleteBuffers(1, &modelviewBufferID);
-            modelviewBufferID = -1;
+            glDeleteBuffers(1, &m_modelViewBufferID);
+            m_modelViewBufferID = -1;
+        }
+        
+        if(m_colorTransformBufferID == -1)
+        {
+            glDeleteBuffers(1, &m_colorTransformBufferID);
+            m_colorTransformBufferID = -1;
         }
         
         if(indexBufferID == -1)
@@ -965,16 +1184,16 @@ namespace njli
             indexBufferID = -1;
         }
         
-        if(verticesID == -1)
+        if(m_verticesBufferID == -1)
         {
-            glDeleteBuffers(1, &verticesID);
-            verticesID = -1;
+            glDeleteBuffers(1, &m_verticesBufferID);
+            m_verticesBufferID = -1;
         }
         
-        if(vertexArrayID == -1)
+        if(m_vertexArrayID == -1)
         {
-            glDeleteVertexArraysAPPLE(1, &vertexArrayID);
-            vertexArrayID = -1;
+            //TODO:UPDATE glDeleteVertexArraysOES(1, &m_vertexArrayID);
+            m_vertexArrayID = -1;
         }
         
         m_UnLoadGPU = false;
@@ -991,43 +1210,44 @@ namespace njli
         
         if (!shader->isLinked())
         {
-            if(!shader->link())
+            if(shader->link())
             {
-                DEBUG_LOG_PRINT_E(TAG, "%s", "Linking failed");
-                DEBUG_LOG_PRINT_E(TAG, "Program log: %s", shader->programLog());
-                DEBUG_LOG_PRINT_E(TAG, "Vertex log: %s", shader->vertexShaderLog());
-                DEBUG_LOG_PRINT_E(TAG, "Fragment log: %s", shader->fragmentShaderLog());
+                DEBUG_LOG_PRINT_E(TAG, "%s\n", shader->programLog());
+//                DEBUG_LOG_PRINT_E(TAG, "Vertex log: %s\n", shader->vertexShaderLog());
+//                DEBUG_LOG_PRINT_E(TAG, "Fragment log: %s\n", shader->fragmentShaderLog());
             }
         }
-        // ... and add the attributes the shader needs for the vertex position, color and texture st information
-        shader->bindAttribute("inPosition");
-        shader->bindAttribute("inTexCoord");
-        shader->bindAttribute("inColor");
-        shader->bindAttribute("inOpacity");
-        shader->bindAttribute("inHidden");
-        
-        shader->bindAttribute("inTransform");
-        
-        // Setup the index pointers into the shader for our attributes
-        m_InPositionAttrib = shader->getAttributeIndex("inPosition");
-        m_InTexCoordAttrib = shader->getAttributeIndex("inTexCoord");
-        m_InColorAttrib = shader->getAttributeIndex("inColor");
-        m_InOpacityAttrib = shader->getAttributeIndex("inOpacity");
-        m_InHiddenAttrib = shader->getAttributeIndex("inHidden");
-        
-        
-        
-        shader->use();
-        
-        m_InTransformAttrib = shader->getAttributeIndex("inTransform");
-        
-        m_modelViewMatrixUniform = shader->getUniformIndex("modelView");
-        m_projectionMatrixUniform = shader->getUniformIndex("projection");
-        u_opacityModifyRGB = shader->getUniformIndex("u_opacityModifyRGB");
-        //        u_pointSize = shader->getUniformIndex("u_pointSize");
-        
-//        m_setupShader = false;
-        m_vertexAttribChanged = true;
+        if (shader->isLinked())
+        {
+            shader->use();
+            // ... and add the attributes the shader needs for the vertex position, color and texture st information
+            shader->bindAttribute("inPosition");
+            shader->bindAttribute("inTexCoord");
+            shader->bindAttribute("inColor");
+            shader->bindAttribute("inOpacity");
+            shader->bindAttribute("inHidden");
+            
+            shader->bindAttribute("inTransform");
+            shader->bindAttribute("inColorTransform");
+            
+            // Setup the index pointers into the shader for our attributes
+            m_InPositionAttrib = shader->getAttributeLocation("inPosition");
+            m_InTexCoordAttrib = shader->getAttributeLocation("inTexCoord");
+            m_InColorAttrib = shader->getAttributeLocation("inColor");
+            m_InOpacityAttrib = shader->getAttributeLocation("inOpacity");
+            m_InHiddenAttrib = shader->getAttributeLocation("inHidden");
+            
+            
+            m_InTransformAttrib = shader->getAttributeLocation("inTransform");
+            m_InColorTransform = shader->getAttributeLocation("inColorTransform");
+            
+            //        m_modelViewMatrixUniform = shader->getUniformLocation("modelView");
+            m_projectionMatrixUniform = shader->getUniformLocation("projection");
+            //        u_opacityModifyRGB = shader->getUniformLocation("u_opacityModifyRGB");
+            //        u_pointSize = shader->getUniformLocation("u_pointSize");
+            
+            //        m_setupShader = false;
+            m_vertexAttribChanged = true;
+        }
     }
-    
 }

@@ -22,6 +22,7 @@
 
 #define FORMATSTRING "{\"njli::Sprite2D\":[]}"
 #include "btPrint.h"
+#include "JsonJLI.h"
 
 
 static const btVector3 BL_VERTEX = { -0.5f, -0.5f, 0.0f };
@@ -47,10 +48,13 @@ namespace njli
     m_SpritePivots(NULL)
     {
         m_SpritePivots = new btVector2[getMaxMeshes()];
+        m_changedDimensionArray = new bool[getMaxMeshes()];
         for(int i=0; i<getMaxMeshes(); i++)
         {
             m_SpritePivots[i] = DEFAULTPIVOT;
+            m_changedDimensionArray[i] = true;
         }
+        
         
         load();
     }
@@ -62,9 +66,11 @@ namespace njli
     m_SpritePivots(NULL)
     {
         m_SpritePivots = new btVector2[getMaxMeshes()];
+        m_changedDimensionArray = new bool[getMaxMeshes()];
         for(int i=0; i<getMaxMeshes(); i++)
         {
             m_SpritePivots[i] = DEFAULTPIVOT;
+            m_changedDimensionArray[i] = true;
         }
         
         load();
@@ -77,9 +83,11 @@ namespace njli
     m_SpritePivots(NULL)
     {
         m_SpritePivots = new btVector2[getMaxMeshes()];
+        m_changedDimensionArray = new bool[getMaxMeshes()];
         for(int i=0; i<getMaxMeshes(); i++)
         {
             m_SpritePivots[i] = DEFAULTPIVOT;
+            m_changedDimensionArray[i] = true;
         }
         
         load();
@@ -87,6 +95,10 @@ namespace njli
     
     Sprite2D::~Sprite2D()
     {
+        if(m_changedDimensionArray)
+            delete [] m_changedDimensionArray;
+        m_changedDimensionArray = NULL;
+        
         if(m_SpritePivots)
             delete [] m_SpritePivots;
         m_SpritePivots=NULL;
@@ -127,7 +139,7 @@ namespace njli
     
     Sprite2D::operator std::string() const
     {
-        return njli::JsonJLI::parse(string_format("%s", FORMATSTRING).c_str());
+        return njli::JsonJLI::parse(string_format("%s", FORMATSTRING));
     }
     
     Sprite2D **Sprite2D::createArray(const u32 size)
@@ -285,12 +297,22 @@ namespace njli
         
         if(m_Sprite2D)
         {
-            m_Sprite2D[index].bl.hidden = (hidden)?1.0f:0.0f;
-            m_Sprite2D[index].br.hidden = (hidden)?1.0f:0.0f;
-            m_Sprite2D[index].tl.hidden = (hidden)?1.0f:0.0f;
-            m_Sprite2D[index].tr.hidden = (hidden)?1.0f:0.0f;
+            float h = (hidden)?1.0f:0.0f;
+            if(m_Sprite2D[index].bl.hidden != (h) ||
+            m_Sprite2D[index].br.hidden != (h) ||
+            m_Sprite2D[index].tl.hidden != (h) ||
+            m_Sprite2D[index].tr.hidden != (h))
+            {
+                m_Sprite2D[index].bl.hidden = (hidden)?1.0f:0.0f;
+                m_Sprite2D[index].br.hidden = (hidden)?1.0f:0.0f;
+                m_Sprite2D[index].tl.hidden = (hidden)?1.0f:0.0f;
+                m_Sprite2D[index].tr.hidden = (hidden)?1.0f:0.0f;
+                
+                enableBufferModified();
+            }
             
-            enableBufferModified();
+            
+            
         }
     }
     
@@ -364,16 +386,19 @@ namespace njli
 //        if(NULL != (shape2d  = dynamic_cast<PhysicsShapeBox2D*>(physicsShape)))
         if(strcmp(physicsShape->getClassName(), "PhysicsShapeBox2D") == 0)
         {
-            PhysicsShapeBox2D *shape2d  = dynamic_cast<PhysicsShapeBox2D*>(physicsShape);
+            PhysicsShapeBox2D *shape2d  = reinterpret_cast<PhysicsShapeBox2D*>(physicsShape);
             shape2d->setHalfExtends(halfExtends);
         }
 //        else if(NULL != (shape3d  = dynamic_cast<PhysicsShapeBox*>(physicsShape)))
         else if(strcmp(physicsShape->getClassName(), "PhysicsShapeBox") == 0)
         {
-            PhysicsShapeBox *shape3d  = dynamic_cast<PhysicsShapeBox*>(physicsShape);
+            PhysicsShapeBox *shape3d  = reinterpret_cast<PhysicsShapeBox*>(physicsShape);
             btVector3 halfExtends3d(halfExtends.x(), halfExtends.y(), 1.0f);
             shape3d->setHalfExtends(halfExtends3d);
         }
+        
+        s64 spriteIndex = node->getGeometryIndex();
+        m_changedDimensionArray[spriteIndex] = false;
     }
     
     void Sprite2D::setSpriteAtlasFrame(Node *node,
@@ -444,7 +469,18 @@ namespace njli
             
             setVertexPositions(spriteIndex, bottomLeft, bottomRight, topLeft, topRight);
             m_SpritePivots[spriteIndex] = spritePivotPoint;
+            m_changedDimensionArray[spriteIndex] = true;
         }
+    }
+    
+    bool Sprite2D::shouldApplyShape(Node *node)const
+    {
+        s64 spriteIndex = node->getGeometryIndex();
+        if(spriteIndex >= 0)
+        {
+            return m_changedDimensionArray[spriteIndex];
+        }
+        return false;
     }
     
     btVector2 Sprite2D::getDimensions(Node *node)const
@@ -627,14 +663,14 @@ namespace njli
         return ret;
     }
     
-    s32 Sprite2D::numberOfVertices()const
-    {
-        return 4;
-    }
-    s32 Sprite2D::numberOfIndices()const
-    {
-        return 6;
-    }
+//    s32 Sprite2D::numberOfVertices()const
+//    {
+//        return 4;
+//    }
+//    s32 Sprite2D::numberOfIndices()const
+//    {
+//        return 6;
+//    }
     
     void Sprite2D::setVertexPositions(Node *node,
                             const btVector2 &bottomLeft,
@@ -658,12 +694,39 @@ namespace njli
     {
         DEBUG_ASSERT(spriteIndex < getMaxMeshes());
         
-        m_Sprite2D[spriteIndex].bl.vertex = bottomLeft;
-        m_Sprite2D[spriteIndex].br.vertex = bottomRight;
-        m_Sprite2D[spriteIndex].tl.vertex = topLeft;
-        m_Sprite2D[spriteIndex].tr.vertex = topRight;
+        if(m_Sprite2D[spriteIndex].bl.vertex.x() != bottomLeft.x() &&
+           m_Sprite2D[spriteIndex].bl.vertex.y() != bottomLeft.y())
+        {
+            m_Sprite2D[spriteIndex].bl.vertex = bottomLeft;
+            enableBufferModified();
+        }
         
-        enableBufferModified();
+        if(m_Sprite2D[spriteIndex].br.vertex.x() != bottomRight.x() &&
+           m_Sprite2D[spriteIndex].br.vertex.y() != bottomRight.y())
+        {
+            m_Sprite2D[spriteIndex].br.vertex = bottomRight;
+            enableBufferModified();
+        }
+        
+        if(m_Sprite2D[spriteIndex].tl.vertex.x() != topLeft.x() &&
+           m_Sprite2D[spriteIndex].tl.vertex.y() != topLeft.y())
+        {
+            m_Sprite2D[spriteIndex].tl.vertex = topLeft;
+            enableBufferModified();
+        }
+        
+        if(m_Sprite2D[spriteIndex].tr.vertex.x() != topRight.x() &&
+           m_Sprite2D[spriteIndex].tr.vertex.y() != topRight.y())
+        {
+            m_Sprite2D[spriteIndex].tr.vertex = topRight;
+            enableBufferModified();
+        }
+        
+//        m_Sprite2D[spriteIndex].br.vertex = bottomRight;
+//        m_Sprite2D[spriteIndex].tl.vertex = topLeft;
+//        m_Sprite2D[spriteIndex].tr.vertex = topRight;
+        
+        
         
 //        Node *node = getParent();
 //        if(node)

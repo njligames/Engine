@@ -19,11 +19,11 @@
 #include "GLPlatform.h"
 //#include "nanovg.h"
 
-#ifdef __MACOSX__
-#define NANOVG_GL2_IMPLEMENTATION
-#else
-#define NANOVG_GLES2_IMPLEMENTATION
-#endif
+//#ifdef __MACOSX__
+//#define NANOVG_GL2_IMPLEMENTATION
+//#else
+//#define NANOVG_GLES2_IMPLEMENTATION
+//#endif
 #include "nanovg_gl.h"
 //#include "nanovg_gl_utils.h"
 
@@ -33,6 +33,7 @@
 
 #define FORMATSTRING "{\"njli::WorldHUD\":[]}"
 #include "btPrint.h"
+#include "JsonJLI.h"
 
 namespace njli
 {
@@ -41,15 +42,7 @@ namespace njli
     m_matrixBuffer(new f32[9]),
     m_Camera(NULL)
     {
-#if defined NANOVG_GL2
-        m_NVGContext = nvgCreateGL2(NVG_ANTIALIAS | NVG_STENCIL_STROKES | NVG_DEBUG);
-#elif defined NANOVG_GL3
-        m_NVGContext = nvgCreateGL3(NVG_ANTIALIAS | NVG_STENCIL_STROKES | NVG_DEBUG);
-#elif defined NANOVG_GLES2
         m_NVGContext = nvgCreateGLES2(NVG_ANTIALIAS | NVG_STENCIL_STROKES | NVG_DEBUG);
-#elif defined NANOVG_GLES3
-        m_NVGContext = nvgCreateGLES3(NVG_ANTIALIAS | NVG_STENCIL_STROKES | NVG_DEBUG);
-#endif
     }
 
     WorldHUD::~WorldHUD()
@@ -64,16 +57,7 @@ namespace njli
         for (std::vector<s32>::iterator i = m_images.begin(); i != m_images.end(); ++i)
             nvgDeleteImage(m_NVGContext, *i);
         
-#if defined NANOVG_GL2
-        nvgDeleteGL2(m_NVGContext);
-#elif defined NANOVG_GL3
-        nvgDeleteGL3(m_NVGContext);
-#elif defined NANOVG_GLES2
         nvgDeleteGLES2(m_NVGContext);
-#elif defined NANOVG_GLES3
-        nvgDeleteGLES3(m_NVGContext);
-#endif
-        
     }
 
     const s8 *WorldHUD::getClassName()const
@@ -88,7 +72,7 @@ namespace njli
 
     WorldHUD::operator std::string() const
     {
-        return njli::JsonJLI::parse(string_format("%s", FORMATSTRING).c_str());
+        return njli::JsonJLI::parse(string_format("%s", FORMATSTRING));
     }
 
 
@@ -503,14 +487,14 @@ namespace njli
 
     s32 WorldHUD::createImageRGBA(const Image &image, njliHUDImageFlags imageFlags)
     {
-        s32 img = nvgCreateImageRGBA(m_NVGContext, image.getWidth(), image.getHeight(), imageFlags, image.getDataRaw());
+        s32 img = nvgCreateImageRGBA(m_NVGContext, image.getWidth(), image.getHeight(), imageFlags, image.getDataPtr());
         m_images.push_back(img);
         return img;
     }
 
     void WorldHUD::updateImage(s32 imageHandle, const Image &image)
     {
-        nvgUpdateImage(m_NVGContext, imageHandle, image.getDataRaw());
+        nvgUpdateImage(m_NVGContext, imageHandle, image.getDataPtr());
     }
 
     void WorldHUD::imageSize(s32 imageHandle, s32 &w, s32 &h)
@@ -1149,23 +1133,35 @@ namespace njli
     
     void WorldHUD::renderFBOs()
     {
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        
-        for (std::vector<AbstractFrameBufferObject*>::iterator i = m_FBOvector.begin(); i != m_FBOvector.end(); ++i)
+        if (m_FBOvector.size() > 0)
         {
-            if (!(*i)->isHidden())
+#if defined(DEBUG) || defined (_DEBUG)
+            glPushGroupMarkerEXT(0, "WorldHUD::renderFBOs()");
+#endif
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glBlendEquation(GL_FUNC_ADD);
+            
+            for (std::vector<AbstractFrameBufferObject*>::iterator i = m_FBOvector.begin(); i != m_FBOvector.end(); ++i)
             {
-                (*i)->render(NULL);
+                AbstractFrameBufferObject *fbo = *i;
+                
+                if (!fbo->isHidden())
+                {
+                    fbo->render(NULL);
+                }
             }
+            glDisable(GL_BLEND);
+#if defined(DEBUG) || defined (_DEBUG)
+            glPopGroupMarkerEXT();
+#endif
         }
-        glDisable(GL_BLEND);
     }
     void WorldHUD::render()
     {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//        glEnable(GL_DEPTH_TEST);
+        glBlendEquation(GL_FUNC_ADD);
         
         nvgBeginFrame(m_NVGContext,
                       njli::World::getInstance()->getViewportDimensions().x(),
@@ -1173,7 +1169,7 @@ namespace njli
                       njli::World::getInstance()->getAspectRatio());
         
         s8 buffer[BUFFER_SIZE];
-        sprintf(buffer, "%s", "WorldRenderHUD");
+        sprintf(buffer, "%s", "__NJLIWorldRenderHUD");
         njli::World::getInstance()->getWorldLuaVirtualMachine()->execute(buffer);
         
         if(njli::World::getInstance()->getScene())

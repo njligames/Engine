@@ -173,7 +173,14 @@ macro( BUILD_PLATFORM )
     INCLUDE_DIRECTORIES( ${NJLI_SOURCE_DIRECTORY}/njli/sound )
     INCLUDE_DIRECTORIES( ${NJLI_SOURCE_DIRECTORY}/njli/steering )
     INCLUDE_DIRECTORIES( ${NJLI_SOURCE_DIRECTORY}/njli/steering/behavior )
-    IF( ${NJLI_BUILD_PLATFORM} STREQUAL "macOS" )
+    INCLUDE_DIRECTORIES( /usr/local/include )
+    IF( ${NJLI_BUILD_PLATFORM} STREQUAL "appletvos" )
+        INCLUDE_DIRECTORIES( /Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/System/Library/Frameworks )
+    ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "ios" )
+        INCLUDE_DIRECTORIES( /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks )
+    ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "macOS" )
+        INCLUDE_DIRECTORIES( /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks )
+        #INCLUDE_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/Native_SDK/Builds/OSX/x86/Lib )
         INCLUDE_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/Native_SDK/Builds/Include )
     ENDIF()
 
@@ -182,16 +189,14 @@ macro( BUILD_PLATFORM )
         )
 
     FILE(GLOB Lua_SRCS
-        "${NJLI_SOURCE_DIRECTORY}/njli/generated/swig/lua/*.h"
-        "${NJLI_SOURCE_DIRECTORY}/njli/generated/swig/lua/*.cpp"
         "${NJLI_SOURCE_DIRECTORY}/lua/exts/lualoadexts.c"
         "${NJLI_SOURCE_DIRECTORY}/lua/exts/lualoadexts.h"
         "${NJLI_SOURCE_DIRECTORY}/lua/exts/luasocket/auxiliar.c"
         "${NJLI_SOURCE_DIRECTORY}/lua/exts/luasocket/auxiliar.h"
         "${NJLI_SOURCE_DIRECTORY}/lua/exts/luasocket/buffer.c"
         "${NJLI_SOURCE_DIRECTORY}/lua/exts/luasocket/buffer.h"
-        "${NJLI_SOURCE_DIRECTORY}/lua/exts/luasocket/compat.c"
-        "${NJLI_SOURCE_DIRECTORY}/lua/exts/luasocket/compat.h"
+        #"${NJLI_SOURCE_DIRECTORY}/lua/exts/luasocket/compat.c"
+        #"${NJLI_SOURCE_DIRECTORY}/lua/exts/luasocket/compat.h"
         "${NJLI_SOURCE_DIRECTORY}/lua/exts/luasocket/except.c"
         "${NJLI_SOURCE_DIRECTORY}/lua/exts/luasocket/except.h"
         "${NJLI_SOURCE_DIRECTORY}/lua/exts/luasocket/inet.c"
@@ -365,6 +370,11 @@ macro( BUILD_PLATFORM )
     LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/nanovg/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} ) 
     LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/stb/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} ) 
     LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/tinyxml2/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
+    IF( ${NJLI_BUILD_PLATFORM} STREQUAL "appletvos" )
+    ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "ios" )
+    ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "macOS" )
+        LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/Native_SDK/Builds/OSX/x86/Lib )
+    ENDIF()
     
     FILE(GLOB NJLIGameEngine_LBY
         libassimp${NJLI_ASSIMP_POSTFIX}.a 
@@ -395,35 +405,36 @@ macro( BUILD_PLATFORM )
         libtinyxml2.a 
         )
 
-    IF( ${NJLI_BUILD_PLATFORM} STREQUAL "macOS" )
-        set( CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} "-framework Cocoa -framework QuartzCore -framework AppKit -framework CoreData -framework Foundation -lGLESv2 -lEGL" )
-        #FILE(GLOB NJLIGameEngine_LBY
-        #${NJLIGameEngine_LBY}
-        #libGLESv2.dylib 
-        #libEGL.dylib 
-        #)
-    ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "ios" )
-        #set( CMAKE_EXE_LINKER_FLAGS "-framework Foundation -framework OpenGLES -framework AudioToolbox -framework CoreGraphics -framework QuartzCore -framework UIKit" )
-        SET( CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} "-framework Foundation" )
 
-        #        FIND_LIBRARY(FOUNDATION Foundation "/")
-        #        FIND_LIBRARY(QUARTZCORE QuartzCore "/")
-        #        FIND_LIBRARY(UIKIT UIKit "/")
-        #        FIND_LIBRARY(OPENGLES OpenGLES "/")
-        #        FIND_LIBRARY(COREFOUNDATION CoreFoundation "/")
-        #        FIND_LIBRARY(GLKIT GLKit "/")
-        #        SET(EXTRA_LINKED_LIBRARIES ${FOUNDATION} ${QUARTZCORE} ${UIKIT} ${OPENGLES} ${COREFOUNDATION} ${GLKIT})
-        #        FILE(GLOB NJLIGameEngine_LBY
-        #            ${NJLIGameEngine_LBY}
-        #            ${EXTRA_LINKED_LIBRARIES}
-        #            )
+    IF( ${NJLI_BUILD_PLATFORM} STREQUAL "appletvos" )
+    ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "ios" )
+    ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "macOS" )
+        #FIND_LIBRARY(GLUT_LIBRARY GLUT)
+        #MARK_AS_ADVANCED (
+        #GLUT_LIBRARY
+        #)
+        #SET(EXTRA_PLATFORM_LIBS 
+        #${GLUT_LIBRARY} 
+        #)
+        SET( CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} "-lGLESv2 -lEGL" )
+        SET( NJLIGameEngine_LBY ${NJLIGameEngine_LBY} 
+            libGLESv2.dylib 
+            libEGL.dylib 
+            )
     ENDIF()
 
     ADD_LIBRARY( libnjli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} STATIC ${NJLIGameEngine_SRCS} )
     SET_TARGET_PROPERTIES( libnjli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES OUTPUT_NAME libnjli )
     SET_TARGET_PROPERTIES( libnjli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES PREFIX "")
-    TARGET_LINK_LIBRARIES( libnjli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} ${NJLIGameEngine_LBY} )
+    TARGET_LINK_LIBRARIES( libnjli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} ${NJLIGameEngine_LBY} ${EXTRA_PLATFORM_LIBS} )
     INSTALL( TARGETS libnjli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} DESTINATION lib/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
+
+    #    ADD_LIBRARY( njli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} SHARED ${NJLIGameEngine_SRCS} )
+    #    SET_TARGET_PROPERTIES( njli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES OUTPUT_NAME njli )
+    #    SET_TARGET_PROPERTIES( njli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES PREFIX "")
+    #    SET_TARGET_PROPERTIES( njli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES POSTFIX ".so")
+    #    TARGET_LINK_LIBRARIES( njli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} ${NJLIGameEngine_LBY} ${EXTRA_PLATFORM_LIBS} )
+    #    INSTALL( TARGETS njli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} DESTINATION module/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
 
     SET(Binary_FILES
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/lua/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/bin/lua${NJLI_BINARY_EXTENSION}
@@ -432,29 +443,37 @@ macro( BUILD_PLATFORM )
         )
     INSTALL(PROGRAMS ${Binary_FILES} DESTINATION bin/thirdparty/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
 
-    ADD_LIBRARY( njli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} MODULE ${NJLIGameEngine_SRCS} )
-    SET_TARGET_PROPERTIES( njli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES OUTPUT_NAME njli )
-    SET_TARGET_PROPERTIES(njli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES PREFIX "")
-    SET_TARGET_PROPERTIES(njli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES SUFFIX ".so")
-    TARGET_LINK_LIBRARIES(njli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} ${NJLIGameEngine_LBY} )
-    INSTALL(TARGETS njli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} DESTINATION module/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
-
     INSTALL(FILES ${NJLIGameEngine_PUBLIC_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
     MATH(EXPR BUILD_COUNTER "${BUILD_COUNTER}+1")
 endmacro()
 
 IF(GENERATE_LIB)
-    EXECUTE_PROCESS(COMMAND ./swig_lua.sh ${CMAKE_CURRENT_BINARY_DIR}/njli.xml 
+
+    EXECUTE_PROCESS(COMMAND ./swig_lua.sh ${CMAKE_CURRENT_BINARY_DIR}
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         RESULT_VARIABLE swig_result
         OUTPUT_VARIABLE swig_ver)
-    MESSAGE(STATUS "${swig_result}")
-    MESSAGE(STATUS "${swig_ver}")
-    INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/njli.xml DESTINATION ${CMAKE_INSTALL_DATADIR}/swig/lua)
+    INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/lnjli.xml DESTINATION ${CMAKE_INSTALL_DATADIR}/swig/lua)
+    INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/lbullet.xml DESTINATION ${CMAKE_INSTALL_DATADIR}/swig/lua)
+                                            
+    #ADD_CUSTOM_COMMAND(OUTPUT ${NJLI_SOURCE_DIRECTORY}/njli/generated/swig/lua/lnjli.cpp #${NJLI_SOURCE_DIRECTORY}/njli/generated/swig/lua/lbullet.cpp
+    #    COMMAND ./swig_lua.sh ${CMAKE_CURRENT_BINARY_DIR}
+    #    DEPENDS ${NJLIGameEngine_SRCS}
+    #    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    #    RESULT_VARIABLE swig_result
+    #    OUTPUT_VARIABLE swig_ver
+    #    )
+    #MESSAGE("${swig_result}")
+    #SET_SOURCE_FILES_PROPERTIES( ${NJLI_SOURCE_DIRECTORY}/njli/generated/swig/lua/lnjli.cpp PROPERTIES GENERATED TRUE )
+    #SET_SOURCE_FILES_PROPERTIES( ${NJLI_SOURCE_DIRECTORY}/njli/generated/swig/lua/lbullet.cpp PROPERTIES GENERATED TRUE )
+    #INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/lnjli.xml DESTINATION ${CMAKE_INSTALL_DATADIR}/swig/lua)
+    #INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/lbullet.xml DESTINATION ${CMAKE_INSTALL_DATADIR}/swig/lua)
     
     SET( BUILD_COUNTER 1 )
+
     BUILD_PLATFORM()
+
 ENDIF()
 
 IF(GENERATE_DOCUMENTATION)

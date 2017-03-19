@@ -20,6 +20,7 @@
 
 #define FORMATSTRING "{\"njli::CheckboxHUD\":[]}"
 #include "btPrint.h"
+#include "JsonJLI.h"
 
 namespace njli
 {
@@ -147,7 +148,7 @@ namespace njli
     
     CheckboxHUD::operator std::string() const
     {
-        return njli::JsonJLI::parse(string_format("%s", FORMATSTRING).c_str());
+        return njli::JsonJLI::parse(string_format("%s", FORMATSTRING));
     }
     
     CheckboxHUD **CheckboxHUD::createArray(const u32 size)

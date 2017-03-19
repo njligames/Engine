@@ -16,6 +16,7 @@
 #define TAG "TextboxHUD.cpp"
 #define FORMATSTRING "{\"njli::TextboxHUD\":[]}"
 #include "btPrint.h"
+#include "JsonJLI.h"
 
 namespace njli
 {
@@ -157,7 +158,7 @@ namespace njli
     
     TextboxHUD::operator std::string() const
     {
-        return njli::JsonJLI::parse(string_format("%s", FORMATSTRING).c_str());
+        return njli::JsonJLI::parse(string_format("%s", FORMATSTRING));
     }
     
     TextboxHUD **TextboxHUD::createArray(const u32 size)

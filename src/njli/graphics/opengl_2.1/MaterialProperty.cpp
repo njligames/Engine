@@ -16,11 +16,15 @@
 #include "ShaderProgram.h"
 #include "AbstractFrameBufferObject.h"
 #include "Material.h"
+//#include "PVRTTextureAPI.h"
 
 #define FORMATSTRING "{\"njli::MaterialProperty\":[]}"
 #include "btPrint.h"
+#include "JsonJLI.h"
 
 #define NUMBER_OF_IMAGES (6)
+
+#define TAG "MaterialProperty.cpp"
 
 /*
  Skybox images:
@@ -32,8 +36,10 @@ namespace njli
     
     MaterialProperty::MaterialProperty():
     AbstractFactoryObject(this),
+//    m_diffuseBound(false),
+    m_materialBound(new bool[16]),
     m_textureID(-1),
-    m_minVal(JLI_TEXTURE_MINIFICATION_VALUE_TYPE_LINEAR),
+    m_minVal(JLI_TEXTURE_MINIFICATION_VALUE_TYPE_LINEAR_MIPMAP_LINEAR),
     m_magVal(JLI_TEXTURE_MAGNIFICATION_VALUE_TYPE_LINEAR),
     m_sWrap(JLI_TEXTURE_WRAP_TYPE_CLAMP_TO_EDGE),
     m_tWrap(JLI_TEXTURE_WRAP_TYPE_CLAMP_TO_EDGE),
@@ -50,24 +56,28 @@ namespace njli
     m_AbstractFrameBufferObject(NULL),
     m_hasOpacity(false),
     m_njliLoadGPUType(JLI_LOAD_GPU_TYPE_NONE),
-    m_loadGPU_fbo(NULL),
-    m_loadGPU_images(Image::createArray(NUMBER_OF_IMAGES))
+    m_loadGPU_fbo(NULL)//,
+//    m_loadGPU_images(Image::createArray(NUMBER_OF_IMAGES))
     {
+        memset(m_materialBound, 0, sizeof(bool) * 16);
+        
         enableRenderObject();
         
         char buffer[1024];
         sprintf(buffer, "%s's Image", getName());
         
-        for (s32 i = 0; i < NUMBER_OF_IMAGES; ++i)
-        {
-            Image *img = m_loadGPU_images[i];
-            img->setName(buffer);
-            addChild(img);
-        }
+//        for (s32 i = 0; i < NUMBER_OF_IMAGES; ++i)
+//        {
+//            Image *img = m_loadGPU_images[i];
+//            img->setName(buffer);
+//            addChild(img);
+//        }
     }
     
     MaterialProperty::MaterialProperty(const AbstractBuilder &builder):
     AbstractFactoryObject(this),
+    //    m_diffuseBound(false),
+    m_materialBound(new bool[16]),
     m_textureID(-1),
     m_minVal(JLI_TEXTURE_MINIFICATION_VALUE_TYPE_LINEAR),
     m_magVal(JLI_TEXTURE_MAGNIFICATION_VALUE_TYPE_LINEAR),
@@ -86,24 +96,28 @@ namespace njli
     m_AbstractFrameBufferObject(NULL),
     m_hasOpacity(false),
     m_njliLoadGPUType(JLI_LOAD_GPU_TYPE_NONE),
-    m_loadGPU_fbo(NULL),
-    m_loadGPU_images(Image::createArray(NUMBER_OF_IMAGES))
+    m_loadGPU_fbo(NULL)//,
+//    m_loadGPU_images(Image::createArray(NUMBER_OF_IMAGES))
     {
+        memset(m_materialBound, 0, sizeof(bool) * 16);
+        
         enableRenderObject();
         
         char buffer[1024];
         sprintf(buffer, "%s's Image", getName());
         
-        for (s32 i = 0; i < NUMBER_OF_IMAGES; ++i)
-        {
-            Image *img = m_loadGPU_images[i];
-            img->setName(buffer);
-            addChild(img);
-        }
+//        for (s32 i = 0; i < NUMBER_OF_IMAGES; ++i)
+//        {
+//            Image *img = m_loadGPU_images[i];
+//            img->setName(buffer);
+//            addChild(img);
+//        }
     }
     
     MaterialProperty::MaterialProperty(const MaterialProperty &copy):
     AbstractFactoryObject(this),
+    //    m_diffuseBound(false),
+    m_materialBound(new bool[16]),
     m_textureID(-1),
     m_minVal(JLI_TEXTURE_MINIFICATION_VALUE_TYPE_LINEAR),
     m_magVal(JLI_TEXTURE_MAGNIFICATION_VALUE_TYPE_LINEAR),
@@ -122,25 +136,27 @@ namespace njli
     m_AbstractFrameBufferObject(NULL),
     m_hasOpacity(false),
     m_njliLoadGPUType(JLI_LOAD_GPU_TYPE_NONE),
-    m_loadGPU_fbo(NULL),
-    m_loadGPU_images(Image::createArray(NUMBER_OF_IMAGES))
+    m_loadGPU_fbo(NULL)//,
+//    m_loadGPU_images(Image::createArray(NUMBER_OF_IMAGES))
     {
+        memcpy(m_materialBound, copy.m_materialBound, sizeof(bool) * 16);
+        
         enableRenderObject();
         
         char buffer[1024];
         sprintf(buffer, "%s's Image", getName());
         
-        for (s32 i = 0; i < NUMBER_OF_IMAGES; ++i)
-        {
-            Image *img = m_loadGPU_images[i];
-            img->setName(buffer);
-            addChild(img);
-        }
+//        for (s32 i = 0; i < NUMBER_OF_IMAGES; ++i)
+//        {
+//            Image *img = m_loadGPU_images[i];
+//            img->setName(buffer);
+//            addChild(img);
+//        }
     }
     
     MaterialProperty::~MaterialProperty()
     {
-        delete [] m_TextureTransform;
+        delete m_TextureTransform;
         m_TextureTransform=NULL;
         
         unLoadGPU();
@@ -178,7 +194,7 @@ namespace njli
     
     MaterialProperty::operator std::string() const
     {
-        return njli::JsonJLI::parse(string_format("%s", FORMATSTRING).c_str());
+        return njli::JsonJLI::parse(string_format("%s", FORMATSTRING));
     }
     
     MaterialProperty **MaterialProperty::createArray(const u32 size)
@@ -217,13 +233,13 @@ namespace njli
     {
         if(object)
         {
-            for (s32 i = 0; i < NUMBER_OF_IMAGES; ++i)
-            {
-                Image *img = object->m_loadGPU_images[i];
-                object->removeChild(img);
-                Image::destroy(img);
-            }
-            Image::destroyArray(object->m_loadGPU_images);
+//            for (s32 i = 0; i < NUMBER_OF_IMAGES; ++i)
+//            {
+//                Image *img = object->m_loadGPU_images[i];
+//                object->removeChild(img);
+//                Image::destroy(img);
+//            }
+//            Image::destroyArray(object->m_loadGPU_images);
             
             World::getInstance()->getWorldFactory()->destroy(object);
         }
@@ -358,9 +374,9 @@ namespace njli
     void MaterialProperty::loadGPU(const Image &img)
     {
         m_njliLoadGPUType = JLI_LOAD_GPU_TYPE_2D;
-        *m_loadGPU_images[0] = img;
-        
-        loadGPU_Internal(*m_loadGPU_images[0]);
+        loadGPU_Internal(img);
+//        *m_loadGPU_images[0] = img;
+//        m_loadGPU_images[0] = njli::Image::copy(img);
     }
     
     void MaterialProperty::loadGPU(const Image &negativeX,
@@ -371,19 +387,19 @@ namespace njli
                           const Image &positiveZ)
     {
         m_njliLoadGPUType = JLI_LOAD_GPU_TYPE_CUBE;
-        *m_loadGPU_images[0] = negativeX;
-        *m_loadGPU_images[1] = negativeY;
-        *m_loadGPU_images[2] = negativeZ;
-        *m_loadGPU_images[3] = positiveX;
-        *m_loadGPU_images[4] = positiveY;
-        *m_loadGPU_images[5] = positiveZ;
+//        *m_loadGPU_images[0] = negativeX;
+//        *m_loadGPU_images[1] = negativeY;
+//        *m_loadGPU_images[2] = negativeZ;
+//        *m_loadGPU_images[3] = positiveX;
+//        *m_loadGPU_images[4] = positiveY;
+//        *m_loadGPU_images[5] = positiveZ;
         
-        loadGPU_Internal(*m_loadGPU_images[0],
-                         *m_loadGPU_images[1],
-                         *m_loadGPU_images[2],
-                         *m_loadGPU_images[3],
-                         *m_loadGPU_images[4],
-                         *m_loadGPU_images[5]);
+        loadGPU_Internal(negativeX,
+                         negativeY,
+                         negativeZ,
+                         positiveX,
+                         positiveY,
+                         positiveZ);
     }
     
     void MaterialProperty::loadGPU(AbstractFrameBufferObject *fbo)
@@ -398,9 +414,13 @@ namespace njli
     {
         if(-1 != m_textureID)
         {
+            u8 textureIndex = getTextureIndex();
+            m_materialBound[textureIndex] = false;
+            
             MaterialProperty::removeReference(this);
             
             glDeleteTextures(1, &m_textureID);
+            
         }
         m_textureID = -1;
         m_AbstractFrameBufferObject = NULL;
@@ -513,43 +533,43 @@ namespace njli
     }
     
     
-    void MaterialProperty::bind(ShaderProgram *shader, const char *propertyName)
+    bool MaterialProperty::bind(ShaderProgram *shader)
     {//https://www.opengl.org/wiki/Texture_Combiners
         DEBUG_ASSERT(shader);
         
+        bool retVal = false;
         
+        s32 textureIndex = getTextureIndex();
         
-        if(m_TextureIndex != 255)
-            glActiveTexture(GL_TEXTURE0 + m_TextureIndex);
+        if(textureIndex != 255)
+            glActiveTexture(GL_TEXTURE0 + textureIndex);
         
         if(m_AbstractFrameBufferObject)
         {
             glBindTexture(m_textureType, m_AbstractFrameBufferObject->getTextureID());
-            return;
+            retVal = true;
         }
         else if(m_textureID != -1)
         {
-            char buffer[256];
-            char property[256];
-            strcpy(property, propertyName);
-            
             // Bind to the texture that has been loaded for this particle system
             glBindTexture(m_textureType, m_textureID);
             
-//            loadProperties();
-
-            property[0] = property[0] + 32;
-            sprintf(buffer, "%sTexture2D", property);
-            m_2DUniform = shader->getUniformIndex(buffer);
-            glUniform1i(m_2DUniform, getTextureIndex());//DEBUG_GL_ERROR_PRINT("glUniform1i", "%d,%hhu",m_2DUniform,getTextureIndex());
+            m_materialBound[textureIndex] = true;
+            
+            retVal = true;
         }
+        return retVal;
     }
     
-    void MaterialProperty::unBind()const
+    void MaterialProperty::unBind()
     {
+        u8 textureIndex = getTextureIndex();
+        
         if(m_textureID != -1)
         {
-            glActiveTexture(GL_TEXTURE0 + getTextureIndex());
+//            m_materialBound[textureIndex] = false;
+            
+            glActiveTexture(GL_TEXTURE0 + textureIndex);
             // Bind to the texture that has been loaded for this particle system
             glBindTexture(m_textureType, 0);
         }
@@ -565,7 +585,7 @@ namespace njli
         GLint border = 0;
         GLenum format = GL_RGBA;
         GLenum type = GL_UNSIGNED_BYTE;
-        const GLvoid* pixels = (const GLvoid*)img.getDataRaw();
+        const GLvoid* pixels = (const GLvoid*)img.getDataPtr();
         GLsizei imageSize = img.getWidth() * img.getHeight() * img.getNumberOfComponents();
         
         switch(m_NumberOfComponents)
@@ -597,11 +617,21 @@ namespace njli
                 break;
         }
         
-        glTexImage2D(target, level, internalformat, m_Width, m_Height, border, format, type, pixels);DEBUG_GL_ERROR_WRITE("glTexImage2D");
+        if(img.isCompressed())
+        {
+            glCompressedTexImage2D(target, level, internalformat, m_Width, m_Height, border, imageSize, pixels);
+            DEBUG_GL_ERROR_WRITE("glCompressedTexImage2D");
+        }
+        else
+        {
+            glTexImage2D(target, level, internalformat, m_Width, m_Height, border, format, type, pixels);
+            DEBUG_GL_ERROR_WRITE("glTexImage2D");
+        }
+        
         
         if(isTexture2D())
         {
-            glGenerateMipmap(target);DEBUG_GL_ERROR_WRITE("glGenerateMipmap");
+            //TODO:UPDATE glGenerateMipmap(target);DEBUG_GL_ERROR_WRITE("glGenerateMipmap");
         }
     }
     
@@ -614,7 +644,7 @@ namespace njli
         GLint border = 0;
         GLenum format = GL_RGBA;
         GLenum type = GL_UNSIGNED_BYTE;
-        const GLvoid* pixels = (const GLvoid*)img.getDataRaw();
+        const GLvoid* pixels = (const GLvoid*)img.getDataPtr();
         GLsizei imageSize = img.getWidth() * img.getHeight() * img.getNumberOfComponents();
         
         DEBUG_ASSERT(offset.x() + img.getWidth() < getWidth());
@@ -650,9 +680,18 @@ namespace njli
                 break;
         }
         
-        glTexSubImage2D(target, level, offset.x(), offset.y(), m_Width, m_Height, format, type, pixels);DEBUG_GL_ERROR_WRITE("glTexSubImage2D");
+        if(img.isCompressed())
+        {
+            glCompressedTexSubImage2D(target, level, offset.x(), offset.y(), m_Width, m_Height, format, imageSize, pixels);
+            DEBUG_GL_ERROR_WRITE("glCompressedTexSubImage2D");
+        }
+        else
+        {
+            glTexSubImage2D(target, level, offset.x(), offset.y(), m_Width, m_Height, format, type, pixels);
+            DEBUG_GL_ERROR_WRITE("glTexSubImage2D");
+        }
         
-        glGenerateMipmap(target);DEBUG_GL_ERROR_WRITE("glGenerateMipmap");
+        //TODO:UPDATE glGenerateMipmap(target);DEBUG_GL_ERROR_WRITE("glGenerateMipmap");
         
         m_hasOpacity = img.hasAlpha();
     }
@@ -732,37 +771,37 @@ namespace njli
         }
     }
     
-    void MaterialProperty::render()
-    {
-        if (m_njliLoadGPUType != JLI_LOAD_GPU_TYPE_NONE)
-        {
-            switch (m_njliLoadGPUType)
-            {
-                case JLI_LOAD_GPU_TYPE_2D:
-                    loadGPU_Internal(*m_loadGPU_images[0]);
-                    break;
-                case JLI_LOAD_GPU_TYPE_2D_EMPTY:
-                    loadGPU_Internal();
-                    
-                    break;
-                case JLI_LOAD_GPU_TYPE_CUBE:
-                    loadGPU_Internal(*m_loadGPU_images[0],
-                                     *m_loadGPU_images[1],
-                                     *m_loadGPU_images[2],
-                                     *m_loadGPU_images[3],
-                                     *m_loadGPU_images[4],
-                                     *m_loadGPU_images[5]);
-                    break;
-                case JLI_LOAD_GPU_TYPE_FBO:
-                    loadGPU_Internal(m_loadGPU_fbo);
-                    break;
-                    
-                default:
-                    break;
-            }
-            m_njliLoadGPUType = JLI_LOAD_GPU_TYPE_NONE;
-        }
-    }
+//    void MaterialProperty::render()
+//    {
+//        if (m_njliLoadGPUType != JLI_LOAD_GPU_TYPE_NONE)
+//        {
+//            switch (m_njliLoadGPUType)
+//            {
+//                case JLI_LOAD_GPU_TYPE_2D:
+//                    loadGPU_Internal(*m_loadGPU_images[0]);
+//                    break;
+//                case JLI_LOAD_GPU_TYPE_2D_EMPTY:
+//                    loadGPU_Internal();
+//                    
+//                    break;
+//                case JLI_LOAD_GPU_TYPE_CUBE:
+//                    loadGPU_Internal(*m_loadGPU_images[0],
+//                                     *m_loadGPU_images[1],
+//                                     *m_loadGPU_images[2],
+//                                     *m_loadGPU_images[3],
+//                                     *m_loadGPU_images[4],
+//                                     *m_loadGPU_images[5]);
+//                    break;
+//                case JLI_LOAD_GPU_TYPE_FBO:
+//                    loadGPU_Internal(m_loadGPU_fbo);
+//                    break;
+//                    
+//                default:
+//                    break;
+//            }
+//            m_njliLoadGPUType = JLI_LOAD_GPU_TYPE_NONE;
+//        }
+//    }
     
 #if defined(DEBUG) || defined (_DEBUG)
     u64 MaterialProperty::s_MaxTextureUnits = 0;
@@ -858,23 +897,38 @@ namespace njli
         
         m_textureType = GL_TEXTURE_2D;
         
-//        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         
-//        glActiveTexture(GL_TEXTURE0 + getTextureIndex());DEBUG_GL_ERROR_WRITE("glActiveTexture");
-        
-        glGenTextures ( 1, &m_textureID );DEBUG_GL_ERROR_WRITE("glGenTextures");
-        
-        glBindTexture(m_textureType, m_textureID);DEBUG_GL_ERROR_WRITE("glBindTexture");
-        
-        
-        
-//        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-        
-        loadTexImage2DInternal(img, GL_TEXTURE_2D);
-        
-        loadProperties();
-        
-        m_hasOpacity = img.hasAlpha();
+        if (img.isPvr())
+        {
+            glActiveTexture(GL_TEXTURE0 + getTextureIndex());
+            
+            DEBUG_GL_ERROR_WRITE("glActiveTexture");
+            
+            DEBUG_ASSERT_WRITE(true, "need to add the functionality to load pvr images");
+            
+//            if(PVRTTextureLoadFromPointer(img.getDataRaw(), &m_textureID) != PVR_SUCCESS)
+//            {
+//                DEBUG_LOG_WRITE_E(TAG, "ERROR: Failed to load texture.");
+//            }
+            
+        }
+        else
+        {
+//            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+            
+            glActiveTexture(GL_TEXTURE0 + getTextureIndex());DEBUG_GL_ERROR_WRITE("glActiveTexture");
+            
+            glGenTextures ( 1, &m_textureID );DEBUG_GL_ERROR_WRITE("glGenTextures");
+            
+            glBindTexture(m_textureType, m_textureID);DEBUG_GL_ERROR_WRITE("glBindTexture");
+            
+            loadTexImage2DInternal(img, GL_TEXTURE_2D);
+            
+            loadProperties();
+            
+            m_hasOpacity = img.hasAlpha();
+
+        }
     }
     
     void MaterialProperty::loadGPU_Internal(const Image &negativeX,
@@ -911,7 +965,7 @@ namespace njli
         
         loadProperties();
         
-        glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+        //TODO:UPDATE glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
         
         m_hasOpacity = negativeX.hasAlpha() ||
         negativeY.hasAlpha() ||

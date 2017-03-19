@@ -49,12 +49,12 @@ namespace njli
         GLint defaultFBO;
         GLint defaultRBO;
         
-        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &defaultFBO);
-        glGetIntegerv(GL_RENDERBUFFER_BINDING, &defaultRBO);
+        //TODO:UPDATE glGetIntegerv(GL_FRAMEBUFFER_BINDING, &defaultFBO);
+        //TODO:UPDATE glGetIntegerv(GL_RENDERBUFFER_BINDING, &defaultRBO);
 
         // Create frame buffer
-        glGenFramebuffers(1, &frameBuffer);
-        glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+        //TODO:UPDATE glGenFramebuffers(1, &frameBuffer);
+        //TODO:UPDATE glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
         
         // Create texture to hold color buffer
         glGenTextures(1, &texColorBuffer);
@@ -65,17 +65,17 @@ namespace njli
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer, 0);
+        //TODO:UPDATE glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer, 0);
         
         // Create Renderbuffer Object to hold depth and stencil buffers
-        glGenRenderbuffers(1, &rboDepthStencil);
-        glBindRenderbuffer(GL_RENDERBUFFER, rboDepthStencil);
+        //TODO:UPDATE glGenRenderbuffers(1, &rboDepthStencil);
+        //TODO:UPDATE glBindRenderbuffer(GL_RENDERBUFFER, rboDepthStencil);
         
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_STENCIL_INDEX8, width, height);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rboDepthStencil);
+        //TODO:UPDATE glRenderbufferStorage(GL_RENDERBUFFER, GL_STENCIL_INDEX8, width, height);
+        //TODO:UPDATE glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rboDepthStencil);
         
-        glBindFramebuffer(GL_FRAMEBUFFER, defaultFBO);
-        glBindRenderbuffer(GL_RENDERBUFFER, defaultRBO);
+        //TODO:UPDATE glBindFramebuffer(GL_FRAMEBUFFER, defaultFBO);
+        //TODO:UPDATE glBindRenderbuffer(GL_RENDERBUFFER, defaultRBO);
         //gl end createFBO
     }
     void AbstractFrameBufferObject::loadGPU(u32 width, u32 height)
@@ -108,8 +108,8 @@ namespace njli
         GLint defaultFBO;
         GLint defaultRBO;
         
-        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &defaultFBO);
-        glGetIntegerv(GL_RENDERBUFFER_BINDING, &defaultRBO);
+        //TODO:UPDATE glGetIntegerv(GL_FRAMEBUFFER_BINDING, &defaultFBO);
+        //TODO:UPDATE glGetIntegerv(GL_RENDERBUFFER_BINDING, &defaultRBO);
         GLint viewPort[4] = {0};
         glGetIntegerv(GL_VIEWPORT, viewPort);
         
@@ -120,8 +120,8 @@ namespace njli
         m_counter++;
         
         glViewport(viewPort[0], viewPort[1], viewPort[2], viewPort[3]);
-        glBindFramebuffer(GL_FRAMEBUFFER, defaultFBO);
-        glBindRenderbuffer(GL_RENDERBUFFER, defaultRBO);
+        //TODO:UPDATE glBindFramebuffer(GL_FRAMEBUFFER, defaultFBO);
+        //TODO:UPDATE glBindRenderbuffer(GL_RENDERBUFFER, defaultRBO);
         //gl end render
     }
     
@@ -136,20 +136,20 @@ namespace njli
     void AbstractFrameBufferObject::unLoadGPU()
     {
         //gl begin unloadGPU
-        if(m_stencilBufferA != -1)
-            glDeleteRenderbuffers(1, &m_stencilBufferA);
+        //TODO:UPDATE if(m_stencilBufferA != -1)
+            //TODO:UPDATE glDeleteRenderbuffers(1, &m_stencilBufferA);
         m_stencilBufferA = -1;
         
-        if(m_stencilBufferB != -1)
-            glDeleteRenderbuffers(1, &m_stencilBufferB);
+        //TODO:UPDATE if(m_stencilBufferB != -1)
+            //TODO:UPDATE glDeleteRenderbuffers(1, &m_stencilBufferB);
         m_stencilBufferB = -1;
         
-        if(m_frameBufferA != -1)
-            glDeleteFramebuffers(1, &m_frameBufferA);
+        //TODO:UPDATE if(m_frameBufferA != -1)
+            //TODO:UPDATE glDeleteFramebuffers(1, &m_frameBufferA);
         m_frameBufferA = -1;
         
-        if(m_frameBufferB != -1)
-            glDeleteFramebuffers(1, &m_frameBufferB);
+        //TODO:UPDATE if(m_frameBufferB != -1)
+            //TODO:UPDATE glDeleteFramebuffers(1, &m_frameBufferB);
         m_frameBufferB = -1;
         
         if(m_textureA != -1)
@@ -197,7 +197,7 @@ namespace njli
         //gl begin renderInternal
         
         //bind FBO to set textureA as the output texture.
-        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+        //TODO:UPDATE glBindFramebuffer(GL_FRAMEBUFFER, fbo);
         
         //set the viewport to be the size of the texture
         glViewport(0, 0, m_width, m_height);

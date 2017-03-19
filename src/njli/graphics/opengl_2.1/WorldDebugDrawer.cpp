@@ -13,6 +13,7 @@
 #define TAG "WorldDebugDrawer.cpp"
 #define FORMATSTRING "{\"njli::WorldDebugDrawer\":[]}"
 #include "btPrint.h"
+#include "JsonJLI.h"
 
 namespace njli
 {
@@ -43,7 +44,7 @@ namespace njli
     
     WorldDebugDrawer::operator std::string() const
     {
-        return njli::JsonJLI::parse(string_format("%s", FORMATSTRING).c_str());
+        return njli::JsonJLI::parse(string_format("%s", FORMATSTRING));
     }
     
     void WorldDebugDrawer::getVertices(LevelOfDetail *geometry, btVector3 **vertices, Node*node)const

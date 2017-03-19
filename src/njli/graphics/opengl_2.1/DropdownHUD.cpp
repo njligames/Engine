@@ -16,6 +16,7 @@
 #define TAG "DropdownHUD.cpp"
 #define FORMATSTRING "{\"njli::DropdownHUD\":[]}"
 #include "btPrint.h"
+#include "JsonJLI.h"
 
 namespace njli
 {
@@ -89,7 +90,7 @@ namespace njli
     
     DropdownHUD::operator std::string() const
     {
-        return njli::JsonJLI::parse(string_format("%s", FORMATSTRING).c_str());
+        return njli::JsonJLI::parse(string_format("%s", FORMATSTRING));
     }
     
     DropdownHUD **DropdownHUD::createArray(const u32 size)
