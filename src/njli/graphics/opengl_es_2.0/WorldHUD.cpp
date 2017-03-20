@@ -19,11 +19,6 @@
 #include "GLPlatform.h"
 //#include "nanovg.h"
 
-//#ifdef __MACOSX__
-//#define NANOVG_GL2_IMPLEMENTATION
-//#else
-//#define NANOVG_GLES2_IMPLEMENTATION
-//#endif
 #include "nanovg_gl.h"
 //#include "nanovg_gl_utils.h"
 

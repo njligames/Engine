@@ -372,6 +372,7 @@ macro( BUILD_PLATFORM )
     LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/tinyxml2/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
     IF( ${NJLI_BUILD_PLATFORM} STREQUAL "appletvos" )
     ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "ios" )
+        SET( CMAKE_FRAMEWORK_PATH /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks )
     ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "macOS" )
         LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/Native_SDK/Builds/OSX/x86/Lib )
     ENDIF()
@@ -408,14 +409,12 @@ macro( BUILD_PLATFORM )
 
     IF( ${NJLI_BUILD_PLATFORM} STREQUAL "appletvos" )
     ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "ios" )
+        SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -x objective-c")
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -x objective-c++")
+        SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework Foundation -framework UIKit")
+
+        #SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fobjc-arc")
     ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "macOS" )
-        #FIND_LIBRARY(GLUT_LIBRARY GLUT)
-        #MARK_AS_ADVANCED (
-        #GLUT_LIBRARY
-        #)
-        #SET(EXTRA_PLATFORM_LIBS 
-        #${GLUT_LIBRARY} 
-        #)
         SET( CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} "-lGLESv2 -lEGL" )
         SET( NJLIGameEngine_LBY ${NJLIGameEngine_LBY} 
             libGLESv2.dylib 

@@ -35,6 +35,7 @@ build_apple()
     cd ${MY_BUILD_DIRECTORY}
 
     cmake .. -G "Unix Makefiles" \
+        -DCMAKE_CXX_FLAGS='-std=gnu++11' \
         -DCMAKE_INSTALL_PREFIX=../generated/ \
         -DNJLI_THIRDPARTY_DIRECTORY:STRING=${MY_THIRDPARTY_DIR} \
         -DNJLI_BUILD_PLATFORM=${MY_PLATFORM} \
@@ -137,6 +138,6 @@ build_macos()
 #build_appletvos
 #build_applewatchos
 
-_build_macos Release ${CMAKE_MACOS_SYSTEM_VERSION}
+#_build_macos Release ${CMAKE_MACOS_SYSTEM_VERSION}
 #build_apple Debug ios ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-
+build_apple Debug ios OFF OS ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}

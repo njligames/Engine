@@ -5,7 +5,7 @@
 #import <OpenGLES/ES2/glext.h>
 #import <OpenGLES/ES2/gl.h>
 
-
+#define NANOVG_GLES2_IMPLEMENTATION
 
 #ifndef __IOS__
 #define __IOS__

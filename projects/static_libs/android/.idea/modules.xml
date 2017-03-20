@@ -1,9 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/android.iml" filepath="$PROJECT_DIR$/android.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-    </modules>
-  </component>
-</project>
+version https://git-lfs.github.com/spec/v1
+oid sha256:8bd4d25beebf7ce975748c24fbcf59400a422cf85ae62eef49ab1ba49aa67494
+size 351

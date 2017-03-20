@@ -84,10 +84,10 @@
 
 namespace njli
 {
-    static const btVector4 DEFAULTCOLOR = {1.0, 1.0, 1.0, 1.0};
-    static const btVector4 REDCOLOR = {1.0, 0.0, 0.0, 1.0};
-    static const btVector4 GREENCOLOR = {0.0, 1.0, 0.0, 1.0};
-    static const btVector4 BLUECOLOR = {0.0, 0.0, 1.0, 1.0};
+    static const btVector4 DEFAULTCOLOR(1.0, 1.0, 1.0, 1.0);
+    static const btVector4 REDCOLOR(1.0, 0.0, 0.0, 1.0);
+    static const btVector4 GREENCOLOR(0.0, 1.0, 0.0, 1.0);
+    static const btVector4 BLUECOLOR(0.0, 0.0, 1.0, 1.0);
     
     /*
      // Back
