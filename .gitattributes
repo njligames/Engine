@@ -1,3 +1,4 @@
 *.xml filter=lfs diff=lfs merge=lfs -text
 ./.build/lnjli.xml filter=lfs diff=lfs merge=lfs -text
 ./generated/data/swig/lua/lnjli.xml filter=lfs diff=lfs merge=lfs -text
+lnjli.xml filter=lfs diff=lfs merge=lfs -text
