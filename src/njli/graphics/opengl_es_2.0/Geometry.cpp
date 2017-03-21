@@ -24,6 +24,7 @@
 #include "JsonJLI.h"
 
 #include "Image.h"
+#define USE_OES
 
 static const u32 MAX_SPRITES = NUMBER_OF_MESHES;
 
@@ -830,7 +831,11 @@ namespace njli
             loadGPU_Internal();
         }
         
+#ifdef USE_OES
         glBindVertexArrayOES(m_vertexArrayID);
+#else
+        glBindVertexArray(m_vertexArrayID);
+#endif
         
         
         
@@ -1092,8 +1097,13 @@ namespace njli
         
         
         DEBUG_ASSERT(m_vertexArrayID == -1);
+#ifdef USE_OES
         glGenVertexArraysOES(1, &m_vertexArrayID);
         glBindVertexArrayOES(m_vertexArrayID);
+#else
+        glGenVertexArrays(1, &m_vertexArrayID);
+        glBindVertexArray(m_vertexArrayID);
+#endif
         {
             {
                 DEBUG_ASSERT(m_modelViewBufferID == -1);
@@ -1131,7 +1141,11 @@ namespace njli
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
             }
         }
+#ifdef USE_OES
         glBindVertexArrayOES(0);
+#else
+        glBindVertexArray(0);
+#endif
         
         m_LoadGPU = false;
     }
@@ -1192,7 +1206,11 @@ namespace njli
         
         if(m_vertexArrayID == -1)
         {
+#ifdef USE_OES
             glDeleteVertexArraysOES(1, &m_vertexArrayID);
+#else
+            glDeleteVertexArrays(1, &m_vertexArrayID);
+#endif
             m_vertexArrayID = -1;
         }
         

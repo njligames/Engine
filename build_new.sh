@@ -17,12 +17,9 @@ export MY_ANDROID_API_LEVEL=24
 
 rm -rf .build
 
-./cmake_apple.sh
-
-
 #./cmake_doc.sh
 #./cmake_android.sh
-#./cmake_apple.sh
+./cmake_apple.sh
 #./cmake_emscripten.sh
 
 

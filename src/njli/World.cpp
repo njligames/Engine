@@ -28,6 +28,7 @@
 
 #include "btQuickprof.h"
 #include "unistd.h"
+#include <signal.h>
 
 namespace njli
 {

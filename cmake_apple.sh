@@ -112,7 +112,6 @@ _build_macos()
         -DCMAKE_CXX_FLAGS='-std=gnu++11' \
         -DCMAKE_INSTALL_PREFIX=../generated/ \
         -DNJLI_THIRDPARTY_DIRECTORY:STRING=${MY_THIRDPARTY_DIR} \
-        -DGL_GLEXT_PROTOTYPES=1 \
         -DCMAKE_OSX_ARCHITECTURES="x86_64;i386" \
         -DNJLI_BUILD_PLATFORM="macOS" \
         -DCMAKE_BUILD_TYPE=${MY_BUILD_TYPE} \
@@ -138,6 +137,7 @@ build_macos()
 #build_appletvos
 #build_applewatchos
 
-#_build_macos Release ${CMAKE_MACOS_SYSTEM_VERSION}
+_build_macos Debug ${CMAKE_MACOS_SYSTEM_VERSION}
 #build_apple Debug ios ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-build_apple Debug ios OFF OS ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
+#build_apple Debug ios OFF OS ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
+#build_apple Debug appletvos OFF OS ${MY_IOS_PATH} ${CMAKE_TVOS_SYSTEM_VERSION}

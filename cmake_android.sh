@@ -41,4 +41,7 @@ build_android()
     done
 }
 
-build_android
+#build_android
+ _build_android Release "android/${MY_ANDROID_API_LEVEL}/armeabi-v7a" armeabi-v7a
+
+

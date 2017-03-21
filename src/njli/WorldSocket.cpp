@@ -15,6 +15,7 @@
 //#ifdef __ANDROID__
 #include <sys/socket.h>
 //#endif
+#include <signal.h>
 
 #include <netinet/tcp.h>
 #include <arpa/inet.h>

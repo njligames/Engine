@@ -32,9 +32,13 @@
 #include <EGL/eglext.h>
 #include <EGL/eglplatform.h>
 
-#include <GLES3/gl3.h>
-#include <GLES3/gl3ext.h>
-#include <GLES3/gl3platform.h>
+#define GL_GLEXT_PROTOTYPES
+
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
+#include <GLES2/gl2platform.h>
+
+#define NANOVG_GLES2_IMPLEMENTATION
 
 #include <android/asset_manager_jni.h>
 

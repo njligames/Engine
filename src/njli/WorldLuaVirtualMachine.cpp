@@ -210,6 +210,8 @@ extern "C" {
 
 #include "swig_runtime.h"
 
+#include <signal.h>
+
 extern swig_type_info *swig_types[484];
 
 

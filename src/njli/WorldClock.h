@@ -13,6 +13,7 @@
 #include "AbstractObject.h"
 #include "LinearMath/btQuickprof.h"
 #include <string>
+#include <stddef.h>
 
 namespace njli {
 /// <#Description#>

@@ -90,7 +90,7 @@ namespace njli
         // }
     }
     
-    void WorldSound::createSound(const char *fileContent, size_t file_size, Sound &sound)
+    bool WorldSound::createSound(const char *fileContent, size_t file_size, Sound &sound)
     {
         // FMOD_CREATESOUNDEXINFO info;
         // memset(&info, 0, sizeof(FMOD_CREATESOUNDEXINFO));
@@ -103,6 +103,7 @@ namespace njli
         // FMOD_ERRCHECK(result);
         // sound.m_Sound = s;
         // sound.m_Mode = mode;
+        return false;
     }
     
     // FMOD::Channel *WorldSound::getChannel(s32 channelindex)
@@ -112,7 +113,7 @@ namespace njli
     //     // return channel;
     // }
     // 
-    void WorldSound::enableSuspend(bool enable)
+    void WorldSound::enablePause(bool enable)
     {
         if (enable)
         {

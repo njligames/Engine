@@ -175,7 +175,7 @@ int CRUD_create(const char *filename, const void *buffer, unsigned long len)
     {
         if ([[NSFileManager defaultManager] createFileAtPath:filePath contents:data attributes:nil])
         {
-            DEBUG_LOG_V("TAG", "Created File %s\n", [filePath UTF8String]);
+//            DEBUG_LOG_V("TAG", "Created File %s\n", [filePath UTF8String]);
             return 1;
         }
         
@@ -259,7 +259,7 @@ void setupFileSystem()
                                                         errorHandler:^BOOL(NSURL *url, NSError *error)
                                          {
                                              if (error) {
-                                                 NSLog(@"[Error] %@ (%@)", error, url);
+//                                                 NSLog(@"[Error] %@ (%@)", error, url);
                                                  return NO;
                                              }
                                              

@@ -15,7 +15,7 @@
 
 #define FORMATSTRING "{\"njli::WorldInput\":[]}"
 #include "btPrint.h"
-
+#include "JsonJLI.h"
 
 namespace njli
 {
@@ -54,7 +54,7 @@ namespace njli
     
     WorldInput::operator std::string() const
     {
-        return njli::JsonJLI::parse(string_format("%s", FORMATSTRING).c_str());
+        return njli::JsonJLI::parse(string_format("%s", FORMATSTRING));
     }
     
     DeviceTouch * WorldInput::getTouch(const s32 index)
@@ -126,6 +126,23 @@ namespace njli
 //        clearTouches();
     }
     
+    
+    
+    void WorldInput::keyboardShow()
+    {
+        njli::World::getInstance()->keyboardShow();
+    }
+    
+    void WorldInput::keyboardCancel()
+    {
+        njli::World::getInstance()->keyboardCancel();
+    }
+    
+    void WorldInput::keyboardReturn(const char* text)
+    {
+        njli::World::getInstance()->keyboardReturn(text);
+    }
+    
     void WorldInput::setOrientation(const s32 orientation)
     {
         m_Orientation = orientation;
@@ -133,7 +150,7 @@ namespace njli
     
     bool WorldInput::isPortraitOrientation()const
     {
-//        return (((UIInterfaceOrientation)m_Orientation == UIInterfaceOrientationPortrait) || ((UIInterfaceOrientation)m_Orientation == UIInterfaceOrientationPortraitUpsideDown));
+        //return (((UIInterfaceOrientation)m_Orientation == UIInterfaceOrientationPortrait) || ((UIInterfaceOrientation)m_Orientation == UIInterfaceOrientationPortraitUpsideDown));
         return false;
     }
     
