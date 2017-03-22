@@ -137,7 +137,7 @@ build_macos()
 #build_appletvos
 #build_applewatchos
 
-_build_macos Debug ${CMAKE_MACOS_SYSTEM_VERSION}
+#_build_macos Debug ${CMAKE_MACOS_SYSTEM_VERSION}
 #build_apple Debug ios ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-#build_apple Debug ios OFF OS ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
+build_apple Debug ios OFF OS ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
 #build_apple Debug appletvos OFF OS ${MY_IOS_PATH} ${CMAKE_TVOS_SYSTEM_VERSION}

@@ -1,10 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main_browse_fragment"
-    android:name="tvos.engine.njligames.com.android.MainFragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    tools:deviceIds="tv"
-    tools:ignore="MergeRootFrame" />
+version https://git-lfs.github.com/spec/v1
+oid sha256:b80730d3e88e2d37016c05fdddba52ecc88d2d8e9173beae0af637e0df178a51
+size 445

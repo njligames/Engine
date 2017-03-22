@@ -1,9 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/details_fragment"
-    android:name="tvos.engine.njligames.com.android.VideoDetailsFragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".DetailsActivity"
-    tools:deviceIds="tv" />
+version https://git-lfs.github.com/spec/v1
+oid sha256:2c10e5014d9fafb076a544833ea41c4343a4083f3fc0e2345df58fad8fbfce62
+size 418
