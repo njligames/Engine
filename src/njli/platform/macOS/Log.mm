@@ -35,7 +35,7 @@
 
 njli::NJLIGameEngine::PlatformID njli::NJLIGameEngine::platformID()
 {
-    return njli::NJLIGameEngine::PlatformID_iOS;
+    return njli::NJLIGameEngine::PlatformID_MacOSx;
 }
 
 //fwrite(("(" priority ") %s: "), sizeof(char), (strlen("(" priority ") %s: ")), stdout)

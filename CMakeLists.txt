@@ -36,6 +36,8 @@ ENDIF()
 SET( NJLI_FMOD_EXTENSION "a")
 IF( ${NJLI_FMOD_EXTENSION} EQUAL macOS )
     SET( NJLI_FMOD_EXTENSION "dylib" )
+ELSEIF( ${NJLI_FMOD_EXTENSION} EQUAL android )
+    SET( NJLI_FMOD_EXTENSION "so" )
 ENDIF()
 
 option ( GENERATE_DOCUMENTATION "Whether to build the documentation or not" OFF )
@@ -144,6 +146,7 @@ macro( BUILD_PLATFORM )
     INCLUDE_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/include/bullet3/LinearMath )
     INCLUDE_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/include/glm )
     INCLUDE_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/fmod/include )
+    INCLUDE_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/SDL/include )
     INCLUDE_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/imgui )
     INCLUDE_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/ImGuizmo )
     INCLUDE_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/include/jsoncpp )
@@ -175,12 +178,12 @@ macro( BUILD_PLATFORM )
     INCLUDE_DIRECTORIES( ${NJLI_SOURCE_DIRECTORY}/njli/physics/body )
     INCLUDE_DIRECTORIES( ${NJLI_SOURCE_DIRECTORY}/njli/physics/constraint )
     INCLUDE_DIRECTORIES( ${NJLI_SOURCE_DIRECTORY}/njli/physics/shape )
-    INCLUDE_DIRECTORIES( ${NJLI_SOURCE_DIRECTORY}/njli/platform )
-    INCLUDE_DIRECTORIES( ${NJLI_SOURCE_DIRECTORY}/njli/platform/${NJLI_BUILD_PLATFORM} )
     INCLUDE_DIRECTORIES( ${NJLI_SOURCE_DIRECTORY}/njli/sound )
     INCLUDE_DIRECTORIES( ${NJLI_SOURCE_DIRECTORY}/njli/steering )
     INCLUDE_DIRECTORIES( ${NJLI_SOURCE_DIRECTORY}/njli/steering/behavior )
-    INCLUDE_DIRECTORIES( /usr/local/include )
+    INCLUDE_DIRECTORIES( ${NJLI_SOURCE_DIRECTORY}/njli/platform )
+    INCLUDE_DIRECTORIES( ${NJLI_SOURCE_DIRECTORY}/njli/platform/${NJLI_BUILD_PLATFORM} )
+
     IF( ${NJLI_BUILD_PLATFORM} STREQUAL "appletvos" )
         INCLUDE_DIRECTORIES( /Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/System/Library/Frameworks )
     ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "ios" )
@@ -191,6 +194,8 @@ macro( BUILD_PLATFORM )
     ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "emscripten" )
         INCLUDE_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/Native_SDK/Builds/Include )
         INCLUDE_DIRECTORIES( /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks )
+    ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "android" )
+        INCLUDE_DIRECTORIES( /Users/jamesfolk/Library/Android/sdk/ndk-bundle/platforms/android-24/arch-arm/usr/include )
     ENDIF()
 
     SET(NJLIGameEngine_PUBLIC_HDRS
@@ -310,6 +315,11 @@ macro( BUILD_PLATFORM )
         )
 
     FILE(GLOB NJLIGameEngineBase_SRCS
+        ${NJLI_SOURCE_DIRECTORY}/njli/platform/*.h
+        ${NJLI_SOURCE_DIRECTORY}/njli/platform/*.cpp
+        ${NJLI_SOURCE_DIRECTORY}/njli/platform/${NJLI_BUILD_PLATFORM}/*.h
+        ${NJLI_SOURCE_DIRECTORY}/njli/platform/${NJLI_BUILD_PLATFORM}/*.mm
+        ${NJLI_SOURCE_DIRECTORY}/njli/platform/${NJLI_BUILD_PLATFORM}/*.cpp
         ${NJLI_SOURCE_DIRECTORY}/bullet/*.h
         ${NJLI_SOURCE_DIRECTORY}/bullet/*.cpp
         ${NJLI_SOURCE_DIRECTORY}/njli/*.h
@@ -350,11 +360,6 @@ macro( BUILD_PLATFORM )
         ${NJLI_SOURCE_DIRECTORY}/njli/physics/constraint/*.cpp
         ${NJLI_SOURCE_DIRECTORY}/njli/physics/shape/*.h
         ${NJLI_SOURCE_DIRECTORY}/njli/physics/shape/*.cpp
-        ${NJLI_SOURCE_DIRECTORY}/njli/platform/*.h
-        ${NJLI_SOURCE_DIRECTORY}/njli/platform/*.cpp
-        ${NJLI_SOURCE_DIRECTORY}/njli/platform/${NJLI_BUILD_PLATFORM}/*.h
-        ${NJLI_SOURCE_DIRECTORY}/njli/platform/${NJLI_BUILD_PLATFORM}/*.mm
-        ${NJLI_SOURCE_DIRECTORY}/njli/platform/${NJLI_BUILD_PLATFORM}/*.cpp
         ${NJLI_SOURCE_DIRECTORY}/njli/sound/*.h
         ${NJLI_SOURCE_DIRECTORY}/njli/sound/*.cpp
         ${NJLI_SOURCE_DIRECTORY}/njli/sound/${NJLI_SOUND_PLATFORM}/*.h
@@ -371,22 +376,30 @@ macro( BUILD_PLATFORM )
         )
 
     LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/assimp/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/lib )
-    LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/lib ) 
-    LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/fmod/lib/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
+    IF( ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
+        LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/fmod/lib/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
+        LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/SDL/lib/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
+    ELSE()
+        LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/fmod/lib/${NJLI_BUILD_DIR}/Release )
+        LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/SDL/lib/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
+    ENDIF()
     LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/imgui/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} ) 
     LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/ImGuizmo/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} ) 
     LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/jsoncpp/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} ) 
     LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/nanovg/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} ) 
     LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/stb/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} ) 
     LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/tinyxml2/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
+    LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/lib ) 
     IF( ${NJLI_BUILD_PLATFORM} STREQUAL "appletvos" )
     ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "ios" )
-        #LINK_DIRECTORIES( /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/)
     ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "macOS" )
         LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/Native_SDK/Builds/OSX/x86/Lib/ )
     ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "emscripten" )
         LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/Native_SDK/Builds/OSX/x86/Lib/ )
+    ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "android" )
+        LINK_DIRECTORIES( /Users/jamesfolk/Library/Android/sdk/ndk-bundle/platforms/android-24/arch-arm/usr/lib )
     ENDIF()
+
     LINK_DIRECTORIES(
         ${NJLI_SOURCE_DIRECTORY}/bullet
         ${NJLI_SOURCE_DIRECTORY}/njli
@@ -406,12 +419,12 @@ macro( BUILD_PLATFORM )
         ${NJLI_SOURCE_DIRECTORY}/njli/physics/body
         ${NJLI_SOURCE_DIRECTORY}/njli/physics/constraint
         ${NJLI_SOURCE_DIRECTORY}/njli/physics/shape
-        ${NJLI_SOURCE_DIRECTORY}/njli/platform
-        ${NJLI_SOURCE_DIRECTORY}/njli/platform/${NJLI_BUILD_PLATFORM}
         ${NJLI_SOURCE_DIRECTORY}/njli/sound
         ${NJLI_SOURCE_DIRECTORY}/njli/sound/${NJLI_SOUND_PLATFORM}
         ${NJLI_SOURCE_DIRECTORY}/njli/steering
         ${NJLI_SOURCE_DIRECTORY}/njli/steering/behavior
+        ${NJLI_SOURCE_DIRECTORY}/njli/platform
+        ${NJLI_SOURCE_DIRECTORY}/njli/platform/${NJLI_BUILD_PLATFORM}
         )
     
     FILE(GLOB NJLIGameEngine_LBY
@@ -434,7 +447,13 @@ macro( BUILD_PLATFORM )
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/lib/libGIMPACTUtils.a 
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/lib/libHACD.a 
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/lib/libLinearMath.a 
-        ${NJLI_THIRDPARTY_DIRECTORY}/fmod/lib/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/libfmod.${NJLI_FMOD_EXTENSION}
+        IF( ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
+            ${NJLI_THIRDPARTY_DIRECTORY}/fmod/lib/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/libfmod.${NJLI_FMOD_EXTENSION}
+            ${NJLI_THIRDPARTY_DIRECTORY}/SDL/lib/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/libSDL2.a
+        ELSE()
+            ${NJLI_THIRDPARTY_DIRECTORY}/fmod/lib/${NJLI_BUILD_DIR}/Release/libfmod.${NJLI_FMOD_EXTENSION}
+            ${NJLI_THIRDPARTY_DIRECTORY}/SDL/lib/${NJLI_BUILD_DIR}/Release/libSDL2.a
+        ENDIF()
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/imgui/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/libimgui.a 
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/ImGuizmo/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/libImGuizmo.a 
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/jsoncpp/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/libjsoncpp.a 
@@ -445,9 +464,21 @@ macro( BUILD_PLATFORM )
 
 
     IF( ${NJLI_BUILD_PLATFORM} STREQUAL "appletvos" )
-        SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -x objective-c")
-        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -x objective-c++")
-        SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -framework Foundation -framework UIKit")
+        set (IOS_SDK_ROOT "/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk")
+
+        # Set the sysroot default to the most recent SDK
+        set (CMAKE_OSX_SYSROOT ${IOS_SDK_ROOT} CACHE PATH "Sysroot used for iOS support")
+
+        # set the architecture for iOS - this env var sets armv6,armv7 and appears to be XCode's standard. The other found is ARCHS_UNIVERSAL_IPHONE_OS but that is armv7 only
+        set (CMAKE_OSX_ARCHITECTURES "${IOS_ARCH}" CACHE string "Build architecture for iOS")
+
+        # set up the default search directories for frameworks
+        set (CMAKE_SYSTEM_FRAMEWORK_PATH ${IOS_SDK_ROOT}/Developer/Library/Frameworks)
+
+        #http://stackoverflow.com/questions/17070101/why-i-cannot-link-the-mac-framework-file-with-cmake
+        SET(EXTRA_PLATFORM_LIBS "-framework Foundation -framework OpenGLES -framework AudioToolbox -framework AVFoundation -lfmod")
+
+        SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden" )
     ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "ios" )
         set (IOS_SDK_ROOT "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.2.sdk")
 
@@ -466,45 +497,131 @@ macro( BUILD_PLATFORM )
         SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden" )
 
     ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "macOS" )
+        set (IOS_SDK_ROOT "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk")
+
+        # Set the sysroot default to the most recent SDK
+        set (CMAKE_OSX_SYSROOT ${IOS_SDK_ROOT} CACHE PATH "Sysroot used for iOS support")
+
+        # set the architecture for iOS - this env var sets armv6,armv7 and appears to be XCode's standard. The other found is ARCHS_UNIVERSAL_IPHONE_OS but that is armv7 only
+        set (CMAKE_OSX_ARCHITECTURES "${IOS_ARCH}" CACHE string "Build architecture for iOS")
+
+        # set up the default search directories for frameworks
+        set (CMAKE_SYSTEM_FRAMEWORK_PATH ${IOS_SDK_ROOT}/Developer/Library/Frameworks)
+
+        #http://stackoverflow.com/questions/17070101/why-i-cannot-link-the-mac-framework-file-with-cmake
+        SET(EXTRA_PLATFORM_LIBS "-framework Foundation -framework AudioToolbox -framework AVFoundation -lfmod -lGLESv2")
+
+        SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGL_GLEXT_PROTOTYPES -fvisibility=hidden" )
+        SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DGL_GLEXT_PROTOTYPES" )
+        #SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -framework Foundation -framework AudioToolbox -framework AVFoundation -lfmod -lGLESv2" )
+
         FILE(GLOB NJLIGameEngine_LBY
             ${NJLIGameEngine_LBY}
-            ${NJLI_THIRDPARTY_DIRECTORY}/Native_SDK/Builds/OSX/x86/Lib/libGLESv2.dylib 
+            ${NJLI_THIRDPARTY_DIRECTORY}/Native_SDK/Builds/OSX/x86/Lib/libGLESv2.dylib
             ${NJLI_THIRDPARTY_DIRECTORY}/Native_SDK/Builds/OSX/x86/Lib/libEGL.dylib
             )
-        SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -x objective-c" )
-        SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -x objective-c++ -DGL_GLEXT_PROTOTYPES" )
-        SET( CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} "-lGLESv2 -lEGL" )
+
     ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "emscripten" )
         FILE(GLOB NJLIGameEngine_LBY
             ${NJLIGameEngine_LBY}
             ${NJLI_THIRDPARTY_DIRECTORY}/Native_SDK/Builds/OSX/x86/Lib/libGLESv2.dylib 
             ${NJLI_THIRDPARTY_DIRECTORY}/Native_SDK/Builds/OSX/x86/Lib/libEGL.dylib
             )
-        SET( CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} "-lGLESv2 -lEGL" )
+        SET(EXTRA_PLATFORM_LIBS "-lGLESv2 -lEGL")
+    ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "android" )
+        SET( EXTRA_PLATFORM_LIBS "-lfmod -ldl -lGLESv2 -llog -landroid -lm -lc -lEGL -lstdc++")
+        SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DGL_GLEXT_PROTOTYPES" )
     ENDIF()
 
 
-    ADD_LIBRARY( libnjli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} STATIC ${NJLIGameEngine_SRCS} )
-    SET_TARGET_PROPERTIES( libnjli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES OUTPUT_NAME libnjli )
-    SET_TARGET_PROPERTIES( libnjli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES PREFIX "")
-    IF( ${NJLI_BUILD_PLATFORM} STREQUAL "emscripten" )
-        SET_TARGET_PROPERTIES( njli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES POSTFIX ".bc")
+    if( NOT XCODE )
+        ADD_LIBRARY( libnjli_static_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} STATIC ${NJLIGameEngine_SRCS} )
+        SET_TARGET_PROPERTIES( libnjli_static_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES OUTPUT_NAME libnjli )
+        SET_TARGET_PROPERTIES( libnjli_static_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES PREFIX "")
+        TARGET_LINK_LIBRARIES( libnjli_static_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} ${NJLIGameEngine_LBY} ${EXTRA_PLATFORM_LIBS} )
+        INSTALL( TARGETS libnjli_static_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} DESTINATION lib/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
+
+        ADD_LIBRARY( libnjli_shared_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} SHARED ${NJLIGameEngine_SRCS} )
+        SET_TARGET_PROPERTIES( libnjli_shared_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES OUTPUT_NAME libnjli )
+        SET_TARGET_PROPERTIES( libnjli_shared_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES PREFIX "")
+        TARGET_LINK_LIBRARIES( libnjli_shared_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} ${EXTRA_PLATFORM_LIBS} ${NJLIGameEngine_LBY} )
+        INSTALL( TARGETS libnjli_shared_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} DESTINATION lib/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
+
+        ADD_LIBRARY( libnjli_lua_module_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} MODULE ${NJLIGameEngine_SRCS} )
+        SET_TARGET_PROPERTIES( libnjli_lua_module_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES OUTPUT_NAME njli )
+        SET_TARGET_PROPERTIES( libnjli_lua_module_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES PREFIX "")
+        SET_TARGET_PROPERTIES( libnjli_lua_module_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES POSTFIX ".so")
+        TARGET_LINK_LIBRARIES( libnjli_lua_module_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} ${NJLIGameEngine_LBY} ${EXTRA_PLATFORM_LIBS} )
+        INSTALL( TARGETS libnjli_lua_module_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} DESTINATION module/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
     ENDIF()
-    TARGET_LINK_LIBRARIES( libnjli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} ${NJLIGameEngine_LBY} ${EXTRA_PLATFORM_LIBS} )
-    INSTALL( TARGETS libnjli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} DESTINATION lib/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
 
-    ADD_LIBRARY( libnjlis_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} SHARED ${NJLIGameEngine_SRCS} )
-    SET_TARGET_PROPERTIES( libnjlis_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES OUTPUT_NAME libnjli )
-    SET_TARGET_PROPERTIES( libnjlis_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES PREFIX "")
-    TARGET_LINK_LIBRARIES( libnjlis_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} ${NJLIGameEngine_LBY} ${EXTRA_PLATFORM_LIBS} )
-    INSTALL( TARGETS libnjlis_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} DESTINATION lib/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
+    IF( ${NJLI_BUILD_PLATFORM} STREQUAL "appletvos" )
+    ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "ios" )
+        if( XCODE )
+            SET( CMAKE_OSX_SYSROOT "iphoneos" )
+            SET( CMAKE_XCODE_EFFECTIVE_PLATFORMS "-iphoneos;-iphonesimulator" )
+            SET( CMAKE_DEBUG_POSTFIX d )
 
-    ADD_LIBRARY( njli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} MODULE ${NJLIGameEngine_SRCS} )
-    SET_TARGET_PROPERTIES( njli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES OUTPUT_NAME njli )
-    SET_TARGET_PROPERTIES( njli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES PREFIX "")
-    SET_TARGET_PROPERTIES( njli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES POSTFIX ".so")
-    TARGET_LINK_LIBRARIES( njli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} ${NJLIGameEngine_LBY} ${EXTRA_PLATFORM_LIBS} )
-    INSTALL( TARGETS njli_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} DESTINATION module/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
+            SET( IOS_ICONS 
+                "${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/Platform.in/ios/Icon.png" 
+                )
+            SET( IOS_IMAGES 
+                "${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/Platform.in/ios/Default.png" 
+                "${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/Platform.in/ios/Default-568h@2x.png" 
+                )
+
+            SET( IOS_RESOURCES ${IOS_ICONS} ${IOS_IMAGES} )
+            
+            FILE(GLOB NJLIGameEngine_SRCS_project
+                ${NJLIGameEngine_SRCS}
+                ${NJLI_SOURCE_DIRECTORY}/njli/platform/Game.h 
+                ${NJLI_SOURCE_DIRECTORY}/njli/platform/main.cpp
+                )
+            
+            ADD_EXECUTABLE( njli_source_project_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} ${NJLIGameEngine_SRCS_project} ${IOS_RESOURCES} )
+            SET_TARGET_PROPERTIES( njli_source_project_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES OUTPUT_NAME njli_source_project )
+            SET_TARGET_PROPERTIES( njli_source_project_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES PREFIX "")
+            TARGET_LINK_LIBRARIES( njli_source_project_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} ${EXTRA_PLATFORM_LIBS} ${NJLIGameEngine_LBY} )
+
+            SET_TARGET_PROPERTIES (
+                njli_source_project_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM}
+                PROPERTIES
+                MACOSX_BUNDLE YES
+                MACOSX_BUNDLE_INFO_PLIST
+                "${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/Platform.in/ios/Info.plist"
+                XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Developer: James Folk"
+                XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2"
+                XCODE_ATTRIBUTE_CLANG_ENABLE_OBJC_ARC YES
+                XCODE_ATTRIBUTE_INSTALL_PATH "${CMAKE_BINARY_DIR}/ProductRelease"
+                XCODE_ATTRIBUTE_COMBINE_HIDPI_IMAGES "NO"
+                RESOURCE "${IOS_RESOURCES}"
+                )
+            SET_TARGET_PROPERTIES(
+                njli_source_project_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM}
+                PROPERTIES
+                XCODE_ATTRIBUTE_PRODUCT_NAME
+                "njli_source_project_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM}"
+                XCODE_ATTRIBUTE_BUNDLE_IDENTIFIER
+                "com.njligames.engine.source"
+                )
+
+            TARGET_LINK_LIBRARIES(
+                njli_source_project_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM}
+                "-framework AVFoundation"
+                "-framework GameController"
+                "-framework CoreMotion"
+                "-framework CoreGraphics"
+                "-framework AudioToolbox"
+                "-framework QuartzCore"
+                "-framework OpenGLES"
+                "-framework UIKit"
+                "-framework Foundation"
+                )
+        ENDIF()
+    ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "macOS" )
+    ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "emscripten" )
+    ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "android" )
+    ENDIF()
 
     SET(Binary_FILES
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/lua/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/bin/lua${NJLI_BINARY_EXTENSION}

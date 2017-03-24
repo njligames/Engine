@@ -118,6 +118,21 @@ void WorldInput::touchCancelled()
     //        clearTouches();
 }
 
+    void WorldInput::keyboardShow()
+    {
+        njli::World::getInstance()->keyboardShow();
+    }
+    
+    void WorldInput::keyboardCancel()
+    {
+        njli::World::getInstance()->keyboardCancel();
+    }
+    
+    void WorldInput::keyboardReturn(const char* text)
+    {
+        njli::World::getInstance()->keyboardReturn(text);
+    }
+    
 void WorldInput::setOrientation(const s32 orientation)
 {
     m_Orientation = orientation;

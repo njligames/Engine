@@ -21,6 +21,7 @@ _build_android()
         -DANDROID_NATIVE_API_LEVEL=${MY_ANDROID_API_LEVEL} \
         -DANDROID_STL=c++_static \
         -DANDROID_TOOLCHAIN=gcc \
+        -DCMAKE_CXX_FLAGS='-std=gnu++11' \
         -DCMAKE_TOOLCHAIN_FILE=${MY_ANDROID_NDK}/build/cmake/android.toolchain.cmake \
 
     make -j4
@@ -42,6 +43,6 @@ build_android()
 }
 
 #build_android
- _build_android Release "android/${MY_ANDROID_API_LEVEL}/armeabi-v7a" armeabi-v7a
+_build_android Release "android/${MY_ANDROID_API_LEVEL}/armeabi-v7a" armeabi-v7a
 
 
