@@ -19,17 +19,20 @@ export CMAKE_MACOS_SYSTEM_VERSION=`xcodebuild -sdk /Applications/Xcode.app/Conte
 
 build_apple_xcode()
 {
-    #Debug Release MinsizeRel RelWithDebugInfo
-    MY_BUILD_TYPE=$1
-    #ios appletvos applewatchos
-    MY_PLATFORM=$2
-    MY_SIMULATOR=$3
-    MY_BUILD_PLAT=$4
-    MY_LIBRARY=$5
-    MY_VERSION=$6
+#    #Debug Release MinsizeRel RelWithDebugInfo
+#    MY_BUILD_TYPE=$1
+#    #ios appletvos applewatchos
+#    MY_PLATFORM=$2
+#    MY_SIMULATOR=$3
+#    MY_BUILD_PLAT=$4
+#    MY_LIBRARY=$5
+#    MY_VERSION=$6
+
+    MY_PLATFORM=$1
+    MY_BUILD_PLAT=$2
+    MY_VERSION=$3
 
     MY_BUILD_DIR="${MY_PLATFORM}/${MY_VERSION}/${MY_BUILD_PLAT}"
-
 
     MY_BUILD_DIRECTORY=Xcode_build
 
@@ -41,10 +44,29 @@ build_apple_xcode()
         -DCMAKE_CXX_FLAGS='-std=gnu++11' \
         -DNJLI_THIRDPARTY_DIRECTORY:STRING=${MY_THIRDPARTY_DIR} \
         -DNJLI_BUILD_PLATFORM=${MY_PLATFORM} \
-        -DCMAKE_BUILD_TYPE=${MY_BUILD_TYPE} \
+        -DCMAKE_BUILD_TYPE=Debug \
         -DNJLI_BUILD_DIR=${MY_BUILD_DIR}
 
-    cmake --build . --config ${MY_BUILD_TYPE}
+    cmake .. -G "Xcode" \
+        -DCMAKE_CXX_FLAGS='-std=gnu++11' \
+        -DNJLI_THIRDPARTY_DIRECTORY:STRING=${MY_THIRDPARTY_DIR} \
+        -DNJLI_BUILD_PLATFORM=${MY_PLATFORM} \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DNJLI_BUILD_DIR=${MY_BUILD_DIR}
+
+    cmake .. -G "Xcode" \
+        -DCMAKE_CXX_FLAGS='-std=gnu++11' \
+        -DNJLI_THIRDPARTY_DIRECTORY:STRING=${MY_THIRDPARTY_DIR} \
+        -DNJLI_BUILD_PLATFORM=${MY_PLATFORM} \
+        -DCMAKE_BUILD_TYPE=MinSizeRel \
+        -DNJLI_BUILD_DIR=${MY_BUILD_DIR}
+
+    cmake .. -G "Xcode" \
+        -DCMAKE_CXX_FLAGS='-std=gnu++11' \
+        -DNJLI_THIRDPARTY_DIRECTORY:STRING=${MY_THIRDPARTY_DIR} \
+        -DNJLI_BUILD_PLATFORM=${MY_PLATFORM} \
+        -DCMAKE_BUILD_TYPE=RelWithDebugInfo \
+        -DNJLI_BUILD_DIR=${MY_BUILD_DIR}
 
     cd ..
 }
@@ -173,7 +195,11 @@ build_macos()
 #_build_macos Debug ${CMAKE_MACOS_SYSTEM_VERSION}
 #build_apple Debug appletvos OFF OS ${MY_IOS_PATH} ${CMAKE_TVOS_SYSTEM_VERSION}
 
-build_apple_xcode Debug ios ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
+#build_apple_xcode Debug ios ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
+build_apple_xcode ios SIMULATOR ${CMAKE_IOS_SYSTEM_VERSION}
+
+#build_apple Debug ios ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
+
 #build_apple Debug ios OFF OS ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
 
 #build_apple Release ios ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}

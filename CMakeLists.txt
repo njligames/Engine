@@ -5,6 +5,21 @@ include (CPack)
 
 SET_PROPERTY(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS TRUE)
 
+MACRO(SUBDIRLIST result curdir)
+    FILE(GLOB children RELATIVE ${curdir} ${curdir}/*)
+    SET(dirlist "")
+    FOREACH(child ${children})
+        IF(IS_DIRECTORY ${curdir}/${child})
+            LIST(APPEND dirlist ${child})
+        ENDIF()
+    ENDFOREACH()
+    SET(${result} ${dirlist})
+ENDMACRO()
+
+
+
+
+
 SET( CMAKE_INSTALL_INCLUDEDIR include/ CACHE STRING "The include directory" )
 SET( CMAKE_INSTALL_DATADIR data/ CACHE STRING "The data directory" )
 SET( CMAKE_INSTALL_DOCDIR doc/ CACHE STRING "The documentation directory" )
@@ -146,7 +161,6 @@ macro( BUILD_PLATFORM )
     INCLUDE_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/include/bullet3/LinearMath )
     INCLUDE_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/include/glm )
     INCLUDE_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/fmod/include )
-    INCLUDE_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/SDL/include )
     INCLUDE_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/imgui )
     INCLUDE_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/ImGuizmo )
     INCLUDE_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/include/jsoncpp )
@@ -375,57 +389,55 @@ macro( BUILD_PLATFORM )
         ${Lua_SRCS} 
         )
 
-    LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/assimp/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/lib )
+    #    LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/assimp/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/lib )
     IF( ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
         LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/fmod/lib/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
-        LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/SDL/lib/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
     ELSE()
         LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/fmod/lib/${NJLI_BUILD_DIR}/Release )
-        LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/SDL/lib/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
     ENDIF()
-    LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/imgui/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} ) 
-    LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/ImGuizmo/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} ) 
-    LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/jsoncpp/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} ) 
-    LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/nanovg/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} ) 
-    LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/stb/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} ) 
-    LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/tinyxml2/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
-    LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/lib ) 
-    IF( ${NJLI_BUILD_PLATFORM} STREQUAL "appletvos" )
-    ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "ios" )
-    ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "macOS" )
-        LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/Native_SDK/Builds/OSX/x86/Lib/ )
-    ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "emscripten" )
-        LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/Native_SDK/Builds/OSX/x86/Lib/ )
-    ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "android" )
-        LINK_DIRECTORIES( /Users/jamesfolk/Library/Android/sdk/ndk-bundle/platforms/android-24/arch-arm/usr/lib )
-    ENDIF()
-
-    LINK_DIRECTORIES(
-        ${NJLI_SOURCE_DIRECTORY}/bullet
-        ${NJLI_SOURCE_DIRECTORY}/njli
-        ${NJLI_SOURCE_DIRECTORY}/njli/builders
-        ${NJLI_SOURCE_DIRECTORY}/njli/builders/graphics
-        ${NJLI_SOURCE_DIRECTORY}/njli/builders/physics
-        ${NJLI_SOURCE_DIRECTORY}/njli/builders/physics/body
-        ${NJLI_SOURCE_DIRECTORY}/njli/builders/physics/constraint
-        ${NJLI_SOURCE_DIRECTORY}/njli/builders/physics/shape
-        ${NJLI_SOURCE_DIRECTORY}/njli/builders/platform
-        ${NJLI_SOURCE_DIRECTORY}/njli/builders/sound
-        ${NJLI_SOURCE_DIRECTORY}/njli/builders/steering
-        ${NJLI_SOURCE_DIRECTORY}/njli/builders/steering/behavior
-        ${NJLI_SOURCE_DIRECTORY}/njli/graphics
-        ${NJLI_SOURCE_DIRECTORY}/njli/graphics/${NJLI_GRAPHICS_PLATFORM}
-        ${NJLI_SOURCE_DIRECTORY}/njli/physics
-        ${NJLI_SOURCE_DIRECTORY}/njli/physics/body
-        ${NJLI_SOURCE_DIRECTORY}/njli/physics/constraint
-        ${NJLI_SOURCE_DIRECTORY}/njli/physics/shape
-        ${NJLI_SOURCE_DIRECTORY}/njli/sound
-        ${NJLI_SOURCE_DIRECTORY}/njli/sound/${NJLI_SOUND_PLATFORM}
-        ${NJLI_SOURCE_DIRECTORY}/njli/steering
-        ${NJLI_SOURCE_DIRECTORY}/njli/steering/behavior
-        ${NJLI_SOURCE_DIRECTORY}/njli/platform
-        ${NJLI_SOURCE_DIRECTORY}/njli/platform/${NJLI_BUILD_PLATFORM}
-        )
+    #    LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/imgui/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} ) 
+    #    LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/ImGuizmo/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} ) 
+    #    LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/jsoncpp/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} ) 
+    #    LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/nanovg/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} ) 
+    #    LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/stb/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} ) 
+    #    LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/tinyxml2/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
+    #    LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/lib ) 
+    #    IF( ${NJLI_BUILD_PLATFORM} STREQUAL "appletvos" )
+    #    ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "ios" )
+    #    ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "macOS" )
+    #        LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/Native_SDK/Builds/OSX/x86/Lib/ )
+    #    ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "emscripten" )
+    #        LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/Native_SDK/Builds/OSX/x86/Lib/ )
+    #    ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "android" )
+    #        LINK_DIRECTORIES( /Users/jamesfolk/Library/Android/sdk/ndk-bundle/platforms/android-24/arch-arm/usr/lib )
+    #    ENDIF()
+    #
+    #    LINK_DIRECTORIES(
+    #        ${NJLI_SOURCE_DIRECTORY}/bullet
+    #        ${NJLI_SOURCE_DIRECTORY}/njli
+    #        ${NJLI_SOURCE_DIRECTORY}/njli/builders
+    #        ${NJLI_SOURCE_DIRECTORY}/njli/builders/graphics
+    #        ${NJLI_SOURCE_DIRECTORY}/njli/builders/physics
+    #        ${NJLI_SOURCE_DIRECTORY}/njli/builders/physics/body
+    #        ${NJLI_SOURCE_DIRECTORY}/njli/builders/physics/constraint
+    #        ${NJLI_SOURCE_DIRECTORY}/njli/builders/physics/shape
+    #        ${NJLI_SOURCE_DIRECTORY}/njli/builders/platform
+    #        ${NJLI_SOURCE_DIRECTORY}/njli/builders/sound
+    #        ${NJLI_SOURCE_DIRECTORY}/njli/builders/steering
+    #        ${NJLI_SOURCE_DIRECTORY}/njli/builders/steering/behavior
+    #        ${NJLI_SOURCE_DIRECTORY}/njli/graphics
+    #        ${NJLI_SOURCE_DIRECTORY}/njli/graphics/${NJLI_GRAPHICS_PLATFORM}
+    #        ${NJLI_SOURCE_DIRECTORY}/njli/physics
+    #        ${NJLI_SOURCE_DIRECTORY}/njli/physics/body
+    #        ${NJLI_SOURCE_DIRECTORY}/njli/physics/constraint
+    #        ${NJLI_SOURCE_DIRECTORY}/njli/physics/shape
+    #        ${NJLI_SOURCE_DIRECTORY}/njli/sound
+    #        ${NJLI_SOURCE_DIRECTORY}/njli/sound/${NJLI_SOUND_PLATFORM}
+    #        ${NJLI_SOURCE_DIRECTORY}/njli/steering
+    #        ${NJLI_SOURCE_DIRECTORY}/njli/steering/behavior
+    #        ${NJLI_SOURCE_DIRECTORY}/njli/platform
+    #        ${NJLI_SOURCE_DIRECTORY}/njli/platform/${NJLI_BUILD_PLATFORM}
+    #        )
     
     FILE(GLOB NJLIGameEngine_LBY
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/assimp/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/lib/libassimp${NJLI_ASSIMP_POSTFIX}.a 
@@ -447,13 +459,6 @@ macro( BUILD_PLATFORM )
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/lib/libGIMPACTUtils.a 
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/lib/libHACD.a 
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/lib/libLinearMath.a 
-        IF( ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
-            ${NJLI_THIRDPARTY_DIRECTORY}/fmod/lib/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/libfmod.${NJLI_FMOD_EXTENSION}
-            ${NJLI_THIRDPARTY_DIRECTORY}/SDL/lib/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/libSDL2.a
-        ELSE()
-            ${NJLI_THIRDPARTY_DIRECTORY}/fmod/lib/${NJLI_BUILD_DIR}/Release/libfmod.${NJLI_FMOD_EXTENSION}
-            ${NJLI_THIRDPARTY_DIRECTORY}/SDL/lib/${NJLI_BUILD_DIR}/Release/libSDL2.a
-        ENDIF()
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/imgui/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/libimgui.a 
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/ImGuizmo/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/libImGuizmo.a 
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/jsoncpp/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/libjsoncpp.a 
@@ -461,6 +466,17 @@ macro( BUILD_PLATFORM )
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/stb/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/libstb.a 
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/tinyxml2/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/libtinyxml2.a 
         )
+    IF( ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
+        FILE(GLOB NJLIGameEngine_LBY
+            ${NJLIGameEngine_LBY}
+            ${NJLI_THIRDPARTY_DIRECTORY}/fmod/lib/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/libfmod.${NJLI_FMOD_EXTENSION}
+            )
+    ELSE()
+        FILE(GLOB NJLIGameEngine_LBY
+            ${NJLIGameEngine_LBY}
+            ${NJLI_THIRDPARTY_DIRECTORY}/fmod/lib/${NJLI_BUILD_DIR}/Release/libfmod.${NJLI_FMOD_EXTENSION}
+            )
+    ENDIF()
 
 
     IF( ${NJLI_BUILD_PLATFORM} STREQUAL "appletvos" )
@@ -535,6 +551,10 @@ macro( BUILD_PLATFORM )
 
 
     if( NOT XCODE )
+        list(REMOVE_ITEM NJLIGameEngine_SRCS 
+            ${NJLI_SOURCE_DIRECTORY}/njli/platform/main.cpp
+            )
+
         ADD_LIBRARY( libnjli_static_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} STATIC ${NJLIGameEngine_SRCS} )
         SET_TARGET_PROPERTIES( libnjli_static_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES OUTPUT_NAME libnjli )
         SET_TARGET_PROPERTIES( libnjli_static_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES PREFIX "")
@@ -558,6 +578,22 @@ macro( BUILD_PLATFORM )
     IF( ${NJLI_BUILD_PLATFORM} STREQUAL "appletvos" )
     ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "ios" )
         if( XCODE )
+            INCLUDE_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/SDL/include )
+
+            IF( ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
+                LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/SDL/lib/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
+                FILE(GLOB NJLIGameEngine_LBY
+                    ${NJLIGameEngine_LBY}
+                    ${NJLI_THIRDPARTY_DIRECTORY}/SDL/lib/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/libSDL2.a
+                    )
+            ELSE()
+                LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/SDL/lib/Release/${CMAKE_BUILD_TYPE} )
+                FILE(GLOB NJLIGameEngine_LBY
+                    ${NJLIGameEngine_LBY}
+                    ${NJLI_THIRDPARTY_DIRECTORY}/SDL/lib/${NJLI_BUILD_DIR}/Release/libSDL2.a
+                    )
+            ENDIF()
+
             SET( CMAKE_OSX_SYSROOT "iphoneos" )
             SET( CMAKE_XCODE_EFFECTIVE_PLATFORMS "-iphoneos;-iphonesimulator" )
             SET( CMAKE_DEBUG_POSTFIX d )
@@ -579,6 +615,421 @@ macro( BUILD_PLATFORM )
                 )
             
             ADD_EXECUTABLE( njli_source_project_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} ${NJLIGameEngine_SRCS_project} ${IOS_RESOURCES} )
+
+
+
+
+
+            file( GLOB src
+                ${NJLI_SOURCE_DIRECTORY}/njli/platform/*.h
+                ${NJLI_SOURCE_DIRECTORY}/njli/platform/*.cpp
+                )
+            SET(REG "${NJLI_SOURCE_DIRECTORY}/njli/platform/.*([.]cpp|[.]c|[.]h|[.]hpp)")
+            FOREACH(filename ${src})
+                STRING(REGEX MATCH "${REG}" match_group_sources ${filename})
+                IF(match_group_sources)
+                    LIST(APPEND njli_platform ${filename})
+                ELSE()
+                    LIST(APPEND group_other ${filename})
+                ENDIF()
+            ENDFOREACH()
+            
+            file(GLOB src
+                ${NJLI_SOURCE_DIRECTORY}/njli/platform/${NJLI_BUILD_PLATFORM}/*.h
+                ${NJLI_SOURCE_DIRECTORY}/njli/platform/${NJLI_BUILD_PLATFORM}/*.mm
+                ${NJLI_SOURCE_DIRECTORY}/njli/platform/${NJLI_BUILD_PLATFORM}/*.cpp
+                )
+            SET(REG "${NJLI_SOURCE_DIRECTORY}/njli/platform/${NJLI_BUILD_PLATFORM}/.*([.]cpp|[.]c|[.]h|[.]hpp|[.]m|[.]mm)")
+            FOREACH(filename ${src})
+                STRING(REGEX MATCH "${REG}" match_group_sources ${filename})
+                IF(match_group_sources)
+                    LIST(APPEND njli_platform_specific ${filename})
+                ELSE()
+                    LIST(APPEND group_other ${filename})
+                ENDIF()
+            ENDFOREACH()
+            
+            file( GLOB src
+                ${NJLI_SOURCE_DIRECTORY}/bullet/*.h
+                ${NJLI_SOURCE_DIRECTORY}/bullet/*.cpp
+                )
+            SET(REG "${NJLI_SOURCE_DIRECTORY}/bullet/.*([.]cpp|[.]c|[.]h|[.]hpp)")
+            FOREACH(filename ${src})
+                STRING(REGEX MATCH "${REG}" match_group_sources ${filename})
+                IF(match_group_sources)
+                    LIST(APPEND bullet ${filename})
+                ELSE()
+                    LIST(APPEND group_other ${filename})
+                ENDIF()
+            ENDFOREACH()
+
+            file( GLOB src
+                ${NJLI_SOURCE_DIRECTORY}/njli/*.h
+                ${NJLI_SOURCE_DIRECTORY}/njli/*.cpp
+                )
+            SET(REG "${NJLI_SOURCE_DIRECTORY}/njli/.*([.]cpp|[.]c|[.]h|[.]hpp)")
+            FOREACH(filename ${src})
+                STRING(REGEX MATCH "${REG}" match_group_sources ${filename})
+                IF(match_group_sources)
+                    LIST(APPEND njli ${filename})
+                ELSE()
+                    LIST(APPEND group_other ${filename})
+                ENDIF()
+            ENDFOREACH()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            #START HERE
+            file( GLOB src
+                ${NJLI_SOURCE_DIRECTORY}/njli/builders/*.h
+                ${NJLI_SOURCE_DIRECTORY}/njli/builders/*.cpp
+                )
+            SET(REG "${NJLI_SOURCE_DIRECTORY}/njli/builders/.*([.]cpp|[.]c|[.]h|[.]hpp)")
+            FOREACH(filename ${src})
+                STRING(REGEX MATCH "${REG}" match_group_sources ${filename})
+                IF(match_group_sources)
+                    LIST(APPEND njli_builders ${filename})
+                ELSE()
+                    LIST(APPEND group_other ${filename})
+                ENDIF()
+            ENDFOREACH()
+            
+            file( GLOB src
+                ${NJLI_SOURCE_DIRECTORY}/njli/builders/graphics/*.h
+                ${NJLI_SOURCE_DIRECTORY}/njli/builders/graphics/*.cpp
+                )
+            SET(REG "${NJLI_SOURCE_DIRECTORY}/njli/builders/graphics/.*([.]cpp|[.]c|[.]h|[.]hpp)")
+            FOREACH(filename ${src})
+                STRING(REGEX MATCH "${REG}" match_group_sources ${filename})
+                IF(match_group_sources)
+                    LIST(APPEND njli_builders_graphics ${filename})
+                ELSE()
+                    LIST(APPEND group_other ${filename})
+                ENDIF()
+            ENDFOREACH()
+            
+            file( GLOB src
+                ${NJLI_SOURCE_DIRECTORY}/njli/builders/physics/*.h
+                ${NJLI_SOURCE_DIRECTORY}/njli/builders/physics/*.cpp
+                )
+            SET(REG "${NJLI_SOURCE_DIRECTORY}/njli/builders/physics/.*([.]cpp|[.]c|[.]h|[.]hpp)")
+            FOREACH(filename ${src})
+                STRING(REGEX MATCH "${REG}" match_group_sources ${filename})
+                IF(match_group_sources)
+                    LIST(APPEND njli_builders_physics ${filename})
+                ELSE()
+                    LIST(APPEND group_other ${filename})
+                ENDIF()
+            ENDFOREACH()
+            
+            file( GLOB src
+                ${NJLI_SOURCE_DIRECTORY}/njli/builders/physics/body/*.h
+                ${NJLI_SOURCE_DIRECTORY}/njli/builders/physics/body/*.cpp
+                )
+            SET(REG "${NJLI_SOURCE_DIRECTORY}/njli/builders/physics/body/.*([.]cpp|[.]c|[.]h|[.]hpp)")
+            FOREACH(filename ${src})
+                STRING(REGEX MATCH "${REG}" match_group_sources ${filename})
+                IF(match_group_sources)
+                    LIST(APPEND njli_builders_physics_body ${filename})
+                ELSE()
+                    LIST(APPEND group_other ${filename})
+                ENDIF()
+            ENDFOREACH()
+            
+            file( GLOB src
+                ${NJLI_SOURCE_DIRECTORY}/njli/builders/physics/constraint/*.h
+                ${NJLI_SOURCE_DIRECTORY}/njli/builders/physics/constraint/*.cpp
+                )
+            SET(REG "${NJLI_SOURCE_DIRECTORY}/njli/builders/physics/constraint/.*([.]cpp|[.]c|[.]h|[.]hpp)")
+            FOREACH(filename ${src})
+                STRING(REGEX MATCH "${REG}" match_group_sources ${filename})
+                IF(match_group_sources)
+                    LIST(APPEND njli_builders_physics_constraint ${filename})
+                ELSE()
+                    LIST(APPEND group_other ${filename})
+                ENDIF()
+            ENDFOREACH()
+            
+            file( GLOB src
+                ${NJLI_SOURCE_DIRECTORY}/njli/builders/physics/shape/*.h
+                ${NJLI_SOURCE_DIRECTORY}/njli/builders/physics/shape/*.cpp
+                )
+            SET(REG "${NJLI_SOURCE_DIRECTORY}/njli/builders/physics/shape/.*([.]cpp|[.]c|[.]h|[.]hpp)")
+            FOREACH(filename ${src})
+                STRING(REGEX MATCH "${REG}" match_group_sources ${filename})
+                IF(match_group_sources)
+                    LIST(APPEND njli_builders_physics_shape ${filename})
+                ELSE()
+                    LIST(APPEND group_other ${filename})
+                ENDIF()
+            ENDFOREACH()
+            
+            file( GLOB src
+                ${NJLI_SOURCE_DIRECTORY}/njli/builders/platform/*.h
+                ${NJLI_SOURCE_DIRECTORY}/njli/builders/platform/*.cpp
+                )
+            SET(REG "${NJLI_SOURCE_DIRECTORY}/njli/builders/platform/.*([.]cpp|[.]c|[.]h|[.]hpp)")
+            FOREACH(filename ${src})
+                STRING(REGEX MATCH "${REG}" match_group_sources ${filename})
+                IF(match_group_sources)
+                    LIST(APPEND njli_builders_platform ${filename})
+                ELSE()
+                    LIST(APPEND group_other ${filename})
+                ENDIF()
+            ENDFOREACH()
+            
+            file( GLOB src
+                ${NJLI_SOURCE_DIRECTORY}/njli/builders/sound/*.h
+                ${NJLI_SOURCE_DIRECTORY}/njli/builders/sound/*.cpp
+                )
+            SET(REG "${NJLI_SOURCE_DIRECTORY}/njli/builders/sound/.*([.]cpp|[.]c|[.]h|[.]hpp)")
+            FOREACH(filename ${src})
+                STRING(REGEX MATCH "${REG}" match_group_sources ${filename})
+                IF(match_group_sources)
+                    LIST(APPEND njli_builders_sound ${filename})
+                ELSE()
+                    LIST(APPEND group_other ${filename})
+                ENDIF()
+            ENDFOREACH()
+                
+            file( GLOB src
+                ${NJLI_SOURCE_DIRECTORY}/njli/builders/steering/*.h
+                ${NJLI_SOURCE_DIRECTORY}/njli/builders/steering/*.cpp
+                )
+            SET(REG "${NJLI_SOURCE_DIRECTORY}/njli/builders/steering/.*([.]cpp|[.]c|[.]h|[.]hpp)")
+            FOREACH(filename ${src})
+                STRING(REGEX MATCH "${REG}" match_group_sources ${filename})
+                IF(match_group_sources)
+                    LIST(APPEND njli_builders_steering ${filename})
+                ELSE()
+                    LIST(APPEND group_other ${filename})
+                ENDIF()
+            ENDFOREACH()
+            
+            file( GLOB src
+                ${NJLI_SOURCE_DIRECTORY}/njli/builders/steering/behavior/*.h
+                ${NJLI_SOURCE_DIRECTORY}/njli/builders/steering/behavior/*.cpp
+                )
+            SET(REG "${NJLI_SOURCE_DIRECTORY}/njli/.*([.]cpp|[.]c|[.]h|[.]hpp)")
+            FOREACH(filename ${src})
+                STRING(REGEX MATCH "${REG}" match_group_sources ${filename})
+                IF(match_group_sources)
+                    LIST(APPEND njli_builders_steering_behavior ${filename})
+                ELSE()
+                    LIST(APPEND group_other ${filename})
+                ENDIF()
+            ENDFOREACH()
+            
+            file( GLOB src
+                ${NJLI_SOURCE_DIRECTORY}/njli/generated/*.h
+                ${NJLI_SOURCE_DIRECTORY}/njli/generated/*.cpp
+                )
+            SET(REG "${NJLI_SOURCE_DIRECTORY}/njli/.*([.]cpp|[.]c|[.]h|[.]hpp)")
+            FOREACH(filename ${src})
+                STRING(REGEX MATCH "${REG}" match_group_sources ${filename})
+                IF(match_group_sources)
+                    LIST(APPEND njli_generated ${filename})
+                ELSE()
+                    LIST(APPEND group_other ${filename})
+                ENDIF()
+            ENDFOREACH()
+            
+            file( GLOB src
+                ${NJLI_SOURCE_DIRECTORY}/njli/generated/swig/*.h
+                ${NJLI_SOURCE_DIRECTORY}/njli/generated/swig/*.cpp
+                )
+            SET(REG "${NJLI_SOURCE_DIRECTORY}/njli/.*([.]cpp|[.]c|[.]h|[.]hpp)")
+            FOREACH(filename ${src})
+                STRING(REGEX MATCH "${REG}" match_group_sources ${filename})
+                IF(match_group_sources)
+                    LIST(APPEND njli_generated_swig ${filename})
+                ELSE()
+                    LIST(APPEND group_other ${filename})
+                ENDIF()
+            ENDFOREACH()
+            
+            file( GLOB src
+                ${NJLI_SOURCE_DIRECTORY}/njli/graphics/*.h
+                ${NJLI_SOURCE_DIRECTORY}/njli/graphics/*.cpp
+                )
+            SET(REG "${NJLI_SOURCE_DIRECTORY}/njli/.*([.]cpp|[.]c|[.]h|[.]hpp)")
+            FOREACH(filename ${src})
+                STRING(REGEX MATCH "${REG}" match_group_sources ${filename})
+                IF(match_group_sources)
+                    LIST(APPEND njli_graphics ${filename})
+                ELSE()
+                    LIST(APPEND group_other ${filename})
+                ENDIF()
+            ENDFOREACH()
+            
+            file( GLOB src
+                ${NJLI_SOURCE_DIRECTORY}/njli/graphics/${NJLI_GRAPHICS_PLATFORM}/*.h
+                ${NJLI_SOURCE_DIRECTORY}/njli/graphics/${NJLI_GRAPHICS_PLATFORM}/*.cpp
+                )
+            SET(REG "${NJLI_SOURCE_DIRECTORY}/njli/.*([.]cpp|[.]c|[.]h|[.]hpp)")
+            FOREACH(filename ${src})
+                STRING(REGEX MATCH "${REG}" match_group_sources ${filename})
+                IF(match_group_sources)
+                    LIST(APPEND njli_graphics_specific ${filename})
+                ELSE()
+                    LIST(APPEND group_other ${filename})
+                ENDIF()
+            ENDFOREACH()
+            
+            file( GLOB src
+                ${NJLI_SOURCE_DIRECTORY}/njli/physics/*.h
+                ${NJLI_SOURCE_DIRECTORY}/njli/physics/*.cpp
+                )
+            SET(REG "${NJLI_SOURCE_DIRECTORY}/njli/.*([.]cpp|[.]c|[.]h|[.]hpp)")
+            FOREACH(filename ${src})
+                STRING(REGEX MATCH "${REG}" match_group_sources ${filename})
+                IF(match_group_sources)
+                    LIST(APPEND njli_physics ${filename})
+                ELSE()
+                    LIST(APPEND group_other ${filename})
+                ENDIF()
+            ENDFOREACH()
+            
+            file( GLOB src
+                ${NJLI_SOURCE_DIRECTORY}/njli/physics/body/*.h
+                ${NJLI_SOURCE_DIRECTORY}/njli/physics/body/*.cpp
+                )
+            SET(REG "${NJLI_SOURCE_DIRECTORY}/njli/.*([.]cpp|[.]c|[.]h|[.]hpp)")
+            FOREACH(filename ${src})
+                STRING(REGEX MATCH "${REG}" match_group_sources ${filename})
+                IF(match_group_sources)
+                    LIST(APPEND njli_physics_body ${filename})
+                ELSE()
+                    LIST(APPEND group_other ${filename})
+                ENDIF()
+            ENDFOREACH()
+            
+            file( GLOB src
+                ${NJLI_SOURCE_DIRECTORY}/njli/physics/constraint/*.h
+                ${NJLI_SOURCE_DIRECTORY}/njli/physics/constraint/*.cpp
+                )
+            SET(REG "${NJLI_SOURCE_DIRECTORY}/njli/.*([.]cpp|[.]c|[.]h|[.]hpp)")
+            FOREACH(filename ${src})
+                STRING(REGEX MATCH "${REG}" match_group_sources ${filename})
+                IF(match_group_sources)
+                    LIST(APPEND njli_physics_constraint ${filename})
+                ELSE()
+                    LIST(APPEND group_other ${filename})
+                ENDIF()
+            ENDFOREACH()
+            
+            file( GLOB src
+                ${NJLI_SOURCE_DIRECTORY}/njli/physics/shape/*.h
+                ${NJLI_SOURCE_DIRECTORY}/njli/physics/shape/*.cpp
+                )
+            SET(REG "${NJLI_SOURCE_DIRECTORY}/njli/.*([.]cpp|[.]c|[.]h|[.]hpp)")
+            FOREACH(filename ${src})
+                STRING(REGEX MATCH "${REG}" match_group_sources ${filename})
+                IF(match_group_sources)
+                    LIST(APPEND njli_physics_shape ${filename})
+                ELSE()
+                    LIST(APPEND group_other ${filename})
+                ENDIF()
+            ENDFOREACH()
+                
+            file( GLOB src
+                ${NJLI_SOURCE_DIRECTORY}/njli/sound/*.h
+                ${NJLI_SOURCE_DIRECTORY}/njli/sound/*.cpp
+                )
+            SET(REG "${NJLI_SOURCE_DIRECTORY}/njli/.*([.]cpp|[.]c|[.]h|[.]hpp)")
+            FOREACH(filename ${src})
+                STRING(REGEX MATCH "${REG}" match_group_sources ${filename})
+                IF(match_group_sources)
+                    LIST(APPEND njli_sound ${filename})
+                ELSE()
+                    LIST(APPEND group_other ${filename})
+                ENDIF()
+            ENDFOREACH()
+            
+            file( GLOB src
+                ${NJLI_SOURCE_DIRECTORY}/njli/sound/${NJLI_SOUND_PLATFORM}/*.h
+                ${NJLI_SOURCE_DIRECTORY}/njli/sound/${NJLI_SOUND_PLATFORM}/*.cpp
+                )
+            SET(REG "${NJLI_SOURCE_DIRECTORY}/njli/.*([.]cpp|[.]c|[.]h|[.]hpp)")
+            FOREACH(filename ${src})
+                STRING(REGEX MATCH "${REG}" match_group_sources ${filename})
+                IF(match_group_sources)
+                    LIST(APPEND njli_sound_specific ${filename})
+                ELSE()
+                    LIST(APPEND group_other ${filename})
+                ENDIF()
+            ENDFOREACH()
+            
+            file( GLOB src
+                ${NJLI_SOURCE_DIRECTORY}/njli/steering/*.h
+                ${NJLI_SOURCE_DIRECTORY}/njli/steering/*.cpp
+                )
+            SET(REG "${NJLI_SOURCE_DIRECTORY}/njli/.*([.]cpp|[.]c|[.]h|[.]hpp)")
+            FOREACH(filename ${src})
+                STRING(REGEX MATCH "${REG}" match_group_sources ${filename})
+                IF(match_group_sources)
+                    LIST(APPEND njli_steering ${filename})
+                ELSE()
+                    LIST(APPEND group_other ${filename})
+                ENDIF()
+            ENDFOREACH()
+            
+            file( GLOB src
+                ${NJLI_SOURCE_DIRECTORY}/njli/steering/behavior/*.h
+                ${NJLI_SOURCE_DIRECTORY}/njli/steering/behavior/*.cpp
+                )
+            SET(REG "${NJLI_SOURCE_DIRECTORY}/njli/.*([.]cpp|[.]c|[.]h|[.]hpp)")
+            FOREACH(filename ${src})
+                STRING(REGEX MATCH "${REG}" match_group_sources ${filename})
+                IF(match_group_sources)
+                    LIST(APPEND njli_steering_behavior ${filename})
+                ELSE()
+                    LIST(APPEND group_other ${filename})
+                ENDIF()
+            ENDFOREACH()
+
+            SOURCE_GROUP("src" FILES ${group_other})
+            SOURCE_GROUP("src\\bullet" FILES ${bullet} )
+            SOURCE_GROUP("src\\njli" FILES ${njli} )
+            SOURCE_GROUP("src\\njli\\platform" FILES ${njli_platform} )
+            SOURCE_GROUP("src\\njli\\platform\\${NJLI_BUILD_PLATFORM}" FILES ${njli_platform_specific} )
+            SOURCE_GROUP("src\\njli\\builders" FILES ${njli_builders})
+            SOURCE_GROUP("src\\njli\\builders\\graphics" FILES ${njli_builders_graphics})
+            SOURCE_GROUP("src\\njli\\builders\\physics" FILES ${njli_builders_physics})
+            SOURCE_GROUP("src\\njli\\builders\\physics\\body" FILES ${njli_builders_physics_body})
+            SOURCE_GROUP("src\\njli\\builders\\physics\\constraint" FILES ${njli_builders_physics_constraint})
+            SOURCE_GROUP("src\\njli\\builders\\physics\\shape" FILES ${njli_builders_physics_shape})
+            SOURCE_GROUP("src\\njli\\builders\\platform" FILES ${njli_builders_platform})
+            SOURCE_GROUP("src\\njli\\builders\\sound" FILES ${njli_builders_sound})
+            SOURCE_GROUP("src\\njli\\builders\\steering" FILES ${njli_builders_steering})
+            SOURCE_GROUP("src\\njli\\builders\\steering\\behavior" FILES ${njli_builders_steering_behavior})
+            SOURCE_GROUP("src\\njli\\generated" FILES ${njli_generated})
+            SOURCE_GROUP("src\\njli\\generated\\swig" FILES ${njli_generated_swig})
+            SOURCE_GROUP("src\\njli\\graphics" FILES ${njli_graphics})
+            SOURCE_GROUP("src\\njli\\graphics\\graphics_${NJLI_GRAPHICS_PLATFORM}" FILES ${njli_graphics_specific})
+            SOURCE_GROUP("src\\njli\\physics" FILES ${njli_physics})
+            SOURCE_GROUP("src\\njli\\physics\\body" FILES ${njli_physics_body})
+            SOURCE_GROUP("src\\njli\\physics\\constraint" FILES ${njli_physics_constraint})
+            SOURCE_GROUP("src\\njli\\physics\\shape" FILES ${njli_physics_shape})
+            SOURCE_GROUP("src\\njli\\sound" FILES ${njli_sound})
+            SOURCE_GROUP("src\\njli\\sound\\sound_${NJLI_SOUND_PLATFORM}" FILES ${njli_sound_specific})
+            SOURCE_GROUP("src\\njli\\steering" FILES ${njli_steering})
+            SOURCE_GROUP("src\\njli\\steering\\behavior" FILES ${njli_steering_behavior})
+
             SET_TARGET_PROPERTIES( njli_source_project_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES OUTPUT_NAME njli_source_project )
             SET_TARGET_PROPERTIES( njli_source_project_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} PROPERTIES PREFIX "")
             TARGET_LINK_LIBRARIES( njli_source_project_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM} ${EXTRA_PLATFORM_LIBS} ${NJLIGameEngine_LBY} )
@@ -602,7 +1053,7 @@ macro( BUILD_PLATFORM )
                 XCODE_ATTRIBUTE_PRODUCT_NAME
                 "njli_source_project_${CMAKE_BUILD_TYPE}_${BUILD_COUNTER}_${NJLI_BUILD_PLATFORM}"
                 XCODE_ATTRIBUTE_BUNDLE_IDENTIFIER
-                "com.njligames.engine.source"
+                "com.njligames.engine.ios.source"
                 )
 
             TARGET_LINK_LIBRARIES(
