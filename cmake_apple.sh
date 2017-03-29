@@ -46,27 +46,28 @@ build_apple_xcode()
         -DNJLI_BUILD_PLATFORM=${MY_PLATFORM} \
         -DCMAKE_BUILD_TYPE=Debug \
         -DNJLI_BUILD_DIR=${MY_BUILD_DIR}
+    cmake --build .
 
-    cmake .. -G "Xcode" \
-        -DCMAKE_CXX_FLAGS='-std=gnu++11' \
-        -DNJLI_THIRDPARTY_DIRECTORY:STRING=${MY_THIRDPARTY_DIR} \
-        -DNJLI_BUILD_PLATFORM=${MY_PLATFORM} \
-        -DCMAKE_BUILD_TYPE=Release \
-        -DNJLI_BUILD_DIR=${MY_BUILD_DIR}
-
-    cmake .. -G "Xcode" \
-        -DCMAKE_CXX_FLAGS='-std=gnu++11' \
-        -DNJLI_THIRDPARTY_DIRECTORY:STRING=${MY_THIRDPARTY_DIR} \
-        -DNJLI_BUILD_PLATFORM=${MY_PLATFORM} \
-        -DCMAKE_BUILD_TYPE=MinSizeRel \
-        -DNJLI_BUILD_DIR=${MY_BUILD_DIR}
-
-    cmake .. -G "Xcode" \
-        -DCMAKE_CXX_FLAGS='-std=gnu++11' \
-        -DNJLI_THIRDPARTY_DIRECTORY:STRING=${MY_THIRDPARTY_DIR} \
-        -DNJLI_BUILD_PLATFORM=${MY_PLATFORM} \
-        -DCMAKE_BUILD_TYPE=RelWithDebugInfo \
-        -DNJLI_BUILD_DIR=${MY_BUILD_DIR}
+#    cmake .. -G "Xcode" \
+#        -DCMAKE_CXX_FLAGS='-std=gnu++11' \
+#        -DNJLI_THIRDPARTY_DIRECTORY:STRING=${MY_THIRDPARTY_DIR} \
+#        -DNJLI_BUILD_PLATFORM=${MY_PLATFORM} \
+#        -DCMAKE_BUILD_TYPE=Release \
+#        -DNJLI_BUILD_DIR=${MY_BUILD_DIR}
+#
+#    cmake .. -G "Xcode" \
+#        -DCMAKE_CXX_FLAGS='-std=gnu++11' \
+#        -DNJLI_THIRDPARTY_DIRECTORY:STRING=${MY_THIRDPARTY_DIR} \
+#        -DNJLI_BUILD_PLATFORM=${MY_PLATFORM} \
+#        -DCMAKE_BUILD_TYPE=MinSizeRel \
+#        -DNJLI_BUILD_DIR=${MY_BUILD_DIR}
+#
+#    cmake .. -G "Xcode" \
+#        -DCMAKE_CXX_FLAGS='-std=gnu++11' \
+#        -DNJLI_THIRDPARTY_DIRECTORY:STRING=${MY_THIRDPARTY_DIR} \
+#        -DNJLI_BUILD_PLATFORM=${MY_PLATFORM} \
+#        -DCMAKE_BUILD_TYPE=RelWithDebugInfo \
+#        -DNJLI_BUILD_DIR=${MY_BUILD_DIR}
 
     cd ..
 }
@@ -85,10 +86,11 @@ build_apple()
     MY_BUILD_DIR="${MY_PLATFORM}/${MY_VERSION}/${MY_BUILD_PLAT}"
 
     MY_BUILD_DIRECTORY=.build
+    rm -rf ${MY_BUILD_DIRECTORY}
     mkdir -p ${MY_BUILD_DIRECTORY}
     cd ${MY_BUILD_DIRECTORY}
 
-    cmake .. -G "Unix Makefiles" \
+    cmake .. -G "Ninja" \
         -DCMAKE_CXX_FLAGS='-std=gnu++11' \
         -DCMAKE_INSTALL_PREFIX=../generated/ \
         -DNJLI_THIRDPARTY_DIRECTORY:STRING=${MY_THIRDPARTY_DIR} \
@@ -100,40 +102,40 @@ build_apple()
         -DENABLE_BITCODE:BOOL=OFF \
         -DPLATFORM=${MY_PLATFORM}
 
-	make -j4
-	make install
+    ninja -C.
+    ninja install
 
     cd ..
 }
 
 build_ios()
 {
-    build_apple Debug ios ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-    build_apple Debug ios OFF OS ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
+    build_apple Debug ios ON iphonesimulator ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
+    build_apple Debug ios OFF iphoneos ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
 
-    build_apple Release ios ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-    build_apple Release ios OFF OS ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
+    build_apple Release ios ON iphonesimulator ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
+    build_apple Release ios OFF iphoneos ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
 
-    build_apple MinsizeRel ios ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-    build_apple MinsizeRel ios OFF OS ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
+    build_apple MinsizeRel ios ON iphonesimulator ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
+    build_apple MinsizeRel ios OFF iphoneos ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
 
-    build_apple RelWithDebugInfo ios ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-    build_apple RelWithDebugInfo ios OFF OS ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
+    build_apple RelWithDebugInfo ios ON iphonesimulator ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
+    build_apple RelWithDebugInfo ios OFF iphoneos ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
 }
 
 build_appletvos()
 {
-    build_apple Debug appletvos ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_TVOS_SYSTEM_VERSION}
-    build_apple Debug appletvos OFF OS ${MY_IOS_PATH} ${CMAKE_TVOS_SYSTEM_VERSION}
+    build_apple Debug appletvos ON appletvsimulator ${MY_IOS_PATH} ${CMAKE_TVOS_SYSTEM_VERSION}
+    build_apple Debug appletvos OFF appletvos ${MY_IOS_PATH} ${CMAKE_TVOS_SYSTEM_VERSION}
 
-    build_apple Release appletvos ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_TVOS_SYSTEM_VERSION}
-    build_apple Release appletvos OFF OS ${MY_IOS_PATH} ${CMAKE_TVOS_SYSTEM_VERSION}
+    build_apple Release appletvos ON appletvsimulator ${MY_IOS_PATH} ${CMAKE_TVOS_SYSTEM_VERSION}
+    build_apple Release appletvos OFF appletvos ${MY_IOS_PATH} ${CMAKE_TVOS_SYSTEM_VERSION}
 
-    build_apple MinsizeRel appletvos ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_TVOS_SYSTEM_VERSION}
-    build_apple MinsizeRel appletvos OFF OS ${MY_IOS_PATH} ${CMAKE_TVOS_SYSTEM_VERSION}
+    build_apple MinsizeRel appletvos ON appletvsimulator ${MY_IOS_PATH} ${CMAKE_TVOS_SYSTEM_VERSION}
+    build_apple MinsizeRel appletvos OFF appletvos ${MY_IOS_PATH} ${CMAKE_TVOS_SYSTEM_VERSION}
 
-    build_apple RelWithDebugInfo appletvos ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_TVOS_SYSTEM_VERSION}
-    build_apple RelWithDebugInfo appletvos OFF OS ${MY_IOS_PATH} ${CMAKE_TVOS_SYSTEM_VERSION}
+    build_apple RelWithDebugInfo appletvos ON appletvsimulator ${MY_IOS_PATH} ${CMAKE_TVOS_SYSTEM_VERSION}
+    build_apple RelWithDebugInfo appletvos OFF appletvos ${MY_IOS_PATH} ${CMAKE_TVOS_SYSTEM_VERSION}
 }
 
 build_applewatchos()
@@ -154,6 +156,7 @@ build_applewatchos()
 _build_macos()
 {
     MY_BUILD_DIRECTORY=.build
+    rm -rf ${MY_BUILD_DIRECTORY}
     mkdir -p ${MY_BUILD_DIRECTORY}
     cd ${MY_BUILD_DIRECTORY}
 
@@ -162,18 +165,19 @@ _build_macos()
     MY_VERSION=$2
     MY_BUILD_DIR="macOS/${MY_VERSION}"
 
-    cmake .. -G "Unix Makefiles" \
+    cmake .. -G "Ninja" \
         -DGL_GLEXT_PROTOTYPES:BOOL=ON \
         -DCMAKE_CXX_FLAGS='-std=gnu++11' \
         -DCMAKE_INSTALL_PREFIX=../generated/ \
         -DNJLI_THIRDPARTY_DIRECTORY:STRING=${MY_THIRDPARTY_DIR} \
-        -DCMAKE_OSX_ARCHITECTURES="x86_64;i386" \
+        -DNJLI_GRAPHICS_PLATFORM=opengl_2.1 \
+        -DCMAKE_OSX_ARCHITECTURES="i386;x86_64" \
         -DNJLI_BUILD_PLATFORM="macOS" \
         -DCMAKE_BUILD_TYPE=${MY_BUILD_TYPE} \
         -DNJLI_BUILD_DIR=${MY_BUILD_DIR}
 
-	make -j8
-	make install
+    ninja -C.
+    ninja install
 
     cd ..
 }
@@ -187,53 +191,11 @@ build_macos()
     done
 }
 
-#build_macos
-#build_ios
-#build_appletvos
-#build_applewatchos
-
-#_build_macos Debug ${CMAKE_MACOS_SYSTEM_VERSION}
-#build_apple Debug appletvos OFF OS ${MY_IOS_PATH} ${CMAKE_TVOS_SYSTEM_VERSION}
+build_macos
+build_ios
+build_appletvos
+build_applewatchos
 
 #build_apple_xcode Debug ios ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-build_apple_xcode ios SIMULATOR ${CMAKE_IOS_SYSTEM_VERSION}
+#build_apple_xcode ios iphonesimulator ${CMAKE_IOS_SYSTEM_VERSION}
 
-#build_apple Debug ios ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-
-#build_apple Debug ios OFF OS ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-
-#build_apple Release ios ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-#build_apple Release ios OFF OS ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-
-#build_apple MinsizeRel ios ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-#build_apple MinsizeRel ios OFF OS ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-
-#build_apple RelWithDebugInfo ios ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-#build_apple RelWithDebugInfo ios OFF OS ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-
-
-
-#build_apple Debug appletvos ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-#build_apple Debug appletvos OFF OS ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-
-#build_apple Release appletvos ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-#build_apple Release appletvos OFF OS ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-
-#build_apple MinsizeRel appletvos ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-#build_apple MinsizeRel appletvos OFF OS ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-
-#build_apple RelWithDebugInfo appletvos ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-#build_apple RelWithDebugInfo appletvos OFF OS ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-
-
-
-
-
-#    build_apple Release ios ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-#    build_apple Release ios OFF OS ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-#
-#    build_apple MinsizeRel ios ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-#    build_apple MinsizeRel ios OFF OS ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-#
-#    build_apple RelWithDebugInfo ios ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-#    build_apple RelWithDebugInfo ios OFF OS ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
