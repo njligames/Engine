@@ -15,12 +15,12 @@ export GLES20_DIR=/Users/jamesfolk/Dropbox/Developer/GameEngine/Source/jli_game_
 export MY_ANDROID_NDK=/Users/jamesfolk/Library/Android/sdk/ndk-bundle
 export MY_ANDROID_API_LEVEL=24
 
-rm -rf .build
+#rm -rf .build
 
 #./cmake_doc.sh
 #./cmake_android.sh
 ./cmake_apple.sh
-#./cmake_emscripten.sh
+#./cmake_emscripten.sh 
 
 
 #mkdir -p .build

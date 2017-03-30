@@ -191,11 +191,11 @@ build_macos()
     done
 }
 
-build_macos
-build_ios
-build_appletvos
-build_applewatchos
+#build_macos
+#build_ios
+#build_appletvos
+#build_applewatchos
 
 #build_apple_xcode Debug ios ON SIMULATOR ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-#build_apple_xcode ios iphonesimulator ${CMAKE_IOS_SYSTEM_VERSION}
+build_apple_xcode ios iphonesimulator ${CMAKE_IOS_SYSTEM_VERSION}
 
