@@ -51,6 +51,7 @@ ELSEIF( ${NJLI_FMOD_EXTENSION} EQUAL android )
     SET( NJLI_FMOD_EXTENSION "so" )
 ENDIF()
 
+
 option ( GENERATE_DOCUMENTATION "Whether to build the documentation or not" OFF )
 option ( GENERATE_LIB "Whether to build the documentation or not" ON )
 
@@ -193,18 +194,22 @@ macro( BUILD_PLATFORM )
     INCLUDE_DIRECTORIES( ${NJLI_SOURCE_DIRECTORY}/njli/platform )
     INCLUDE_DIRECTORIES( ${NJLI_SOURCE_DIRECTORY}/njli/platform/${NJLI_BUILD_PLATFORM} )
 
+    SET( SHARED_LIBRARY_EXTENSION "dylib" )
+
     IF( ${NJLI_BUILD_PLATFORM} STREQUAL "appletvos" )
         INCLUDE_DIRECTORIES( /Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/System/Library/Frameworks )
+        SET( SHARED_LIBRARY_EXTENSION "dylib" )
     ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "ios" )
         INCLUDE_DIRECTORIES( /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks )
+        SET( SHARED_LIBRARY_EXTENSION "dylib" )
     ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "macOS" )
-        INCLUDE_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/Native_SDK/Builds/Include )
         INCLUDE_DIRECTORIES( /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks )
+        SET( SHARED_LIBRARY_EXTENSION "dylib" )
     ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "emscripten" )
-        INCLUDE_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/Native_SDK/Builds/Include )
-        INCLUDE_DIRECTORIES( /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks )
+        SET( SHARED_LIBRARY_EXTENSION "dylib" )
     ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "android" )
         INCLUDE_DIRECTORIES( /Users/jamesfolk/Library/Android/sdk/ndk-bundle/platforms/android-24/arch-arm/usr/include )
+        SET( SHARED_LIBRARY_EXTENSION "so" )
     ENDIF()
 
     SET(NJLIGameEngine_PUBLIC_HDRS
@@ -301,28 +306,26 @@ macro( BUILD_PLATFORM )
     #$(CONFIGURATION) In Xcode this is Debug or Release, etc..
     #$(EFFECTIVE_PLATFORM_NAME) In Xcode this is iphoneos, iphonesimulator, appletvos, appletvsimulator
     
-    #    LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/assimp/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/lib )
+    #LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/assimp/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/lib )
     IF( ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
         LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/fmod/lib/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
     ELSE()
         LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/fmod/lib/${NJLI_BUILD_DIR}/Release )
     ENDIF()
-    #    LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/imgui/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} ) 
-    #    LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/ImGuizmo/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} ) 
-    #    LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/jsoncpp/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} ) 
-    #    LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/nanovg/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} ) 
-    #    LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/stb/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} ) 
-    #    LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/tinyxml2/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
-    #    LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/lib ) 
-    #    IF( ${NJLI_BUILD_PLATFORM} STREQUAL "appletvos" )
-    #    ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "ios" )
-    #    ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "macOS" )
-    #        LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/Native_SDK/Builds/OSX/x86/Lib/ )
-    #    ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "emscripten" )
-    #        LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/Native_SDK/Builds/OSX/x86/Lib/ )
-    #    ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "android" )
-    #        LINK_DIRECTORIES( /Users/jamesfolk/Library/Android/sdk/ndk-bundle/platforms/android-24/arch-arm/usr/lib )
-    #    ENDIF()
+    #LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/imgui/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} ) 
+    #LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/ImGuizmo/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} ) 
+    LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/jsoncpp/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} ) 
+    #LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/nanovg/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} ) 
+    #LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/stb/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} ) 
+    #LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/tinyxml2/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
+    #LINK_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/lib ) 
+    #IF( ${NJLI_BUILD_PLATFORM} STREQUAL "appletvos" )
+    #ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "ios" )
+    #ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "macOS" )
+    #ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "emscripten" )
+    #ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "android" )
+    #    LINK_DIRECTORIES( /Users/jamesfolk/Library/Android/sdk/ndk-bundle/platforms/android-24/arch-arm/usr/lib )
+    #ENDIF()
     #
     #    LINK_DIRECTORIES(
     #        ${NJLI_SOURCE_DIRECTORY}/bullet
@@ -351,6 +354,7 @@ macro( BUILD_PLATFORM )
     #        ${NJLI_SOURCE_DIRECTORY}/njli/platform/${NJLI_BUILD_PLATFORM}
     #        )
     
+
     FILE(GLOB NJLIGameEngine_LBY
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/assimp/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/lib/libassimp${NJLI_ASSIMP_POSTFIX}.a 
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/lib/libBullet2FileLoader.a 
@@ -372,11 +376,11 @@ macro( BUILD_PLATFORM )
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/lib/libHACD.a 
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/lib/libLinearMath.a 
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/imgui/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/libimgui.a 
-        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/ImGuizmo/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/libImGuizmo.a 
-        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/jsoncpp/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/libjsoncpp.a 
+        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/ImGuizmo/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/libImGuizmo.a
+        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/jsoncpp/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/libjsoncpp.a
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/nanovg/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/libnanovg.a 
-        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/stb/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/libstb.a 
-        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/tinyxml2/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/libtinyxml2.a 
+        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/stb/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/libstb.a
+        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/tinyxml2/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE}/libtinyxml2.a
         )
     IF( ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
         FILE(GLOB NJLIGameEngine_LBY
@@ -450,12 +454,6 @@ macro( BUILD_PLATFORM )
             )
 
     ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "emscripten" )
-        FILE(GLOB NJLIGameEngine_LBY
-            ${NJLIGameEngine_LBY}
-            ${NJLI_THIRDPARTY_DIRECTORY}/Native_SDK/Builds/OSX/x86/Lib/libGLESv2.dylib 
-            ${NJLI_THIRDPARTY_DIRECTORY}/Native_SDK/Builds/OSX/x86/Lib/libEGL.dylib
-            )
-        SET(EXTRA_PLATFORM_LIBS "-lGLESv2 -lEGL")
     ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "android" )
         SET( EXTRA_PLATFORM_LIBS "-lfmod -ldl -lGLESv2 -llog -landroid -lm -lc -lEGL -lstdc++")
         SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DGL_GLEXT_PROTOTYPES" )

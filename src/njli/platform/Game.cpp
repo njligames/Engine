@@ -61,7 +61,7 @@ void NJLIGameEngine::resize(int x, int y, int width, int height,
     njli::World::getInstance()->resize(width, height, orientation);
 }
 
-    void NJLIGameEngine::start()
+    bool NJLIGameEngine::start()
     {
         njli::World::getInstance()->getWorldClock()->reset();
         
@@ -117,12 +117,14 @@ void NJLIGameEngine::resize(int x, int y, int width, int height,
                                          ");
         
         
-        World::getInstance()->getWorldLuaVirtualMachine()->loadString(source.c_str());
+        if(!World::getInstance()->getWorldLuaVirtualMachine()->loadString(source.c_str()))
+            return false;
         njli::World::getInstance()->getWorldLuaVirtualMachine()->compile();
         
-        njli::World::getInstance()->getWorldLuaVirtualMachine()->loadFile("scripts/main.lua");
-        //    njli::World::getInstance()->getWorldLuaVirtualMachine()->loadFile("scripts/TestMain.lua");
-        njli::World::getInstance()->getWorldLuaVirtualMachine()->compile();
+        if(!njli::World::getInstance()->getWorldLuaVirtualMachine()->loadFile("scripts/main.lua"))
+            return false;
+        
+        return njli::World::getInstance()->getWorldLuaVirtualMachine()->compile();
     }
 void NJLIGameEngine::update(float step)
 {

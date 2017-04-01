@@ -14,6 +14,7 @@ _build_android()
     cd ${MY_BUILD_DIRECTORY}
 
     cmake .. -G "Ninja" \
+        -DCMAKE_CXX_FLAGS='-std=gnu++11' \
         -DCMAKE_INSTALL_PREFIX=../generated/ \
         -DNJLI_THIRDPARTY_DIRECTORY:STRING=${MY_THIRDPARTY_DIR} \
         -DNJLI_BUILD_PLATFORM='android' \
@@ -21,7 +22,7 @@ _build_android()
         -DNJLI_BUILD_DIR=${MY_BUILD_DIR} \
         -DANDROID_ABI=${MY_ABI} \
         -DANDROID_NATIVE_API_LEVEL=${MY_ANDROID_API_LEVEL} \
-        -DANDROID_STL=c++_static \
+        -DANDROID_STL=c++_shared \
         -DANDROID_TOOLCHAIN=gcc \
         -DCMAKE_CXX_FLAGS='-std=gnu++11' \
         -DCMAKE_TOOLCHAIN_FILE=${MY_ANDROID_NDK}/build/cmake/android.toolchain.cmake

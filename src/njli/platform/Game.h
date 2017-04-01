@@ -14,7 +14,7 @@ public:
 //    static bool create(int x, int y, int width, int height, int orientation, const char* deviceName, bool initLua = true);
     static void resize(int x, int y, int width, int height, int orientation);
     
-    static void start();
+    static bool start();
     static void update(float step);
     static void render();
     static void destroy();

@@ -1086,19 +1086,22 @@ namespace njli
             FileData *fileData = loadFileData(filePath);
             
             char *fileContent = (char*)fileData->getBufferPtr();
-            long fileSize = fileData->getSize();
-            fileContent[fileSize] = '\0';
-            
             if(fileContent)
             {
-                *object = std::string(fileContent);
-                removeFileData(filePath);
-                retVal = true;
-            }
-            else
-            {
-                if(!fileContent)
-                    DEBUG_LOG_WRITE_W(TAG, "filename is empty for the sound.");
+                long fileSize = fileData->getSize();
+                fileContent[fileSize] = '\0';
+                
+                if(fileContent)
+                {
+                    *object = std::string(fileContent);
+                    removeFileData(filePath);
+                    retVal = true;
+                }
+                else
+                {
+                    if(!fileContent)
+                        DEBUG_LOG_WRITE_W(TAG, "filename is empty for the sound.");
+                }
             }
         }
         
