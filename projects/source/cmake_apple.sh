@@ -46,7 +46,17 @@ build_apple_xcode()
         -DNJLI_BUILD_PLATFORM=${MY_PLATFORM} \
         -DCMAKE_BUILD_TYPE=Debug \
         -DNJLI_BUILD_DIR=${MY_BUILD_DIR}
-    cmake --build .
+
+    #xcodebuild -project NJLIGameEngine.xcodeproj -target Source -configuration Debug DEVELOPMENT_TEAM=SRBQ5SCF5X
+
+
+
+    #xcodebuild -project NJLIGameEngine.xcodeproj -list
+    #http://stackoverflow.com/questions/39500634/use-xcodebuild-xcode-8-and-automatic-signing-in-ci-travis-jenkins-environmen
+    #xcodebuild -project NJLIGameEngine.xcodeproj -scheme package -configuration Debug clean archive -archivePath ../NJLIGameEngine.xcarchive DEVELOPMENT_TEAM=SRBQ5SCF5X
+    #xcodebuild -exportArchive -archivePath ../NJLIGameEngine.xcarchive -exportOptionsPlist ../exportOptions.plist -exportPath ./
+
+    #cmake --build .
 
 #    cmake .. -G "Xcode" \
 #        -DCMAKE_CXX_FLAGS='-std=gnu++11' \

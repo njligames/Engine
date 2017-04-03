@@ -16,6 +16,21 @@ MACRO(SUBDIRLIST result curdir)
     SET(${result} ${dirlist})
 ENDMACRO()
 
+#https://github.com/sheldonth/ios-cmake/blob/master/CMakeLists.txt
+MACRO(cp_ios_get_provisioning_profiles PROFILE_NAME PROVISIONG_PROFILES_DIR RESULT)
+    FILE(GLOB FILES ${PROVISIONG_PROFILES_DIR}/*.mobileprovision)
+    SET(LIST "")
+    FOREACH(FILE ${FILES})
+        FILE(STRINGS "${FILE}" NAME REGEX "${PROFILE_NAME}")
+        IF (NAME)
+            LIST(APPEND LIST ${FILE})
+        ENDIF()
+    ENDFOREACH()
+    IF (LIST)
+        LIST(APPEND ${RESULT} ${LIST})
+    ENDIF()
+ENDMACRO() 
+
 SET( CMAKE_INSTALL_INCLUDEDIR include/ CACHE STRING "The include directory" )
 SET( CMAKE_INSTALL_DATADIR data/ CACHE STRING "The data directory" )
 SET( CMAKE_INSTALL_DOCDIR doc/ CACHE STRING "The documentation directory" )
@@ -490,6 +505,22 @@ macro( BUILD_PLATFORM )
     IF( ${NJLI_BUILD_PLATFORM} STREQUAL "appletvos" )
     ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "ios" )
         if( XCODE )
+
+
+
+
+            set(IOS_PROVISIONG_PROFILES_DIR "$ENV{HOME}/Library/MobileDevice/Provisioning Profiles/")
+            set(RESULTS "")
+            cp_ios_get_provisioning_profiles("Source Code Build Of The Engine"  "${IOS_PROVISIONG_PROFILES_DIR}" RESULTS)
+            if (NOT RESULTS)
+                message("Could not find matching provisioning profile in ${IOS_PROVISIONG_PROFILES_DIR}")
+            else()
+                message(STATUS "Found provisioning profile hash ${RESULTS}")
+            endif()
+
+
+
+
             INCLUDE_DIRECTORIES( ${NJLI_THIRDPARTY_DIRECTORY}/SDL/include )
 
             IF( ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
@@ -981,7 +1012,8 @@ macro( BUILD_PLATFORM )
                 MACOSX_BUNDLE YES
                 MACOSX_BUNDLE_INFO_PLIST
                 "${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/Platform.in/ios/Info.plist"
-                XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Developer: James Folk"
+                XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Developer"
+                #XCODE_ATTRIBUTE_DEVELOPMENT_TEAM "SRBQ5SCF5X"
                 XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2"
                 XCODE_ATTRIBUTE_CLANG_ENABLE_OBJC_ARC YES
                 XCODE_ATTRIBUTE_INSTALL_PATH "${CMAKE_BINARY_DIR}/ProductRelease"

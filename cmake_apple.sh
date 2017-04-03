@@ -42,32 +42,24 @@ build_apple_xcode()
 
     cmake .. -G "Xcode" \
         -DCMAKE_CXX_FLAGS='-std=gnu++11' \
+        -DCMAKE_INSTALL_PREFIX=../generated/ \
         -DNJLI_THIRDPARTY_DIRECTORY:STRING=${MY_THIRDPARTY_DIR} \
         -DNJLI_BUILD_PLATFORM=${MY_PLATFORM} \
-        -DCMAKE_BUILD_TYPE=Debug \
+        -DCMAKE_BUILD_TYPE=Release \
         -DNJLI_BUILD_DIR=${MY_BUILD_DIR}
-    cmake --build .
 
-#    cmake .. -G "Xcode" \
-#        -DCMAKE_CXX_FLAGS='-std=gnu++11' \
-#        -DNJLI_THIRDPARTY_DIRECTORY:STRING=${MY_THIRDPARTY_DIR} \
-#        -DNJLI_BUILD_PLATFORM=${MY_PLATFORM} \
-#        -DCMAKE_BUILD_TYPE=Release \
-#        -DNJLI_BUILD_DIR=${MY_BUILD_DIR}
-#
-#    cmake .. -G "Xcode" \
-#        -DCMAKE_CXX_FLAGS='-std=gnu++11' \
-#        -DNJLI_THIRDPARTY_DIRECTORY:STRING=${MY_THIRDPARTY_DIR} \
-#        -DNJLI_BUILD_PLATFORM=${MY_PLATFORM} \
-#        -DCMAKE_BUILD_TYPE=MinSizeRel \
-#        -DNJLI_BUILD_DIR=${MY_BUILD_DIR}
-#
-#    cmake .. -G "Xcode" \
-#        -DCMAKE_CXX_FLAGS='-std=gnu++11' \
-#        -DNJLI_THIRDPARTY_DIRECTORY:STRING=${MY_THIRDPARTY_DIR} \
-#        -DNJLI_BUILD_PLATFORM=${MY_PLATFORM} \
-#        -DCMAKE_BUILD_TYPE=RelWithDebugInfo \
-#        -DNJLI_BUILD_DIR=${MY_BUILD_DIR}
+    #xcodebuild -project NJLIGameEngine.xcodeproj -target Source -configuration Release DEVELOPMENT_TEAM=SRBQ5SCF5X
+    #xcodebuild -project NJLIGameEngine.xcodeproj -target documentation -configuration Release DEVELOPMENT_TEAM=SRBQ5SCF5X
+    #xcodebuild -project NJLIGameEngine.xcodeproj -target install -configuration Release DEVELOPMENT_TEAM=SRBQ5SCF5X
+
+
+
+    #xcodebuild -project NJLIGameEngine.xcodeproj -list
+    #http://stackoverflow.com/questions/39500634/use-xcodebuild-xcode-8-and-automatic-signing-in-ci-travis-jenkins-environmen
+    #xcodebuild -project NJLIGameEngine.xcodeproj -scheme package -configuration Debug clean archive -archivePath ../NJLIGameEngine.xcarchive DEVELOPMENT_TEAM=SRBQ5SCF5X
+    #xcodebuild -exportArchive -archivePath ../NJLIGameEngine.xcarchive -exportOptionsPlist ../exportOptions.plist -exportPath ./
+
+    #cmake --build .
 
     cd ..
 }
@@ -196,7 +188,8 @@ build_macos()
 #build_appletvos
 #build_applewatchos
 
-build_apple_xcode ios iphonesimulator ${CMAKE_IOS_SYSTEM_VERSION}
+build_apple_xcode ios iphoneos ${CMAKE_IOS_SYSTEM_VERSION}
+#build_apple_xcode appletv appletvos ${CMAKE_IOS_SYSTEM_VERSION}
 
 #build_apple Debug ios ON iphonesimulator ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
 #build_apple Debug appletvos ON appletvsimulator ${MY_IOS_PATH} ${CMAKE_TVOS_SYSTEM_VERSION}
