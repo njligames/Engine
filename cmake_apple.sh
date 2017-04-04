@@ -20,11 +20,19 @@ export CMAKE_MACOS_SYSTEM_VERSION=`xcodebuild -sdk /Applications/Xcode.app/Conte
 build_apple_xcode()
 {
     MY_PLATFORM=$1
-    MY_BUILD_PLAT=$2
-    MY_VERSION=$3
+    MY_VERSION=$2
+    MY_BUILD_PLAT=$3
 
     MY_BUILD_DIR="${MY_PLATFORM}/${MY_VERSION}/${MY_BUILD_PLAT}"
 
+    MY_GRAPHICS_PLATFORM=opengl_es_2.0
+    if [ $MY_PLATFORM == macOS ]
+    then
+        MY_GRAPHICS_PLATFORM=opengl_2.1
+    fi
+
+    echo $MY_PLATFORM
+    echo $MY_GRAPHICS_PLATFORM
 
     cmake .. -G "Xcode" \
         -DCMAKE_CXX_FLAGS='-std=gnu++11' \
@@ -32,11 +40,12 @@ build_apple_xcode()
         -DNJLI_THIRDPARTY_DIRECTORY:STRING=${MY_THIRDPARTY_DIR} \
         -DNJLI_BUILD_PLATFORM=${MY_PLATFORM} \
         -DCMAKE_BUILD_TYPE=Release \
+        -DNJLI_GRAPHICS_PLATFORM=${MY_GRAPHICS_PLATFORM} \
         -DNJLI_BUILD_DIR=${MY_BUILD_DIR}
 
     #xcodebuild -project NJLIGameEngine.xcodeproj -target Source -configuration Release DEVELOPMENT_TEAM=SRBQ5SCF5X
     #xcodebuild -project NJLIGameEngine.xcodeproj -target documentation -configuration Release DEVELOPMENT_TEAM=SRBQ5SCF5X
-    #xcodebuild -project NJLIGameEngine.xcodeproj -target install -configuration Release DEVELOPMENT_TEAM=SRBQ5SCF5X
+    xcodebuild -project NJLIGameEngine.xcodeproj -target install -configuration Release DEVELOPMENT_TEAM=SRBQ5SCF5X
 
     #xcodebuild -project NJLIGameEngine.xcodeproj -list
     #http://stackoverflow.com/questions/39500634/use-xcodebuild-xcode-8-and-automatic-signing-in-ci-travis-jenkins-environmen
@@ -173,14 +182,18 @@ build_macos()
 #rm -rf ios_Xcode
 #mkdir -p ios_Xcode
 #cd ios_Xcode
-#build_apple_xcode ios iphoneos ${CMAKE_IOS_SYSTEM_VERSION}
+#build_apple_xcode ios ${CMAKE_IOS_SYSTEM_VERSION} iphoneos 
 #cd ..
 
-rm -rf tvos_Xcode
-mkdir -p tvos_Xcode
-cd tvos_Xcode
-build_apple_xcode appletv appletvos ${CMAKE_IOS_SYSTEM_VERSION}
+#rm -rf tvos_Xcode
+#mkdir -p tvos_Xcode
+#cd tvos_Xcode
+#build_apple_xcode appletv ${CMAKE_TVOS_SYSTEM_VERSION} appletvos 
+#cd ..
+
+rm -rf macOS_Xcode
+mkdir -p macOS_Xcode
+cd macOS_Xcode
+build_apple_xcode macOS ${CMAKE_MACOS_SYSTEM_VERSION}
 cd ..
 
-#build_apple Debug ios ON iphonesimulator ${MY_IOS_PATH} ${CMAKE_IOS_SYSTEM_VERSION}
-#build_apple Debug appletvos ON appletvsimulator ${MY_IOS_PATH} ${CMAKE_TVOS_SYSTEM_VERSION}

@@ -42,7 +42,7 @@ namespace njli
     m_matrixBuffer(new f32[9]),
     m_Camera(NULL)
     {
-        m_NVGContext = nvgCreateGLES2(NVG_ANTIALIAS | NVG_STENCIL_STROKES | NVG_DEBUG);
+        m_NVGContext = nvgCreateGL2(NVG_ANTIALIAS | NVG_STENCIL_STROKES | NVG_DEBUG);
     }
 
     WorldHUD::~WorldHUD()
@@ -57,7 +57,7 @@ namespace njli
         for (std::vector<s32>::iterator i = m_images.begin(); i != m_images.end(); ++i)
             nvgDeleteImage(m_NVGContext, *i);
         
-        nvgDeleteGLES2(m_NVGContext);
+        nvgDeleteGL2(m_NVGContext);
     }
 
     const s8 *WorldHUD::getClassName()const

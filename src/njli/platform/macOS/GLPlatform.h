@@ -1,15 +1,11 @@
 
 //#define GL_GLEXT_PROTOTYPES
 
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
-//#include <GLES2/gl2platform.h>
-//
-#include <EGL/egl.h>
-#include <EGL/eglext.h>
-#include <EGL/eglplatform.h>
+#include <OpenGL/gl.h>// Header File For The OpenGL32 Library
+#include <OpenGL/glu.h>// Header File For The GLu32 Library
+#include <GLUT/glut.h>// Header File For The GLut Library
 
-#define NANOVG_GLES2_IMPLEMENTATION
+#define NANOVG_GL2_IMPLEMENTATION
 
 #ifndef __MACOSX__
 #define __MACOSX__
