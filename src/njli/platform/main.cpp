@@ -2213,7 +2213,7 @@ main(int argc, char *argv[])
                                  DEFAULT_WINDOW_HEIGHT,
                                  0);
     
-    done = (njli::NJLIGameEngine::start() == false);
+    done = 0;//(njli::NJLIGameEngine::start() == false);
     
 #ifdef __EMSCRIPTEN__
     emscripten_set_main_loop(loop, 0, 1);
