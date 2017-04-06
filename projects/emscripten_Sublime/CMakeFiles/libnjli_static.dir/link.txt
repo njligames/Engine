@@ -1,0 +1,1 @@
+/Applications/Developer/emsdk_portable/emscripten/1.37.9/emar rc libnjli.a  @CMakeFiles/libnjli_static.dir/objects1.rsp

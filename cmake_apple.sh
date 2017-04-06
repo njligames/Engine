@@ -34,9 +34,9 @@ build_apple_xcode()
     echo $MY_PLATFORM
     echo $MY_GRAPHICS_PLATFORM
 
-    cmake .. -G "Xcode" \
+    cmake ../.. -G "Xcode" \
         -DCMAKE_CXX_FLAGS='-std=gnu++11' \
-        -DCMAKE_INSTALL_PREFIX=../generated/ \
+        -DCMAKE_INSTALL_PREFIX=../../generated/ \
         -DNJLI_THIRDPARTY_DIRECTORY:STRING=${MY_THIRDPARTY_DIR} \
         -DNJLI_BUILD_PLATFORM=${MY_PLATFORM} \
         -DCMAKE_BUILD_TYPE=Release \
@@ -179,17 +179,19 @@ build_macos()
 #build_appletvos
 #build_applewatchos
 
-#rm -rf ios_Xcode
-#mkdir -p ios_Xcode
-#cd ios_Xcode
-#build_apple_xcode ios ${CMAKE_IOS_SYSTEM_VERSION} iphoneos 
-#cd ..
+cd projects
 
-#rm -rf tvos_Xcode
-#mkdir -p tvos_Xcode
-#cd tvos_Xcode
-#build_apple_xcode appletv ${CMAKE_TVOS_SYSTEM_VERSION} appletvos 
-#cd ..
+rm -rf ios_Xcode
+mkdir -p ios_Xcode
+cd ios_Xcode
+build_apple_xcode ios ${CMAKE_IOS_SYSTEM_VERSION} iphoneos 
+cd ..
+
+rm -rf tvos_Xcode
+mkdir -p tvos_Xcode
+cd tvos_Xcode
+build_apple_xcode appletv ${CMAKE_TVOS_SYSTEM_VERSION} appletvos 
+cd ..
 
 rm -rf macOS_Xcode
 mkdir -p macOS_Xcode

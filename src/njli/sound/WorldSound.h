@@ -7,8 +7,8 @@
 #include "GLPlatform.h"
 
 #ifdef USE_OPENAL
-#include "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/System/Library/Frameworks/OpenAL.framework/Versions/A/Headers/al.h"
-#include "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/System/Library/Frameworks/OpenAL.framework/Versions/A/Headers/alc.h"
+// #include "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/System/Library/Frameworks/OpenAL.framework/Versions/A/Headers/al.h"
+// #include "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/System/Library/Frameworks/OpenAL.framework/Versions/A/Headers/alc.h"
 #include <vector>
 #endif
 #ifdef USE_FMOD
@@ -58,13 +58,13 @@ protected:
     
 
 #ifdef USE_OPENAL
-    // OpenAL context for playing sounds
-    ALCcontext* m_ALCcontext;
+    // // OpenAL context for playing sounds
+    // ALCcontext* m_ALCcontext;
 
-    // The device we are going to use to play sounds
-    ALCdevice* m_ALCdevice;
+    // // The device we are going to use to play sounds
+    // ALCdevice* m_ALCdevice;
 
-    std::vector<u32> m_Sources;
+    // std::vector<u32> m_Sources;
 #endif
 
 #ifdef USE_FMOD

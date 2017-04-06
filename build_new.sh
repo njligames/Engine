@@ -19,8 +19,8 @@ export MY_ANDROID_API_LEVEL=24
 
 #./cmake_doc.sh
 #./cmake_android.sh
-./cmake_apple.sh
-#./cmake_emscripten.sh 
+#./cmake_apple.sh
+./cmake_emscripten.sh 
 
 
 #mkdir -p .build

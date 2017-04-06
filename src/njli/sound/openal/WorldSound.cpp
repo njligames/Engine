@@ -13,45 +13,45 @@ namespace njli
 {
     WorldSound::WorldSound()
     {
-        // Get the device we are going to use for sound.  Using NULL gets the default device
-        m_ALCdevice = alcOpenDevice(NULL);
+        // // Get the device we are going to use for sound.  Using NULL gets the default device
+        // m_ALCdevice = alcOpenDevice(NULL);
         
-        // If a device has been found we then need to create a context, make it current and then
-        // preload the OpenAL Sources
-        if(m_ALCdevice)
-        {
-            // Use the device we have now got to create a context "air"
-            m_ALCcontext = alcCreateContext(m_ALCdevice, NULL);
-            // Make the context we have just created into the active context
-            alcMakeContextCurrent(m_ALCcontext);
-            // Pre-create 32 sound sources which can be dynamically allocated to buffers (sounds)
-            u32 sourceID;
-            for(int index = 0; index < MAXCHANNELS; index++)
-            {
-                // Generate an OpenAL source
-                alGenSources(1, &sourceID);
-                m_Sources.push_back(sourceID);
-                // Add the generated sourceID to our array of sound sources
-                // [_SFXSources addObject:[NSNumber numberWithUnsignedInt:sourceID]];
-            }
-        }
+        // // If a device has been found we then need to create a context, make it current and then
+        // // preload the OpenAL Sources
+        // if(m_ALCdevice)
+        // {
+        //     // Use the device we have now got to create a context "air"
+        //     m_ALCcontext = alcCreateContext(m_ALCdevice, NULL);
+        //     // Make the context we have just created into the active context
+        //     alcMakeContextCurrent(m_ALCcontext);
+        //     // Pre-create 32 sound sources which can be dynamically allocated to buffers (sounds)
+        //     u32 sourceID;
+        //     for(int index = 0; index < MAXCHANNELS; index++)
+        //     {
+        //         // Generate an OpenAL source
+        //         alGenSources(1, &sourceID);
+        //         m_Sources.push_back(sourceID);
+        //         // Add the generated sourceID to our array of sound sources
+        //         // [_SFXSources addObject:[NSNumber numberWithUnsignedInt:sourceID]];
+        //     }
+        // }
     }
     WorldSound::~WorldSound()
     {
-        for(int index = 0; index < MAXCHANNELS; index++)
-        {
-            u32 sourceID = m_Sources.at(index);
-            alDeleteSources(1, &sourceID);
-        }
+        // for(int index = 0; index < MAXCHANNELS; index++)
+        // {
+        //     u32 sourceID = m_Sources.at(index);
+        //     alDeleteSources(1, &sourceID);
+        // }
 
-        // Disable and then destroy the context
-        alcMakeContextCurrent(NULL);
-        if(m_ALCcontext)
-            alcDestroyContext(m_ALCcontext);
+        // // Disable and then destroy the context
+        // alcMakeContextCurrent(NULL);
+        // if(m_ALCcontext)
+        //     alcDestroyContext(m_ALCcontext);
         
-        // Close the device
-        if(m_ALCdevice)
-            alcCloseDevice(m_ALCdevice);
+        // // Close the device
+        // if(m_ALCdevice)
+        //     alcCloseDevice(m_ALCdevice);
     }
     
     const s8 *WorldSound::getClassName()const

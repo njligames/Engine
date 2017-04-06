@@ -1,0 +1,10 @@
+/Users/jamesfolk/Dropbox/Developer/NJLI/Engine/projects/ios_Xcode/CMakeFiles/install.dir
+/Users/jamesfolk/Dropbox/Developer/NJLI/Engine/projects/ios_Xcode/CMakeFiles/EngineLibrary.dir
+/Users/jamesfolk/Dropbox/Developer/NJLI/Engine/projects/ios_Xcode/CMakeFiles/libnjli_shared.dir
+/Users/jamesfolk/Dropbox/Developer/NJLI/Engine/projects/ios_Xcode/CMakeFiles/doxygen.dir
+/Users/jamesfolk/Dropbox/Developer/NJLI/Engine/projects/ios_Xcode/CMakeFiles/libnjli_static.dir
+/Users/jamesfolk/Dropbox/Developer/NJLI/Engine/projects/ios_Xcode/CMakeFiles/EngineSource.dir
+/Users/jamesfolk/Dropbox/Developer/NJLI/Engine/projects/ios_Xcode/CMakeFiles/ldoc.dir
+/Users/jamesfolk/Dropbox/Developer/NJLI/Engine/projects/ios_Xcode/CMakeFiles/SWIGLua.dir
+/Users/jamesfolk/Dropbox/Developer/NJLI/Engine/projects/ios_Xcode/CMakeFiles/ALL_BUILD.dir
+/Users/jamesfolk/Dropbox/Developer/NJLI/Engine/projects/ios_Xcode/CMakeFiles/ZERO_CHECK.dir

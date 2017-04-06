@@ -618,7 +618,7 @@ FILE(GLOB NJLIGameEngine_HDRS
     ${NJLI_SOURCE_DIRECTORY}/njli/steering/behavior 
     ${NJLI_SOURCE_DIRECTORY}/njli/platform 
     ${NJLI_SOURCE_DIRECTORY}/njli/platform/${NJLI_BUILD_PLATFORM} 
-    ${NJLI_THIRDPARTY_DIRECTORY}/SDL/include
+    ${NJLI_THIRDPARTY_DIRECTORY}/SDL2/include
     )
 
 
@@ -1626,15 +1626,15 @@ FOREACH(filename ${src})
 ENDFOREACH()
 
 FILE( GLOB src
-    ${NJLI_THIRDPARTY_DIRECTORY}/SDL/include/*.h
-    ${NJLI_THIRDPARTY_DIRECTORY}/SDL/include/*.inl
-    ${NJLI_THIRDPARTY_DIRECTORY}/SDL/include/*.hpp
+    ${NJLI_THIRDPARTY_DIRECTORY}/SDL2/include/*.h
+    ${NJLI_THIRDPARTY_DIRECTORY}/SDL2/include/*.inl
+    ${NJLI_THIRDPARTY_DIRECTORY}/SDL2/include/*.hpp
     )
-SET(REG "${NJLI_THIRDPARTY_DIRECTORY}/SDL/include/.*([.]h|[.]inl|[.]hpp)")
+SET(REG "${NJLI_THIRDPARTY_DIRECTORY}/SDL2/include/.*([.]h|[.]inl|[.]hpp)")
 FOREACH(filename ${src})
     STRING(REGEX MATCH "${REG}" match_group_sources ${filename})
     IF(match_group_sources)
-        LIST(APPEND SDL ${filename})
+        LIST(APPEND SDL2 ${filename})
     ELSE()
         LIST(APPEND group_other ${filename})
     ENDIF()
@@ -1707,7 +1707,7 @@ FILE(GLOB NJLIGameEngine_THIRDPARTY_INC
     ${nanovg} 
     ${stb} 
     ${tinyxml2} 
-    ${SDL} 
+    ${SDL2} 
 )
 
 
@@ -2441,7 +2441,7 @@ IF( ${NJLI_BUILD_PLATFORM} STREQUAL "appletv" )
     SET( CMAKE_XCODE_EFFECTIVE_PLATFORMS "-appletvos;-appletvsimulator" )
 
     FILE(GLOB NJLIGameEngine_LBY
-        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/assimp/${NJLI_BUILD_PLATFORM}/10.2/${CMAKE_OSX_SYSROOT}/Release/lib/libassimp${NJLI_ASSIMP_POSTFIX}.a 
+         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/assimp/${NJLI_BUILD_PLATFORM}/10.2/${CMAKE_OSX_SYSROOT}/Release/lib/libassimp${NJLI_ASSIMP_POSTFIX}.a 
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_PLATFORM}/10.2/${CMAKE_OSX_SYSROOT}/Release/lib/libBullet2FileLoader.a 
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_PLATFORM}/10.2/${CMAKE_OSX_SYSROOT}/Release/lib/libBullet3Collision.a 
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_PLATFORM}/10.2/${CMAKE_OSX_SYSROOT}/Release/lib/libBullet3Common.a 
@@ -2460,13 +2460,13 @@ IF( ${NJLI_BUILD_PLATFORM} STREQUAL "appletv" )
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_PLATFORM}/10.2/${CMAKE_OSX_SYSROOT}/Release/lib/libGIMPACTUtils.a 
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_PLATFORM}/10.2/${CMAKE_OSX_SYSROOT}/Release/lib/libHACD.a 
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_PLATFORM}/10.2/${CMAKE_OSX_SYSROOT}/Release/lib/libLinearMath.a 
-        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/imgui/${NJLI_BUILD_PLATFORM}/10.2/${CMAKE_OSX_SYSROOT}/Release/libimgui.a 
-        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/ImGuizmo/${NJLI_BUILD_PLATFORM}/10.2/${CMAKE_OSX_SYSROOT}/Release/libImGuizmo.a
+          ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/imgui/${NJLI_BUILD_PLATFORM}/10.2/${CMAKE_OSX_SYSROOT}/Release/libimgui.a 
+       ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/ImGuizmo/${NJLI_BUILD_PLATFORM}/10.2/${CMAKE_OSX_SYSROOT}/Release/libImGuizmo.a
         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/jsoncpp/${NJLI_BUILD_PLATFORM}/10.2/${CMAKE_OSX_SYSROOT}/Release/libjsoncpp.a
-        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/nanovg/${NJLI_BUILD_PLATFORM}/10.2/${CMAKE_OSX_SYSROOT}/Release/libnanovg.a 
-        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/stb/${NJLI_BUILD_PLATFORM}/10.2/${CMAKE_OSX_SYSROOT}/Release/libstb.a
-        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/tinyxml2/${NJLI_BUILD_PLATFORM}/10.2/${CMAKE_OSX_SYSROOT}/Release/libtinyxml2.a
-        ${NJLI_THIRDPARTY_DIRECTORY}/fmod/lib/${NJLI_BUILD_PLATFORM}/10.2/${CMAKE_OSX_SYSROOT}/Release/libfmod.${NJLI_FMOD_EXTENSION}
+         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/nanovg/${NJLI_BUILD_PLATFORM}/10.2/${CMAKE_OSX_SYSROOT}/Release/libnanovg.a 
+            ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/stb/${NJLI_BUILD_PLATFORM}/10.2/${CMAKE_OSX_SYSROOT}/Release/libstb.a
+       ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/tinyxml2/${NJLI_BUILD_PLATFORM}/10.2/${CMAKE_OSX_SYSROOT}/Release/libtinyxml2.a
+                 ${NJLI_THIRDPARTY_DIRECTORY}/fmod/lib/${NJLI_BUILD_PLATFORM}/10.2/${CMAKE_OSX_SYSROOT}/Release/libfmod.${NJLI_FMOD_EXTENSION}
         )
 
     SET ( CMAKE_OSX_ARCHITECTURES ${ARCHS_STANDARD_32_BIT} CACHE string "Build architecture for iOS" )
@@ -2474,7 +2474,6 @@ IF( ${NJLI_BUILD_PLATFORM} STREQUAL "appletv" )
     SET ( EXTRA_PLATFORM_LIBS
         "-framework AVFoundation"
         "-framework GameController"
-        "-framework CoreMotion"
         "-framework CoreGraphics"
         "-framework AudioToolbox"
         "-framework QuartzCore"
@@ -2617,6 +2616,34 @@ ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "macOS" )
     #SET( NJLI_DEVICE_FAMILY "1,2" )
 
 ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "emscripten" )
+    FILE(GLOB NJLIGameEngine_LBY
+         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/assimp/${NJLI_BUILD_PLATFORM}/lib/libassimp${NJLI_ASSIMP_POSTFIX}.a 
+        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_PLATFORM}/lib/libBullet2FileLoader.a 
+        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_PLATFORM}/lib/libBullet3Collision.a 
+        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_PLATFORM}/lib/libBullet3Common.a 
+        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_PLATFORM}/lib/libBullet3Dynamics.a 
+        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_PLATFORM}/lib/libBullet3Geometry.a 
+        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_PLATFORM}/lib/libBullet3OpenCL_clew.a 
+        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_PLATFORM}/lib/libBulletCollision.a 
+        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_PLATFORM}/lib/libBulletDynamics.a 
+        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_PLATFORM}/lib/libBulletFileLoader.a 
+        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_PLATFORM}/lib/libBulletInverseDynamics.a 
+        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_PLATFORM}/lib/libBulletInverseDynamicsUtils.a 
+        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_PLATFORM}/lib/libBulletSoftBody.a 
+        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_PLATFORM}/lib/libBulletWorldImporter.a 
+        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_PLATFORM}/lib/libBulletXmlWorldImporter.a 
+        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_PLATFORM}/lib/libConvexDecomposition.a 
+        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_PLATFORM}/lib/libGIMPACTUtils.a 
+        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_PLATFORM}/lib/libHACD.a 
+        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/bullet3/${NJLI_BUILD_PLATFORM}/lib/libLinearMath.a 
+          ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/imgui/${NJLI_BUILD_PLATFORM}/libimgui.a 
+       ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/ImGuizmo/${NJLI_BUILD_PLATFORM}/libImGuizmo.a
+        ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/jsoncpp/${NJLI_BUILD_PLATFORM}/libjsoncpp.a
+         ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/nanovg/${NJLI_BUILD_PLATFORM}/libnanovg.a 
+            ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/stb/${NJLI_BUILD_PLATFORM}/libstb.a
+       ${NJLI_THIRDPARTY_DIRECTORY}/BUILD/lib/tinyxml2/${NJLI_BUILD_PLATFORM}/libtinyxml2.a
+        )
+
 ELSEIF( ${NJLI_BUILD_PLATFORM} STREQUAL "android" )
     SET( EXTRA_PLATFORM_LIBS "-lfmod -ldl -lGLESv2 -llog -landroid -lm -lc -lEGL -lstdc++")
     SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DGL_GLEXT_PROTOTYPES" )
@@ -2637,18 +2664,20 @@ SET(Binary_FILES
 INSTALL(PROGRAMS ${Binary_FILES} DESTINATION bin/thirdparty/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
 INSTALL(FILES ${NJLI_SOURCE_DIRECTORY}/njli/platform/Game.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-ADD_CUSTOM_TARGET(SWIGLua ALL
-    ./swig_lua.sh ${CMAKE_CURRENT_BINARY_DIR}
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    COMMENT "Generating SWIG module with swig" VERBATIM
-    SOURCES ${NJLIGameEngine_ITFS} ${NJLIGameEngine_THIRDPARTY_ITFS}
-    )
-SET_SOURCE_FILES_PROPERTIES( ${NJLI_SOURCE_DIRECTORY}/njli/generated/swig/lua/lnjli.cpp PROPERTIES GENERATED TRUE )
-SET_SOURCE_FILES_PROPERTIES( ${NJLI_SOURCE_DIRECTORY}/njli/generated/swig/lua/lbullet.cpp PROPERTIES GENERATED TRUE )
-SET_SOURCE_FILES_PROPERTIES( ${CMAKE_CURRENT_BINARY_DIR}/lnjli.xml PROPERTIES GENERATED TRUE )
-SET_SOURCE_FILES_PROPERTIES( ${CMAKE_CURRENT_BINARY_DIR}/lbullet.xml PROPERTIES GENERATED TRUE )
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/lnjli.xml DESTINATION ${CMAKE_INSTALL_DATADIR}/swig/lua)
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/lbullet.xml DESTINATION ${CMAKE_INSTALL_DATADIR}/swig/lua)
+#IF( NOT ${NJLI_BUILD_PLATFORM} STREQUAL "emscripten" )
+    ADD_CUSTOM_TARGET(SWIGLua ALL
+        ./swig_lua.sh ${CMAKE_CURRENT_BINARY_DIR}
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Generating SWIG module with swig" VERBATIM
+        SOURCES ${NJLIGameEngine_ITFS} ${NJLIGameEngine_THIRDPARTY_ITFS}
+        )
+    SET_SOURCE_FILES_PROPERTIES( ${NJLI_SOURCE_DIRECTORY}/njli/generated/swig/lua/lnjli.cpp PROPERTIES GENERATED TRUE )
+    SET_SOURCE_FILES_PROPERTIES( ${NJLI_SOURCE_DIRECTORY}/njli/generated/swig/lua/lbullet.cpp PROPERTIES GENERATED TRUE )
+    SET_SOURCE_FILES_PROPERTIES( ${CMAKE_CURRENT_BINARY_DIR}/lnjli.xml PROPERTIES GENERATED TRUE )
+    SET_SOURCE_FILES_PROPERTIES( ${CMAKE_CURRENT_BINARY_DIR}/lbullet.xml PROPERTIES GENERATED TRUE )
+    INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/lnjli.xml DESTINATION ${CMAKE_INSTALL_DATADIR}/swig/lua)
+    INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/lbullet.xml DESTINATION ${CMAKE_INSTALL_DATADIR}/swig/lua)
+#ENDIF()
 
 SOURCE_GROUP("ThirdParty"                                                                   FILES ${group_other} )
 SOURCE_GROUP("ThirdParty\\include"                                                          FILES ${group_other} )
@@ -2718,7 +2747,7 @@ SOURCE_GROUP("ThirdParty\\include\\glm\\glm\\simd"                              
 SOURCE_GROUP("ThirdParty\\include\\nanovg"                                                  FILES ${nanovg} )
 SOURCE_GROUP("ThirdParty\\include\\stb"                                                     FILES ${stb} )
 SOURCE_GROUP("ThirdParty\\include\\tinyxml2"                                                FILES ${tinyxml2} )
-SOURCE_GROUP("ThirdParty\\include\\SDL2"                                                    FILES ${SDL} )
+SOURCE_GROUP("ThirdParty\\include\\SDL2"                                                    FILES ${SDL2} )
 SOURCE_GROUP("GameEngine\\bullet"                                    FILES ${bullet} )
 SOURCE_GROUP("GameEngine\\lua"                                       FILES ${group_other})
 SOURCE_GROUP("GameEngine\\lua\\exts"                                 FILES ${lua_exts} )
@@ -2798,88 +2827,94 @@ SOURCE_GROUP("Interfaces\\swig.in\\lua\\thirdparty\\bullet3\\vectormath\\neon" F
 SOURCE_GROUP("Interfaces\\swig.in\\lua\\thirdparty\\bullet3\\vectormath\\scalar" FILES ${swigin_bullet3_vectormath_scalar} )
 SOURCE_GROUP("Interfaces\\swig.in\\lua\\thirdparty\\bullet3\\vectormath\\sse" FILES ${swigin_bullet3_vectormath_sse} )
 
-ADD_CUSTOM_TARGET(ldoc ALL
-    ldoc ${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/ldoc.in/
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/cmake.in
-    COMMENT "Generating API documentation with LDoc" VERBATIM
-    )
-SET_SOURCE_FILES_PROPERTIES( ${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/ldoc/index.html PROPERTIES GENERATED TRUE )
-INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/ldoc DESTINATION ${CMAKE_INSTALL_DOCDIR})
-
-FIND_PACKAGE(Doxygen)
-IF(DOXYGEN_FOUND)
-    SET_SOURCE_FILES_PROPERTIES( ${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/html/index.html  PROPERTIES GENERATED TRUE )
-
-    CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/Doxyfile.in ${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/Doxyfile @ONLY)
-    ADD_CUSTOM_TARGET(doxygen ALL
-        ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/Doxyfile
+IF( NOT ${NJLI_BUILD_PLATFORM} STREQUAL "emscripten" )
+    ADD_CUSTOM_TARGET(ldoc ALL
+        ldoc ${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/ldoc.in/
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/cmake.in
-        COMMENT "Generating API documentation with Doxygen" VERBATIM
+        COMMENT "Generating API documentation with LDoc" VERBATIM
         )
-    INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/docbook DESTINATION ${CMAKE_INSTALL_DOCDIR})
-    INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/html DESTINATION ${CMAKE_INSTALL_DOCDIR})
-    INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/latex DESTINATION ${CMAKE_INSTALL_DOCDIR})
-    INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/rtf DESTINATION ${CMAKE_INSTALL_DOCDIR})
-    INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/xml DESTINATION ${CMAKE_INSTALL_DOCDIR})
-ENDIF(DOXYGEN_FOUND)
+    SET_SOURCE_FILES_PROPERTIES( ${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/ldoc/index.html PROPERTIES GENERATED TRUE )
+    INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/ldoc DESTINATION ${CMAKE_INSTALL_DOCDIR})
+
+    FIND_PACKAGE(Doxygen)
+    IF(DOXYGEN_FOUND)
+        SET_SOURCE_FILES_PROPERTIES( ${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/html/index.html  PROPERTIES GENERATED TRUE )
+
+        CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/Doxyfile.in ${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/Doxyfile @ONLY)
+        ADD_CUSTOM_TARGET(doxygen ALL
+            ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/Doxyfile
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/cmake.in
+            COMMENT "Generating API documentation with Doxygen" VERBATIM
+            )
+        INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/docbook DESTINATION ${CMAKE_INSTALL_DOCDIR})
+        INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/html DESTINATION ${CMAKE_INSTALL_DOCDIR})
+        INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/latex DESTINATION ${CMAKE_INSTALL_DOCDIR})
+        INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/rtf DESTINATION ${CMAKE_INSTALL_DOCDIR})
+        INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/xml DESTINATION ${CMAKE_INSTALL_DOCDIR})
+    ENDIF(DOXYGEN_FOUND)
+ENDIF()
 
 ADD_LIBRARY( libnjli_static STATIC ${NJLIGameEngine_SRCS} )
 SET_TARGET_PROPERTIES( libnjli_static PROPERTIES OUTPUT_NAME libnjli )
 SET_TARGET_PROPERTIES( libnjli_static PROPERTIES PREFIX "")
+ADD_DEPENDENCIES( libnjli_static SWIGLua )
 TARGET_LINK_LIBRARIES( libnjli_static ${NJLIGameEngine_LBY} ${EXTRA_PLATFORM_LIBS} )
 INSTALL( TARGETS libnjli_static DESTINATION lib/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
 
 ADD_LIBRARY( libnjli_shared SHARED ${NJLIGameEngine_SRCS} )
 SET_TARGET_PROPERTIES( libnjli_shared PROPERTIES OUTPUT_NAME libnjli )
 SET_TARGET_PROPERTIES( libnjli_shared PROPERTIES PREFIX "")
+ADD_DEPENDENCIES( libnjli_shared SWIGLua )
 TARGET_LINK_LIBRARIES( libnjli_shared ${EXTRA_PLATFORM_LIBS} ${NJLIGameEngine_LBY} )
 INSTALL( TARGETS libnjli_shared DESTINATION lib/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
 
-IF(NOT XCODE)
+IF( ${NJLI_BUILD_PLATFORM} STREQUAL "macOS" )
     ADD_LIBRARY( libnjli_lua_module MODULE ${NJLIGameEngine_SRCS} )
     SET_TARGET_PROPERTIES( libnjli_lua_module PROPERTIES OUTPUT_NAME njli )
     SET_TARGET_PROPERTIES( libnjli_lua_module PROPERTIES PREFIX "")
+    ADD_DEPENDENCIES( libnjli_lua_module SWIGLua )
     TARGET_LINK_LIBRARIES( libnjli_lua_module ${NJLIGameEngine_LBY} ${EXTRA_PLATFORM_LIBS} )
     INSTALL( TARGETS libnjli_lua_module DESTINATION module/${NJLI_BUILD_DIR}/${CMAKE_BUILD_TYPE} )
-ENDIF(NOT XCODE)
+ENDIF()
 
-IF(XCODE)
-
-    ADD_EXECUTABLE( EngineSource 
-        ${NJLIGameEngine_SRCS} 
-        ${NJLI_SOURCE_DIRECTORY}/njli/platform/main.cpp 
-        ${NJLI_RESOURCES} 
-        ${NJLIGameEngine_THIRDPARTY_INC} 
+ADD_EXECUTABLE( EngineSource 
+    ${NJLIGameEngine_SRCS} 
+    ${NJLI_SOURCE_DIRECTORY}/njli/platform/main.cpp 
+    ${NJLI_RESOURCES} 
+    ${NJLIGameEngine_THIRDPARTY_INC} 
+    )
+IF( ${NJLI_BUILD_PLATFORM} STREQUAL "appletv" OR ${NJLI_BUILD_PLATFORM} STREQUAL "ios" )
+    SET_TARGET_PROPERTIES (
+        EngineSource
+        PROPERTIES
+        MACOSX_BUNDLE YES
+        MACOSX_BUNDLE_INFO_PLIST
+        "${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/Platform.in/${NJLI_BUILD_PLATFORM}/Info.plist"
+        XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Developer"
+        XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY ${NJLI_DEVICE_FAMILY}
+        XCODE_ATTRIBUTE_CLANG_ENABLE_OBJC_ARC YES
+        XCODE_ATTRIBUTE_INSTALL_PATH "${CMAKE_BINARY_DIR}/ProductRelease"
+        XCODE_ATTRIBUTE_COMBINE_HIDPI_IMAGES "NO"
+        RESOURCE "${NJLI_RESOURCES}"
         )
-    IF( ${NJLI_BUILD_PLATFORM} STREQUAL "appletv" OR ${NJLI_BUILD_PLATFORM} STREQUAL "ios" )
-        SET_TARGET_PROPERTIES (
-            EngineSource
-            PROPERTIES
-            MACOSX_BUNDLE YES
-            MACOSX_BUNDLE_INFO_PLIST
-            "${CMAKE_CURRENT_SOURCE_DIR}/cmake.in/Platform.in/${NJLI_BUILD_PLATFORM}/Info.plist"
-            XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Developer"
-            XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY ${NJLI_DEVICE_FAMILY}
-            XCODE_ATTRIBUTE_CLANG_ENABLE_OBJC_ARC YES
-            XCODE_ATTRIBUTE_INSTALL_PATH "${CMAKE_BINARY_DIR}/ProductRelease"
-            XCODE_ATTRIBUTE_COMBINE_HIDPI_IMAGES "NO"
-            RESOURCE "${NJLI_RESOURCES}"
-            )
-        SET_TARGET_PROPERTIES(
-            EngineSource
-            PROPERTIES
-            XCODE_ATTRIBUTE_PRODUCT_NAME
-            NJLIGameEngine
-            XCODE_ATTRIBUTE_BUNDLE_IDENTIFIER
-            "com.njligames.engine.${NJLI_BUILD_PLATFORM}.source"
-            )
-    ENDIF()
-    TARGET_LINK_LIBRARIES( EngineSource 
-        ${NJLIGameEngine_LBY} 
-        ${EXTRA_PLATFORM_LIBS} 
-        ${NJLI_THIRDPARTY_DIRECTORY}/SDL/lib/${NJLI_BUILD_DIR}/Release/libSDL2.a 
+    SET_TARGET_PROPERTIES(
+        EngineSource
+        PROPERTIES
+        XCODE_ATTRIBUTE_PRODUCT_NAME
+        NJLIGameEngine
+        XCODE_ATTRIBUTE_BUNDLE_IDENTIFIER
+        "com.njligames.engine.${NJLI_BUILD_PLATFORM}.source"
         )
+ENDIF()
 
+ADD_DEPENDENCIES( EngineSource SWIGLua )
+TARGET_LINK_LIBRARIES( EngineSource 
+    ${NJLIGameEngine_LBY} 
+    ${EXTRA_PLATFORM_LIBS} 
+    ${NJLI_THIRDPARTY_DIRECTORY}/SDL2/lib/${NJLI_BUILD_DIR}/Release/libSDL2.a 
+    )
+
+IF( NOT ${NJLI_BUILD_PLATFORM} STREQUAL "emscripten" )
     ADD_EXECUTABLE( EngineLibrary 
         ${NJLI_SOURCE_DIRECTORY}/njli/platform/main.cpp 
         ${NJLI_RESOURCES} 
@@ -2906,13 +2941,14 @@ IF(XCODE)
             XCODE_ATTRIBUTE_PRODUCT_NAME
             NJLIGameEngine
             XCODE_ATTRIBUTE_BUNDLE_IDENTIFIER
-            "com.njligames.engine.${NJLI_BUILD_PLATFORM}.source"
+            "com.njligames.engine.${NJLI_BUILD_PLATFORM}.library"
             )
     ENDIF()
-    ADD_DEPENDENCIES( EngineLibrary libnjli_static )
+
+    ADD_DEPENDENCIES( EngineLibrary libnjli_static SWIGLua )
     TARGET_LINK_LIBRARIES( EngineLibrary 
         libnjli_static 
         ${EXTRA_PLATFORM_LIBS} 
-        ${NJLI_THIRDPARTY_DIRECTORY}/SDL/lib/${NJLI_BUILD_DIR}/Release/libSDL2.a 
+        ${NJLI_THIRDPARTY_DIRECTORY}/SDL2/lib/${NJLI_BUILD_DIR}/Release/libSDL2.a 
         )
-ENDIF(XCODE)
+ENDIF()

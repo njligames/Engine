@@ -1,0 +1,10 @@
+/Users/jamesfolk/Dropbox/Developer/NJLI/Engine/projects/emscripten_Sublime/CMakeFiles/install/local.dir
+/Users/jamesfolk/Dropbox/Developer/NJLI/Engine/projects/emscripten_Sublime/CMakeFiles/install/strip.dir
+/Users/jamesfolk/Dropbox/Developer/NJLI/Engine/projects/emscripten_Sublime/CMakeFiles/install.dir
+/Users/jamesfolk/Dropbox/Developer/NJLI/Engine/projects/emscripten_Sublime/CMakeFiles/list_install_components.dir
+/Users/jamesfolk/Dropbox/Developer/NJLI/Engine/projects/emscripten_Sublime/CMakeFiles/rebuild_cache.dir
+/Users/jamesfolk/Dropbox/Developer/NJLI/Engine/projects/emscripten_Sublime/CMakeFiles/EngineSource.dir
+/Users/jamesfolk/Dropbox/Developer/NJLI/Engine/projects/emscripten_Sublime/CMakeFiles/libnjli_shared.dir
+/Users/jamesfolk/Dropbox/Developer/NJLI/Engine/projects/emscripten_Sublime/CMakeFiles/SWIGLua.dir
+/Users/jamesfolk/Dropbox/Developer/NJLI/Engine/projects/emscripten_Sublime/CMakeFiles/edit_cache.dir
+/Users/jamesfolk/Dropbox/Developer/NJLI/Engine/projects/emscripten_Sublime/CMakeFiles/libnjli_static.dir

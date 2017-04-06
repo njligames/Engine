@@ -1,0 +1,1 @@
+/Applications/Developer/emsdk_portable/emscripten/1.37.9/em++   -Wno-warn-absolute-paths --memory-init-file 0 -s DISABLE_EXCEPTION_CATCHING=0 -s ALLOW_MEMORY_GROWTH=1 -s LEGACY_GL_EMULATION=1 -std=gnu++11 -DNDEBUG -O2  -O2 @CMakeFiles/EngineSource.dir/objects1.rsp  -o EngineSource.js @CMakeFiles/EngineSource.dir/linklibs.rsp

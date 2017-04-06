@@ -204,173 +204,173 @@ namespace njli
     f32 Sound::getTimePosition()
     {
         u32 _pos = 0;
-        FMOD::Channel *channel = getChannel();
-        if(channel)
-            channel->getPosition(&_pos, FMOD_TIMEUNIT_MS);
-//        else
-//            DEBUG_LOG_WRITE_W(TAG, "Channel wasn't found");
+//         FMOD::Channel *channel = getChannel();
+//         if(channel)
+//             channel->getPosition(&_pos, FMOD_TIMEUNIT_MS);
+// //        else
+// //            DEBUG_LOG_WRITE_W(TAG, "Channel wasn't found");
         return (f32)_pos/1000.0f;
     }
     
     void Sound::setTimePosition(f32 pos)
     {
-        u32 _pos = (u32)pos * 1000.0f;
-        FMOD::Channel *channel = getChannel();
-        if(channel)
-            channel->setPosition(_pos, FMOD_TIMEUNIT_MS);
-//        else
-//            DEBUG_LOG_WRITE_W(TAG, "Channel wasn't found");
+//         u32 _pos = (u32)pos * 1000.0f;
+//         FMOD::Channel *channel = getChannel();
+//         if(channel)
+//             channel->setPosition(_pos, FMOD_TIMEUNIT_MS);
+// //        else
+// //            DEBUG_LOG_WRITE_W(TAG, "Channel wasn't found");
     }
     
     f32 Sound::getTimeLength()
     {
         u32 length = 0;
-        m_Sound->getLength(&length, FMOD_TIMEUNIT_MS);
+        // m_Sound->getLength(&length, FMOD_TIMEUNIT_MS);
         return (f32)length/1000.0f;
     }
     
     bool Sound::isPlaying()
     {
         bool playing = false;
-        FMOD::Channel *channel = getChannel();
-        if(channel)
-            channel->isPlaying(&playing);
-//        else
-//            DEBUG_LOG_WRITE_W(TAG, "Channel wasn't found");
+//         FMOD::Channel *channel = getChannel();
+//         if(channel)
+//             channel->isPlaying(&playing);
+// //        else
+// //            DEBUG_LOG_WRITE_W(TAG, "Channel wasn't found");
         return playing;
     }
     
     void Sound::play(bool isPaused)
     {
-        if(m_Sound)
-        {
-            m_Sound->getMode(&m_Mode);
+        // if(m_Sound)
+        // {
+        //     m_Sound->getMode(&m_Mode);
             
-            if(IsOn(m_Mode, FMOD_3D))
-            {
-                FMOD::Channel *channel = getChannel();
-                if(channel)
-                {
-                    FMOD_VECTOR pos =
-                    {
-                        getWorldTransform().getOrigin().x(),
-                        getWorldTransform().getOrigin().y(),
-                        getWorldTransform().getOrigin().z()
-                    };
-                    FMOD_VECTOR vel = {  0.0f, 0.0f, 0.0f };
-                    PhysicsBody *body = getParent()->getPhysicsBody();
-                    if (body)
-                    {
-                        vel =
-                        {
-                            body->getVelocity().x(),
-                            body->getVelocity().y(),
-                            body->getVelocity().z(),
-                        };
-                    }
-                    channel->set3DAttributes(&pos, &vel);
-                }
-            }
+        //     if(IsOn(m_Mode, FMOD_3D))
+        //     {
+        //         FMOD::Channel *channel = getChannel();
+        //         if(channel)
+        //         {
+        //             FMOD_VECTOR pos =
+        //             {
+        //                 getWorldTransform().getOrigin().x(),
+        //                 getWorldTransform().getOrigin().y(),
+        //                 getWorldTransform().getOrigin().z()
+        //             };
+        //             FMOD_VECTOR vel = {  0.0f, 0.0f, 0.0f };
+        //             PhysicsBody *body = getParent()->getPhysicsBody();
+        //             if (body)
+        //             {
+        //                 vel =
+        //                 {
+        //                     body->getVelocity().x(),
+        //                     body->getVelocity().y(),
+        //                     body->getVelocity().z(),
+        //                 };
+        //             }
+        //             channel->set3DAttributes(&pos, &vel);
+        //         }
+        //     }
             
-            njli::World::getInstance()->getWorldSound()->playSound(*this, isPaused);
-        }
-        else
-        {
-            DEBUG_WARN(TAG, "The sound is not null\n");
-        }
+        //     njli::World::getInstance()->getWorldSound()->playSound(*this, isPaused);
+        // }
+        // else
+        // {
+        //     DEBUG_WARN(TAG, "The sound is not null\n");
+        // }
     }
     
     void Sound::stop()
     {
-        FMOD::Channel *channel = getChannel();
-        if(channel)
-            channel->stop();
-//        else
-//            DEBUG_LOG_WRITE_W(TAG, "Channel wasn't found");
+//         FMOD::Channel *channel = getChannel();
+//         if(channel)
+//             channel->stop();
+// //        else
+// //            DEBUG_LOG_WRITE_W(TAG, "Channel wasn't found");
     }
     
     bool Sound::isPaused()
     {
         bool paused = false;
-        FMOD::Channel *channel = getChannel();
-        if(channel)
-            channel->getPaused(&paused);
-//        else
-//            DEBUG_LOG_WRITE_W(TAG, "Channel wasn't found");
+//         FMOD::Channel *channel = getChannel();
+//         if(channel)
+//             channel->getPaused(&paused);
+// //        else
+// //            DEBUG_LOG_WRITE_W(TAG, "Channel wasn't found");
         return paused;
     }
     
     void Sound::pause()
     {
-        FMOD::Channel *channel = getChannel();
-        if(channel)
-            channel->setPaused(true);
-//        else
-//            DEBUG_LOG_WRITE_W(TAG, "Channel wasn't found");
+//         FMOD::Channel *channel = getChannel();
+//         if(channel)
+//             channel->setPaused(true);
+// //        else
+// //            DEBUG_LOG_WRITE_W(TAG, "Channel wasn't found");
     }
     
     void Sound::unPause()
     {
-        FMOD::Channel *channel = getChannel();
-        if(channel)
-            channel->setPaused(false);
-//        else
-//            DEBUG_LOG_WRITE_W(TAG, "Channel wasn't found");
+//         FMOD::Channel *channel = getChannel();
+//         if(channel)
+//             channel->setPaused(false);
+// //        else
+// //            DEBUG_LOG_WRITE_W(TAG, "Channel wasn't found");
     }
     
     bool Sound::isMuted()
     {
         bool muted = false;
-        FMOD::Channel *channel = getChannel();
-        if(channel)
-            channel->getMute(&muted);
-//        else
-//            DEBUG_LOG_WRITE_W(TAG, "Channel wasn't found");
+//         FMOD::Channel *channel = getChannel();
+//         if(channel)
+//             channel->getMute(&muted);
+// //        else
+// //            DEBUG_LOG_WRITE_W(TAG, "Channel wasn't found");
         return muted;
     }
     
     void Sound::mute()
     {
-        FMOD::Channel *channel = getChannel();
-        if(channel)
-            channel->setMute(true);
-//        else
-//            DEBUG_LOG_WRITE_W(TAG, "Channel wasn't found");
+//         FMOD::Channel *channel = getChannel();
+//         if(channel)
+//             channel->setMute(true);
+// //        else
+// //            DEBUG_LOG_WRITE_W(TAG, "Channel wasn't found");
     }
     
     void Sound::unMute()
     {
-        FMOD::Channel *channel = getChannel();
-        if(channel)
-            channel->setMute(false);
-//        else
-//            DEBUG_LOG_WRITE_W(TAG, "Channel wasn't found");
+//         FMOD::Channel *channel = getChannel();
+//         if(channel)
+//             channel->setMute(false);
+// //        else
+// //            DEBUG_LOG_WRITE_W(TAG, "Channel wasn't found");
     }
     
     f32 Sound::getVolume()
     {
         f32 volume = 1.0f;
-        FMOD::Channel *channel = getChannel();
-        if(channel)
-            channel->getVolume(&volume);
-//        else
-//            DEBUG_LOG_WRITE_W(TAG, "Channel wasn't found");
+//         FMOD::Channel *channel = getChannel();
+//         if(channel)
+//             channel->getVolume(&volume);
+// //        else
+// //            DEBUG_LOG_WRITE_W(TAG, "Channel wasn't found");
         return volume;
     }
     
     void Sound::setVolume(f32 vol)
     {
-        FMOD::Channel *channel = getChannel();
-        if(channel)
-            channel->setVolume(vol);
-//        else
-//            DEBUG_LOG_WRITE_W(TAG, "Channel wasn't found");
+//         FMOD::Channel *channel = getChannel();
+//         if(channel)
+//             channel->setVolume(vol);
+// //        else
+// //            DEBUG_LOG_WRITE_W(TAG, "Channel wasn't found");
     }
     
     s32 Sound::getLoopCount()
     {
         s32 count = 0;
-        m_Sound->getLoopCount(&count);
+        // m_Sound->getLoopCount(&count);
         return count;
     }
     
@@ -378,56 +378,56 @@ namespace njli
     {
         bool wasPlaying = isPlaying();
         
-        if (wasPlaying) {
-            stop();
-        }
+        // if (wasPlaying) {
+        //     stop();
+        // }
         
-        if(count < 0)
-            m_Sound->setMode(FMOD_LOOP_NORMAL);
-        else
-            m_Sound->setLoopCount(count);
+        // if(count < 0)
+        //     m_Sound->setMode(FMOD_LOOP_NORMAL);
+        // else
+        //     m_Sound->setLoopCount(count);
         
-        if (wasPlaying)
-        {
-            play();
-        }
+        // if (wasPlaying)
+        // {
+        //     play();
+        // }
     }
     
     btTransform Sound::getWorldTransform()const
     {
-        if(getParent())
-            return getParent()->getWorldTransform() * getTransform();
+        // if(getParent())
+        //     return getParent()->getWorldTransform() * getTransform();
         return btTransform::getIdentity();
     }
     
-    FMOD::Channel *Sound::getChannel()
-    {
-        FMOD::Channel *channel = NULL;
-        FMOD_RESULT result;
+    // FMOD::Channel *Sound::getChannel()
+    // {
+    //     FMOD::Channel *channel = NULL;
+    //     FMOD_RESULT result;
         
-        if(m_ChannelIndex > 0)
-        {
-            FMOD::Sound *sound = NULL;
-            channel = njli::World::getInstance()->getWorldSound()->getChannel(m_ChannelIndex);
-            if(channel)
-            {
-                result = channel->getCurrentSound(&sound);
-                if(result != FMOD_OK)
-                {
-                    m_ChannelIndex = -1;
-                }
-                else if (sound == m_Sound)
-                {
-                    return channel;
-                }
-            }
-            else
-            {
-                m_ChannelIndex = -1;
-            }
-        }
-        return NULL;
-    }
+    //     if(m_ChannelIndex > 0)
+    //     {
+    //         FMOD::Sound *sound = NULL;
+    //         channel = njli::World::getInstance()->getWorldSound()->getChannel(m_ChannelIndex);
+    //         if(channel)
+    //         {
+    //             result = channel->getCurrentSound(&sound);
+    //             if(result != FMOD_OK)
+    //             {
+    //                 m_ChannelIndex = -1;
+    //             }
+    //             else if (sound == m_Sound)
+    //             {
+    //                 return channel;
+    //             }
+    //         }
+    //         else
+    //         {
+    //             m_ChannelIndex = -1;
+    //         }
+    //     }
+    //     return NULL;
+    // }
     
     Node *Sound::getParent()
     {

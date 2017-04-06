@@ -1,0 +1,102 @@
+{
+	"folders":
+	[
+		{
+			"path": "../../",
+			"folder_exclude_patterns": ["projects/emscripten_Sublime"]
+		}
+	],
+	"build_systems":
+	[
+		{
+			"name": "NJLIGameEngine - all",
+			"cmd": ["/Applications/Xcode.app/Contents/Developer/usr/bin/make", "-f", "Makefile", "VERBOSE=1", "all"],
+			"working_dir": "${project_path}",
+			"file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$"
+		},
+		{
+			"name": "NJLIGameEngine - clean",
+			"cmd": ["/Applications/Xcode.app/Contents/Developer/usr/bin/make", "-f", "Makefile", "VERBOSE=1", "clean"],
+			"working_dir": "${project_path}",
+			"file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$"
+		},
+		{
+			"name": "NJLIGameEngine - install/local",
+			"cmd": ["/Applications/Xcode.app/Contents/Developer/usr/bin/make", "-f", "Makefile", "VERBOSE=1", "install/local"],
+			"working_dir": "${project_path}",
+			"file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$"
+		},
+		{
+			"name": "NJLIGameEngine - install/strip",
+			"cmd": ["/Applications/Xcode.app/Contents/Developer/usr/bin/make", "-f", "Makefile", "VERBOSE=1", "install/strip"],
+			"working_dir": "${project_path}",
+			"file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$"
+		},
+		{
+			"name": "NJLIGameEngine - install",
+			"cmd": ["/Applications/Xcode.app/Contents/Developer/usr/bin/make", "-f", "Makefile", "VERBOSE=1", "install"],
+			"working_dir": "${project_path}",
+			"file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$"
+		},
+		{
+			"name": "NJLIGameEngine - list_install_components",
+			"cmd": ["/Applications/Xcode.app/Contents/Developer/usr/bin/make", "-f", "Makefile", "VERBOSE=1", "list_install_components"],
+			"working_dir": "${project_path}",
+			"file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$"
+		},
+		{
+			"name": "NJLIGameEngine - rebuild_cache",
+			"cmd": ["/Applications/Xcode.app/Contents/Developer/usr/bin/make", "-f", "Makefile", "VERBOSE=1", "rebuild_cache"],
+			"working_dir": "${project_path}",
+			"file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$"
+		},
+		{
+			"name": "NJLIGameEngine - EngineSource",
+			"cmd": ["/Applications/Xcode.app/Contents/Developer/usr/bin/make", "-f", "Makefile", "VERBOSE=1", "EngineSource"],
+			"working_dir": "${project_path}",
+			"file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$"
+		},
+		{
+			"name": "NJLIGameEngine - EngineSource/fast",
+			"cmd": ["/Applications/Xcode.app/Contents/Developer/usr/bin/make", "-f", "Makefile", "VERBOSE=1", "EngineSource/fast"],
+			"working_dir": "${project_path}",
+			"file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$"
+		},
+		{
+			"name": "NJLIGameEngine - libnjli_shared",
+			"cmd": ["/Applications/Xcode.app/Contents/Developer/usr/bin/make", "-f", "Makefile", "VERBOSE=1", "libnjli_shared"],
+			"working_dir": "${project_path}",
+			"file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$"
+		},
+		{
+			"name": "NJLIGameEngine - libnjli_shared/fast",
+			"cmd": ["/Applications/Xcode.app/Contents/Developer/usr/bin/make", "-f", "Makefile", "VERBOSE=1", "libnjli_shared/fast"],
+			"working_dir": "${project_path}",
+			"file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$"
+		},
+		{
+			"name": "NJLIGameEngine - SWIGLua",
+			"cmd": ["/Applications/Xcode.app/Contents/Developer/usr/bin/make", "-f", "Makefile", "VERBOSE=1", "SWIGLua"],
+			"working_dir": "${project_path}",
+			"file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$"
+		},
+		{
+			"name": "NJLIGameEngine - edit_cache",
+			"cmd": ["/Applications/Xcode.app/Contents/Developer/usr/bin/make", "-f", "Makefile", "VERBOSE=1", "edit_cache"],
+			"working_dir": "${project_path}",
+			"file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$"
+		},
+		{
+			"name": "NJLIGameEngine - libnjli_static",
+			"cmd": ["/Applications/Xcode.app/Contents/Developer/usr/bin/make", "-f", "Makefile", "VERBOSE=1", "libnjli_static"],
+			"working_dir": "${project_path}",
+			"file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$"
+		},
+		{
+			"name": "NJLIGameEngine - libnjli_static/fast",
+			"cmd": ["/Applications/Xcode.app/Contents/Developer/usr/bin/make", "-f", "Makefile", "VERBOSE=1", "libnjli_static/fast"],
+			"working_dir": "${project_path}",
+			"file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$"
+		}
+	]
+	}

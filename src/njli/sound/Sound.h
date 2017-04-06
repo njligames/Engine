@@ -17,8 +17,8 @@
 #include "lua.hpp"
 
 #ifdef USE_OPENAL
-#include "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/System/Library/Frameworks/OpenAL.framework/Versions/A/Headers/al.h"
-#include "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/System/Library/Frameworks/OpenAL.framework/Versions/A/Headers/alc.h"
+// #include "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/System/Library/Frameworks/OpenAL.framework/Versions/A/Headers/al.h"
+// #include "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/System/Library/Frameworks/OpenAL.framework/Versions/A/Headers/alc.h"
 #endif
 #ifdef USE_FMOD
 #include "fmod.hpp"
